@@ -1,3 +1,232 @@
+# Common Credentials
+_apb_eap_admin_user: &_apb_eap_admin_user
+  name: apb_eap_admin_user
+  title: EAP Admin Username
+  description: Admin username for all EAP Servers
+  required: true
+  type: string
+  default: eapadmin
+_apb_eap_admin_pwd: &_apb_eap_admin_pwd
+  name: apb_eap_admin_pwd
+  title: EAP Admin Password
+  description: Admin username for all EAP Servers. Generated if empty
+  required: false
+  type: string
+  display_type: password
+_apb_kie_admin_user: &_apb_kie_admin_user
+  name: apb_kie_admin_user
+  title: Admin Username
+  description: Admin username for Business Central and Execution Server
+  required: true
+  type: string
+  default: adminUser
+_apb_kie_admin_pwd: &_apb_kie_admin_pwd
+  name: apb_kie_admin_pwd
+  title: Admin Password
+  description: Admin user password for Business Central and Execution Server. Generated if empty
+  required: false
+  type: string
+  display_type: password
+# External Maven Repository
+_apb_maven_repo_url: &_apb_maven_repo_url
+  name: apb_maven_repo_url
+  title: Maven Repository URL
+  description: External Maven Repository URL. Leave empty to use the repository provided by Business Central
+  required: false
+  type: string
+  display_group: External Maven Repository
+_apb_maven_repo_user: &_apb_maven_repo_user
+  name: apb_maven_repo_user
+  title: Maven Repository Username
+  description: Username to use to interact with the external Maven repository.
+  required: false
+  type: string
+  display_group: External Maven Repository
+_apb_maven_repo_pwd: &_apb_maven_repo_pwd
+  name: apb_maven_repo_pwd
+  title: Maven Repository Password
+  description: Password to use to interact with the external Maven repository.
+  required: false
+  type: string
+  display_type: password
+  display_group: External Maven Repository
+# Generic Keystore parameters
+_apb_secret_name: &_apb_secret_name
+  title: Secret Name
+  description: Name of the secret containing the keystore to be used by the server. Generated if empty
+  required: false
+  type: string
+_apb_keystore_name: &_apb_keystore_name
+  title: Keystore Name
+  description: Name of the keystore file containing the certificate to be used by the server.
+  required: true
+  type: string
+  default: keystore.jks
+_apb_keystore_alias: &_apb_keystore_alias
+  title: Keystore certificate alias
+  description: Name of the certificate alias included in the keystore to be used by the server.
+  required: true
+  type: string
+  default: jboss
+_apb_keystore_pwd: &_apb_keystore_pwd
+  title: Keystore and Certificate Password
+  description: Password protecting both the Keystore and the Certificate. Generated if empty
+  required: false
+  type: string
+  display_type: password
+# KIE Execution Server
+_apb_kie_execution_user: &_apb_kie_execution_user
+  name: apb_kie_execution_user
+  title: Execution Server Username
+  description: User to interact with the REST API
+  required: true
+  type: string
+  default: executionUser
+  display_group: KIE Execution Server
+_apb_kie_execution_pwd: &_apb_kie_execution_pwd
+  name: apb_kie_execution_pwd
+  title: Execution Server Password
+  description: User password to interact with the REST API. Generated if empty
+  required: false
+  type: string
+  display_type: password
+  display_group: KIE Execution Server
+_abp_kie_execution_hostname: &_abp_kie_execution_hostname
+  name: abp_kie_execution_hostname
+  title: Public Hostname
+  description: Public hostname where the Execution Server will be accessed from. Generated if empty
+  required: false
+  type: string
+  display_group: KIE Execution Server
+_apb_kie_execution_limits_memory: &_apb_kie_execution_limits_memory
+  name: apb_kie_execution_limits_memory
+  title: Memory Limits
+  description: Memory limits to set for KIE Execution Server.
+  required: true
+  type: string
+  pattern: "^[0-9]+[mMgGtT]i?$"
+  default: 1Gi
+  display_group: KIE Execution Server
+_apb_kie_execution_db_type: &_apb_kie_execution_db_type
+  name: apb_kie_execution_db_type
+  title: Database Type
+  description: Database Type to persist the KIE Execution Server runtime information
+  required: true
+  type: enum
+  enum: ['H2', 'PostgreSQL', 'MySQL']
+  default: H2
+  display_group: KIE Execution Server
+_apb_kie_execution_db_size: &_apb_kie_execution_db_size
+  name: apb_kie_execution_db_size
+  title: Database Storage Size
+  description: Specify the Persistent Volume Claim size to create for the Database. Leave empty for ephemeral storage. e.g. 10Gi
+  required: false
+  type: string
+  pattern: "^[0-9]+[mMgGtT]i?$"
+  display_group: KIE Execution Server
+# Controller
+_apb_controller_svc: &_apb_controller_svc
+  name: apb_controller_svc
+  title: Controller Service name
+  description: Name of the Controller Service
+  required: false
+  type: string
+  display_group: Controller Integration
+_apb_controller_host: &_apb_controller_host
+  name: apb_controller_host
+  title: Controller Host
+  description: Controller Host
+  required: false
+  type: string
+  display_group: Controller Integration
+_apb_controller_port: &_apb_controller_port
+  name: apb_controller_port
+  title: Controller Host port
+  description: Controller Host port
+  required: false
+  type: string
+  display_group: Controller Integration
+_apb_controller_protocol: &_apb_controller_protocol
+  name: apb_controller_protocol
+  title: Controller Protocol
+  description: Controller Host protocol (http/https)
+  required: false
+  type: string
+  display_group: Controller Integration
+_apb_controller_token: &_apb_controller_token
+  name: apb_controller_token
+  title: Controller Auth Token
+  description: Controller authentication Token
+  required: false
+  type: string
+  display_group: Controller Integration
+_apb_controller_user: &_apb_controller_user
+  name: apb_controller_user
+  title: Controller Username
+  description: Username to access to the Controller
+  required: false
+  type: string
+  display_group: Controller Integration
+_apb_controller_pwd: &_apb_controller_pwd
+  name: apb_controller_pwd
+  title: Controller Password
+  description: User password to access to the Controller.
+  required: false
+  type: string
+  display_type: password
+  display_group: Controller Integration
+# RH-SSO
+_apb_sso_url: &_apb_sso_url
+  name: apb_sso_url
+  title: RH-SSO URL
+  description: Red Hat Single Sign-On URL. Leave empty to avoid using SSO. E.g. https://rhsso.example.com/auth
+  required: false
+  type: string
+  display_group: Red Hat - Single Sign-On
+_apb_sso_realm: &_apb_sso_realm
+  name: apb_sso_realm
+  title: RH-SSO Realm
+  description: Red Hat Single Sign-On Realm name. E.g. rhpam
+  required: false
+  type: string
+  display_group: Red Hat - Single Sign-On
+_apb_sso_client: &_apb_sso_client
+  name: apb_sso_client
+  title: RH-SSO Client
+  description: Red Hat Single Sign-On Client name. If the secret, user and password are provided it will be created. E.g. businesscentral
+  required: false
+  type: string
+  display_group: Red Hat - Single Sign-On
+_apb_sso_client_secret: &_apb_sso_client_secret
+  name: apb_sso_client_secret
+  title: RH-SSO Client Secret
+  description: Red Hat Single Sign-On Client secret.
+  required: false
+  type: string
+  display_group: Red Hat - Single Sign-On
+_apb_sso_user: &_apb_sso_user
+  name: apb_sso_user
+  title: RH-SSO Admin User
+  description: Red Hat Single Sign-On User to be used to create the Client if it doesn't exist. The user must be able to create secrets on the given realm.
+  required: false
+  type: string
+  display_group: Red Hat - Single Sign-On
+_apb_sso_pwd: &_apb_sso_pwd
+  name: apb_sso_pwd
+  title: RH-SSO Admin Password
+  description: Red Hat Single Sign-On Password to use to create the Client if it doesn't exist.
+  required: false
+  type: string
+  display_type: password
+  display_group: Red Hat - Single Sign-On
+_apb_sso_disable_ssl_cert_validation: &_apb_sso_disable_ssl_cert_validation
+  name: apb_sso_disable_ssl_cert_validation
+  title: RH-SSO Disable SSL Validation
+  description: Disable SSL Certificate Validation when connecting to RH-SSO
+  required: false
+  type: boolean
+  display_group: Red Hat - Single Sign-On
+
 version: 1.0
 name: rhpam-apb
 description: RHPAM
@@ -32,45 +261,21 @@ plans:
       displayName: RHPAM Authoring
     parameters:
       # Common Credentials
-      - name: apb_eap_admin_user
-        title: EAP Admin Username
-        description: Admin username for all EAP Servers
-        required: true
-        type: string
-        default: eapadmin
-      - name: apb_eap_admin_pwd
-        title: EAP Admin Password
-        description: Admin username for all EAP Servers. Generated if empty
-        required: false
-        type: string
-        display_type: password
-      - name: apb_kie_admin_user
-        title: Admin Username
-        description: Admin username for Business Central and Execution Server
-        required: true
-        type: string
-        default: adminUser
-      - name: apb_kie_admin_pwd
-        title: Admin Password
-        description: Admin user password for Business Central and Execution Server. Generated if empty
-        required: false
-        type: string
-        display_type: password
+      - *_apb_eap_admin_user
+      - *_apb_eap_admin_pwd
+      - *_apb_kie_admin_user
+      - *_apb_kie_admin_pwd
 
       # Business Central
-      - name: apb_businesscentral_controller_user
+      - <<: *_apb_controller_user
         title: Business Central Username
         description: Username to access to the Business Central UI
         required: true
-        type: string
         default: controllerUser
         display_group: Business Central
-      - name: apb_businesscentral_controller_pwd
+      - <<: *_apb_controller_pwd
         title: Business Central Password
         description: User password to access to the Business Central UI. Generated if empty
-        required: false
-        type: string
-        display_type: password
         display_group: Business Central
       - name: abp_businesscentral_hostname
         title: Public Hostname
@@ -78,33 +283,20 @@ plans:
         required: false
         type: string
         display_group: Business Central
-      - name: apb_businesscentral_secret_name
-        title: Secret Name
-        description: Name of the secret containing the keystore to be used by the server. Generated if empty
-        required: false
-        type: string
+      # Keystore and Secret
+      - <<: *_apb_secret_name
+        name: apb_businesscentral_secret_name
         display_group: Business Central
-      - name: apb_businesscentral_keystore_name
-        title: Keystore Name
-        description: Name of the keystore file containing the certificate to be used by the server.
-        required: true
-        type: string
-        default: keystore.jks
+      - <<: *_apb_keystore_name
+        name: apb_businesscentral_keystore_name
         display_group: Business Central
-      - name: apb_businesscentral_keystore_alias
-        title: Keystore certificate alias
-        description: Name of the certificate alias included in the keystore to be used by the server.
-        required: true
-        type: string
-        default: jboss
+      - <<: *_apb_keystore_alias
+        name: apb_businesscentral_keystore_alias
         display_group: Business Central
-      - name: apb_businesscentral_keystore_pwd
-        title: Keystore and Certificate Password
-        description: Password protecting both the Keystore and the Certificate. Generated if empty
-        required: false
-        type: string
-        display_type: password
+      - <<: *_apb_keystore_pwd
+        name: apb_businesscentral_keystore_pwd
         display_group: Business Central
+
       - name: apb_businesscentral_limits_memory
         title: Memory Limits
         description: Memory limits to set for Business Central.
@@ -136,142 +328,131 @@ plans:
         display_group: Business Central
 
       # Business Central SSO
-      - name: apb_sso_url
-        title: RH-SSO URL
-        description: Red Hat Single Sign-On URL. Leave empty to avoid using SSO. E.g. https://rhsso.example.com/auth
-        required: false
-        type: string
-        display_group: Business Central - RH-SSO
-      - name: apb_sso_realm
-        title: RH-SSO Realm
-        description: Red Hat Single Sign-On Realm name. E.g. rhpam
-        required: false
-        type: string
-        display_group: Business Central - RH-SSO
-      - name: apb_sso_client
-        title: RH-SSO Client
-        description: Red Hat Single Sign-On Client name. If the secret, user and password are provided it will be created. E.g. businesscentral
-        required: false
-        type: string
-        display_group: Business Central - RH-SSO
-      - name: apb_sso_client_secret
-        title: RH-SSO Client Secret
-        description: Red Hat Single Sign-On Client secret.
-        required: false
-        type: string
-        display_group: Business Central - RH-SSO
-      - name: apb_sso_user
-        title: RH-SSO Admin User
-        description: Red Hat Single Sign-On User to be used to create the Client if it doesn't exist. The user must be able to create secrets on the given realm.
-        required: false
-        type: string
-        display_group: Business Central - RH-SSO
-      - name: apb_sso_pwd
-        title: RH-SSO Admin Password
-        description: Red Hat Single Sign-On Password to use to create the Client if it doesn't exist.
-        required: false
-        type: string
-        display_type: password
-        display_group: Business Central - RH-SSO
-      - name: apb_sso_disable_ssl_cert_validation
-        title: RH-SSO Disable SSL Validation
-        description: Disable SSL Certificate Validation when connecting to RH-SSO
-        required: false
-        type: boolean
-        display_group: Business Central - RH-SSO
+      - *_apb_sso_url
+      - *_apb_sso_realm
+      - *_apb_sso_client
+      - *_apb_sso_client_secret
+      - *_apb_sso_user
+      - *_apb_sso_pwd
+      - *_apb_sso_disable_ssl_cert_validation
 
       # KIE Execution Server
-      - name: apb_kie_execution_user
-        title: Execution Server Username
-        description: User to interact with the REST API
-        required: true
-        type: string
-        default: executionUser
+      - *_apb_kie_execution_user
+      - *_apb_kie_execution_pwd
+      - *_abp_kie_execution_hostname
+      - *_apb_kie_execution_limits_memory
+      - *_apb_kie_execution_db_type
+      - *_apb_kie_execution_db_size
+
+      # Keystore and Secret
+      - <<: *_apb_secret_name
+        name: apb_kie_execution_secret_name
         display_group: KIE Execution Server
-      - name: apb_kie_execution_pwd
-        title: Execution Server Password
-        description: User password to interact with the REST API. Generated if empty
-        required: false
-        type: string
-        display_type: password
+      - <<: *_apb_keystore_name
+        name: apb_kie_execution_keystore_name
         display_group: KIE Execution Server
-      - name: abp_kie_execution_hostname
-        title: Public Hostname
-        description: Public hostname where the Execution Server will be accessed from. Generated if empty
-        required: false
-        type: string
+      - <<: *_apb_keystore_alias
+        name: apb_kie_execution_keystore_alias
         display_group: KIE Execution Server
-      - name: apb_kie_execution_secret_name
-        title: Secret Name
-        description: Name of the secret containing the keystore to be used by the server. Generated if empty
-        required: false
-        type: string
-        display_group: KIE Execution Server
-      - name: apb_kie_execution_keystore_name
-        title: Keystore Name
-        description: Name of the keystore file containing the certificate to be used by the server.
-        required: true
-        type: string
-        default: keystore.jks
-        display_group: KIE Execution Server
-      - name: apb_kie_execution_keystore_alias
-        title: Keystore certificate alias
-        description: Name of the certificate alias included in the keystore to be used by the server.
-        required: true
-        type: string
-        default: jboss
-        display_group: KIE Execution Server
-      - name: apb_kie_execution_keystore_pwd
-        title: Keystore and Certificate Password
-        description: Password protecting both the Keystore and the Certificate. Generated if empty
-        required: false
-        type: string
-        display_type: password
-        display_group: KIE Execution Server
-      - name: apb_kie_execution_limits_memory
-        title: Memory Limits
-        description: Memory limits to set for KIE Execution Server.
-        required: true
-        type: string
-        pattern: "^[0-9]+[mMgGtT]i?$"
-        default: 1Gi
-        display_group: KIE Execution Server
-      - name: apb_kie_execution_db_type
-        title: Database Type
-        description: Database Type to persist the KIE Execution Server runtime information
-        required: true
-        type: enum
-        enum: ['H2', 'PostgreSQL', 'MySQL']
-        default: H2
-        display_group: KIE Execution Server
-      - name: apb_kie_execution_db_size
-        title: Database Storage Size
-        description: Specify the Persistent Volume Claim size to create for the Database. Leave empty for ephemeral storage. e.g. 10Gi
-        required: false
-        type: string
-        pattern: "^[0-9]+[mMgGtT]i?$"
+      - <<: *_apb_keystore_pwd
+        name: apb_kie_execution_keystore_pwd
         display_group: KIE Execution Server
 
       # External Maven Repository
-      - name: apb_maven_repo_url
-        title: Maven Repository URL
-        description: External Maven Repository URL. Leave empty to use the repository provided by Business Central
+      - *_apb_maven_repo_url
+      - *_apb_maven_repo_user
+      - *_apb_maven_repo_pwd
+
+  - name: kieserver
+    description: Deploy KIE Execution Server
+    free: true
+    metadata:
+      displayName: KIE Execution Server
+    parameters:
+      # Common Credentials
+      - *_apb_eap_admin_user
+      - *_apb_eap_admin_pwd
+      - *_apb_kie_admin_user
+      - *_apb_kie_admin_pwd
+
+      # Router
+      - name: apb_router_svc
+        title: Router Service name
+        description: Name of the Router Service
         required: false
         type: string
-        display_group: External Maven Repository
-      - name: apb_maven_repo_user
-        title: Maven Repository Username
-        description: Username to use to interact with the external Maven repository.
+        display_group: Router Integration
+      - name: apb_router_host
+        title: Router Host
+        description: Router Host
         required: false
         type: string
-        display_group: External Maven Repository
-      - name: apb_maven_repo_pwd
-        title: Maven Repository Password
-        description: Password to use to interact with the external Maven repository.
+        display_group: Router Integration
+      - name: apb_router_port
+        title: Router Host port
+        description: Router Host port
+        required: false
+        type: string
+        display_group: Router Integration
+      - name: apb_router_protocol
+        title: Router Protocol
+        description: Router Host protocol (http/https)
+        required: false
+        type: string
+        display_group: Router Integration
+
+      # Controller
+      - *_apb_controller_svc
+      - *_apb_controller_host
+      - *_apb_controller_port
+      - *_apb_controller_protocol
+      - *_apb_controller_token
+      - *_apb_controller_user
+      - *_apb_controller_pwd
+
+      - name: apb_businesscentral_maven_user
+        title: Maven repository username
+        description: Username used to interact with the Maven Repository hosted by Business Central
+        required: true
+        type: string
+        default: mavenUser
+        display_group: Business Central
+      - name: apb_businesscentral_maven_pwd
+        title: Maven repository password
+        description: User password used to interact with the Maven Repository hosted by Business Central. Generated if emtpy
         required: false
         type: string
         display_type: password
-        display_group: External Maven Repository
+        display_group: Business Central
+
+      # KIE Execution Server
+      - *_apb_kie_execution_user
+      - *_apb_kie_execution_pwd
+      - *_abp_kie_execution_hostname
+      - *_apb_kie_execution_limits_memory
+      - *_apb_kie_execution_db_type
+      - *_apb_kie_execution_db_size
+
+      # Keystore and Secret
+      - <<: *_apb_secret_name
+        name: apb_kie_execution_secret_name
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_name
+        name: apb_kie_execution_keystore_name
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_alias
+        name: apb_kie_execution_keystore_alias
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_pwd
+        name: apb_kie_execution_keystore_pwd
+        display_group: KIE Execution Server
+
+      # External Maven Repository
+      - *_apb_maven_repo_url
+      - *_apb_maven_repo_user
+      - *_apb_maven_repo_pwd
+
+
 
   - name: production
     description: Deploy RHPAM Production
@@ -349,45 +530,3 @@ plans:
       #   required: true
       #   description: Deploy KIE Server in High Availability. Will deploy multiple instances
       #   display_group: KIE Server
-
-  - name: kieserver
-    description: Deploy RHPAM KIE Server
-    free: true
-    metadata:
-      displayName: RHPAM KIE Server
-    parameters:
-      # KIE Server
-      - name: apb_kieserver_db_type
-        type: enum
-        title: Database Type
-        default: H2
-        enum: ['H2', 'PostgreSQL', 'MySQL']
-        required: true
-      - name: apb_kieserver_db_size
-        type: string
-        title: Database Storage Size
-        pattern: "^[0-9]+[mMgGtT]i?$"
-        required: false
-        description: Specify the Persistent Volume Claim size to create for the Database. Leave empty for ephemeral storage. e.g. 10Gi
-      - name: apb_kieserver_limits_memory
-        type: string
-        title: Memory Limits
-        pattern: "^[0-9]+[mMgGtT]i?$"
-        required: true
-        default: 1Gi
-        description: Memory limits to set for KIE Server.
-      - name: apb_kieserver_secret_name
-        type: string
-        title: Secret name
-        required: false
-        description: Name of the Secret containing the keystore to use. Leave empty to generate one.
-      - name: apb_kieserver_external_maven_repo
-        type: string
-        title: External Maven Repository
-        required: false
-        description: Name of the Secret containing the keystore to use. Leave empty to generate one.
-      # - name: apb_kieserver_ha
-      #   type: boolean
-      #   title: High Availability (HA)
-      #   required: true
-      #   description: Deploy KIE Server in High Availability. Will deploy multiple instances

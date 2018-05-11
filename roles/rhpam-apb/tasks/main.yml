@@ -6,6 +6,12 @@
 
 - name: "[RHPAM] Authoring Plan"
   block:
+    - name: "[RHPAM] Set defaults"
+      set_fact:
+        controller_pwd: "{{ apb_controller_pwd | default(lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8'), true) }}"
+        controller_svc: "{{ application_name }}-rhpamcentr"
+        has_rhpamcentr: true
+
     - name: "[RHPAM] Deploy Business Central"
       include_role:
         name: deploy-businesscentral
@@ -14,6 +20,16 @@
       include_role:
         name: deploy-kieserver
   when: _apb_plan_id == "authoring"
+
+- name: "[RHPAM] KIE Execution Server Plan"
+  include_role:
+    name: deploy-kieserver
+  vars:
+    kieserver_mgmt_disabled: true
+    controller_pwd: "{{ apb_controller_pwd | default('', true) | trim  }}"
+    has_external_controller: true
+    has_router: true
+  when: _apb_plan_id == "kieserver"
 
 - name: "[RHPAM] Deploy Business Central Monitoring"
   include_role:

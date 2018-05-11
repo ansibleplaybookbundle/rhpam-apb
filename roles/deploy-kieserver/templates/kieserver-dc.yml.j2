@@ -6,6 +6,8 @@ metadata:
     app: {{ application_name }}
     service: {{ kieserver_service_name }}
 spec:
+  strategy:
+    type: Recreate
   triggers:
     - type: ImageChange
       imageChangeParams:
@@ -126,7 +128,27 @@ spec:
           - name: KIE_SERVER_CONTROLLER_PWD
             value: '{{ controller_pwd }}'
           - name: KIE_SERVER_CONTROLLER_SERVICE
-            value: '{{ kieserver_controller_svc }}'
+            value: '{{ controller_svc }}'
+{% if has_external_controller %}
+          - name: KIE_SERVER_CONTROLLER_HOST
+            value: '{{ controller_host }}'
+          - name: KIE_SERVER_CONTROLLER_PORT
+            value: '{{ controller_port }}'
+          - name: KIE_SERVER_CONTROLLER_PROTOCOL
+            value: '{{ controller_protocol }}'
+          - name: KIE_SERVER_CONTROLLER_TOKEN
+            value: '{{ controller_token }}'
+{% endif %}
+{% if has_router %}
+          - name: KIE_SERVER_ROUTER_SERVICE
+            value: '{{ router_svc }}'
+          - name: KIE_SERVER_ROUTER_HOST
+            value: '{{ router_host }}'
+          - name: KIE_SERVER_ROUTER_PORT
+            value: '{{ router_port }}'
+          - name: KIE_SERVER_ROUTER_PROTOCOL
+            value: '{{ router_protocol }}'
+{% endif %}
           - name: KIE_SERVER_ID
             value: ""
           - name: KIE_SERVER_HOST
@@ -137,6 +159,7 @@ spec:
             value: '{{ kie_execution_user }}'
           - name: KIE_SERVER_PWD
             value: '{{ kie_execution_pwd }}'
+{% if has_rhpamcentr %}
           - name: MAVEN_REPOS
             value: "RHPAMCENTR,EXTERNAL"
           - name: RHPAMCENTR_MAVEN_REPO_SERVICE
@@ -147,14 +170,22 @@ spec:
             value: '{{ businesscentral_maven_repo_user }}'
           - name: RHPAMCENTR_MAVEN_REPO_PASSWORD
             value: '{{ businesscentral_maven_repo_pwd }}'
+{% else %}
+          - name: MAVEN_REPOS
+            value: "EXTERNAL"
+{% endif %}
 {% if kieserver_external_maven_repo is defined %}
           - name: EXTERNAL_MAVEN_REPO_URL
             value: "{{ external_maven_repo_url }}"
-{% endif %}
           - name: EXTERNAL_MAVEN_REPO_USERNAME
             value: '{{ external_maven_repo_user }}'
           - name: EXTERNAL_MAVEN_REPO_PASSWORD
             value: '{{ external_maven_repo_pwd }}'
+{% endif %}
+          - name: KIE_SERVER_MGMT_DISABLED
+            value: '{{ kieserver_mgmt_disabled }}'
+          - name: KIE_SERVER_STARTUP_STRATEGY
+            value: '{{ kieserver_startup_strategy }}'
           - name: HTTPS_KEYSTORE_DIR
             value: "/etc/kieserver-certs"
           - name: HTTPS_KEYSTORE
