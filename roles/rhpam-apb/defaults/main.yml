@@ -1,0 +1,17 @@
+---
+# Pre-provisioned users
+eap_admin_user: "{{ apb_eap_admin_user }}"
+eap_admin_pwd: "{{ apb_eap_admin_pwd | default(lookup('password', tmp_folder + '/eapadmin_pwd chars=ascii_letters,digits length=8'), true) }}"
+kie_admin_user: "{{ apb_kie_admin_user }}"
+kie_admin_pwd: "{{ apb_kie_admin_pwd | default(lookup('password', tmp_folder + '/kieadmin_pwd chars=ascii_letters,digits length=8'), true)}}"
+kie_execution_user: "{{ apb_kie_execution_user }}"
+kie_execution_pwd: "{{ apb_kie_execution_pwd | default(lookup('password', tmp_folder + '/kie_execution_pwd chars=ascii_letters,digits length=8'), true)}}"
+controller_user: "{{ apb_businesscentral_controller_user | default('', true) | trim }}"
+controller_pwd: "{{ apb_businesscentral_controller_pwd | default(lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8'), true) }}"
+
+# Maven repositories
+businesscentral_maven_repo_user: "{{ apb_businesscentral_maven_user | default('', true) | trim }}"
+businesscentral_maven_repo_pwd: "{{ apb_businesscentral_maven_pwd | default(lookup('password', tmp_folder + '/mvn_pwd chars=ascii_letters,digits length=8'), true) }}"
+external_maven_repo_url: "{{ apb_maven_repo_url | default('', true) | trim }}"
+external_maven_repo_user: "{{ apb_maven_repo_user | default('', true) | trim }}"
+external_maven_repo_pwd: "{{ apb_maven_repo_pwd }}"

@@ -1,0 +1,44 @@
+---
+- name: "[SET UP] tmp folder"
+  file:
+    path: '{{ tmp_folder }}'
+    state: directory
+
+- name: "[RHPAM] Authoring Plan"
+  block:
+    - name: "[RHPAM] Deploy Business Central"
+      include_role:
+        name: deploy-businesscentral
+
+    - name: "[RHPAM] Deploy KIE Execution Server"
+      include_role:
+        name: deploy-kieserver
+  when: _apb_plan_id == "authoring"
+
+- name: "[RHPAM] Deploy Business Central Monitoring"
+  include_role:
+    name: deploy-businesscentral-monitoring
+  vars:
+    businesscentral_monitoring_deployment_name: "{{ application_name }}-businesscentral-monitoring"
+    businesscentral_monitoring_service_name: "rhpam-businesscentral-monitoring"
+    businesscentral_monitoring_ha: "{{ apb_businesscentral_monitoring_ha | default(false) | bool }}"
+    businesscentral_monitoring_volume_size: "{{ apb_businesscentral_monitoring_volume_size | default('', true) | trim }}"
+    businesscentral_monitoring_secret_name: "{{ apb_businesscentral_monitoring_secret_name | default('', true) | trim }}"
+    businesscentral_monitoring_limits_memory: '{{ apb_businesscentral_monitoring_limits_memory }}'
+  when: _apb_plan_id != "authoring"
+
+- name: "[RHPAM] Deploy KIE Server"
+  include_role:
+    name: deploy-kieserver
+  vars:
+    kieserver_deployment_name: "{{ application_name }}-kieserver"
+    kieserver_service_name: "rhpam-kieserver"
+    kieserver_ha: "{{ apb_kieserver_ha | default(false) | bool }}"
+    kieserver_secret_name: "{{ apb_kieserver_secret_name | default('', true) | trim }}"
+    kieserver_limits_memory: "{{ apb_kieserver_limits_memory }}"
+    kieserver_db_type: "{{ apb_kieserver_db_type }}"
+    kieserver_db_size: "{{ apb_kieserver_db_size | default('', true) | trim }}"
+    kieserver_external_maven_repo: "{{ apb_kieserver_external_maven_repo | default('', true) }}"
+  when:
+    - _apb_plan_id != "prod_immutable_monitor"
+    - _apb_plan_id != "authoring"

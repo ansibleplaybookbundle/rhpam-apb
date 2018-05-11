@@ -1,0 +1,134 @@
+---
+- name: "[POSTGRESQL] set service state to {{ state }}"
+  k8s_v1_service:
+    name: '{{ deployment_name }}'
+    namespace: '{{ namespace }}'
+    labels:
+      app: '{{ application_name }}'
+      service: '{{ service_name }}'
+    selector:
+      app: '{{ application_name }}'
+      service: '{{ service_name }}'
+    ports:
+    - name: port-5432
+      port: 5432
+      protocol: TCP
+      target_port: 5432
+    state: "{{ state }}"
+  register: postgres_service
+
+- name: "[POSTGRESQL] set persistent deployment state to {{ state }}"
+  block:
+  - name: "[POSTGRESQL] set persistent volume claim state to {{ state }}"
+    k8s_v1_persistent_volume_claim:
+      name: '{{ deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ service_name }}'
+      access_modes:
+        - ReadWriteOnce
+      resources_requests:
+        storage: '{{ postgresql_volume_size }}'
+      state: "{{ state }}"
+
+  - name: "[POSTGRESQL] set deployment config state to {{ state }}"
+    openshift_v1_deployment_config:
+      name: '{{ deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ service_name }}'
+      replicas: 1
+      selector:
+        app: '{{ application_name }}'
+        service: '{{ service_name }}'
+      spec_template_metadata_labels:
+        app: '{{ application_name }}'
+        service: '{{ service_name }}'
+      containers:
+      - env:
+        - name: POSTGRESQL_DATABASE
+          value: '{{ postgresql_database }}'
+        - name: POSTGRESQL_USER
+          value: '{{ postgresql_user }}'
+        - name: POSTGRESQL_PASSWORD
+          value: '{{ postgresql_pwd }}'
+        image: ' '
+        image_pull_policy: IfNotPresent
+        name: postgresql
+        ports:
+        - container_port: 5432
+          protocol: TCP
+        volume_mounts:
+        - mount_path: /var/lib/pgsql/data
+          name: postgresql
+        working_dir: /
+      volumes:
+      - name: postgresql
+        persistent_volume_claim:
+          claim_name: '{{ deployment_name }}'
+      triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        image_change_params:
+          automatic: true
+          container_names:
+            - postgresql
+          _from:
+            kind: ImageStreamTag
+            name: '{{ postgresql_image_name }}:{{ postgresql_image_tag }}'
+            namespace: '{{ postgresql_image_namespace }}'
+      state: "{{ state }}"
+  when:
+    - postgresql_volume_size is defined
+    - postgresql_volume_size != ""
+
+- name: "[POSTGRESQL] set ephemeral deployment state to {{ state }}"
+  openshift_v1_deployment_config:
+    name: '{{ deployment_name }}'
+    namespace: '{{ namespace }}'
+    labels:
+      app: '{{ application_name }}'
+      service: '{{ service_name }}'
+    replicas: 1
+    selector:
+      app: '{{ application_name }}'
+      service: '{{ service_name }}'
+    spec_template_metadata_labels:
+      app: '{{ application_name }}'
+      service: '{{ service_name }}'
+    containers:
+    - env:
+      - name: POSTGRESQL_DATABASE
+        value: '{{ postgresql_database }}'
+      - name: POSTGRESQL_USER
+        value: '{{ postgresql_user }}'
+      - name: POSTGRESQL_PASSWORD
+        value: '{{ postgresql_pwd }}'
+      image: ' '
+      image_pull_policy: IfNotPresent
+      name: postgresql
+      ports:
+      - container_port: 5432
+        protocol: TCP
+      volume_mounts:
+      - mount_path: /var/lib/pgsql/data
+        name: postgresql
+      working_dir: /
+    volumes:
+    - name: postgresql
+      emptyDir: []
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      image_change_params:
+        automatic: true
+        container_names:
+          - postgresql
+        _from:
+          kind: ImageStreamTag
+          name: '{{ postgresql_image_name }}:{{ postgresql_image_tag }}'
+          namespace: '{{ postgresql_image_namespace }}'
+    state: "{{ state }}"
+  when: not postgresql_volume_size is defined or postgresql_volume_size == ""

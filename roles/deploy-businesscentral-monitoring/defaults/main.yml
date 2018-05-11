@@ -1,0 +1,23 @@
+---
+businesscentral_monitoring_image_name: rhpam70-businesscentral-monitoring-openshift
+businesscentral_monitoring_image_tag: 1.0
+businesscentral_monitoring_image_namespace: openshift
+
+businesscentral_monitoring_default_secret_name: '{{ application_name }}-businesscentral-monitoring'
+businesscentral_monitoring_image_pull_policy: IfNotPresent
+businesscentral_monitoring_replicas: 1
+businesscentral_monitoring_replicas_ha: 3
+# Default env variables
+KIE_ADMIN_PWD: "adminPassword"
+KIE_ADMIN_USER: "adminUser"
+KIE_SERVER_CONTROLLER_PWD: "controllerUser"
+KIE_SERVER_CONTROLLER_USER: "controllerPassword"
+KIE_SERVER_PWD: "serverPassword"
+KIE_SERVER_USER: "serverUser"
+BUSINESS_CENTRAL_HTTPS_KEYSTORE: "keystore.jks"
+BUSINESS_CENTRAL_HTTPS_NAME: "jboss"
+BUSINESS_CENTRAL_HTTPS_PASSWORD: "mykeystorepass"
+ADMIN_USERNAME: "admin"
+ADMIN_PASSWORD: "adminPassword"
+MAVEN_REPO_PASSWORD: "mavenPassword"
+MAVEN_REPO_USERNAME: "mavenUser"

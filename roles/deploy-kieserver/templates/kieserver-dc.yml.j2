@@ -1,0 +1,194 @@
+kind: DeploymentConfig
+apiVersion: v1
+metadata:
+  name: {{ kieserver_deployment_name }}
+  labels:
+    app: {{ application_name }}
+    service: {{ kieserver_service_name }}
+spec:
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - kieserver
+        from:
+          kind: ImageStreamTag
+          namespace: '{{ kieserver_image_namespace }}'
+          name: '{{ kieserver_image_name }}:{{ kieserver_image_tag }}'
+    - type: ConfigChange
+  replicas: 1
+  selector:
+    app: {{ application_name }}
+    service: {{ kieserver_service_name }}
+  template:
+    metadata:
+      name: {{ kieserver_deployment_name }}
+      labels:
+        app: {{ application_name }}
+        service: {{ kieserver_service_name }}
+    spec:
+{% if kieserver_ha %}
+      serviceAccountName: {{ kieserver_deployment_name }}
+{% endif %}
+      containers:
+      - name: kieserver
+        image: ' '
+        imagePullPolicy: '{{ kieserver_image_pull_policy }}'
+        resources:
+          limits:
+            memory: '{{ kieserver_limits_memory }}'
+        livenessProbe:
+          exec:
+            command:
+            - "/bin/bash"
+            - "-c"
+            - "curl --fail --silent -u ${KIE_ADMIN_USER}:${KIE_ADMIN_PWD} http://localhost:8080/services/rest/server/healthcheck"
+          initialDelaySeconds: 180
+          timeoutSeconds: 2
+          periodSeconds: 15
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - "/bin/bash"
+            - "-c"
+            - "curl --fail --silent -u ${KIE_ADMIN_USER}:${KIE_ADMIN_PWD} http://localhost:8080/services/rest/server/readycheck"
+          initialDelaySeconds: 60
+          timeoutSeconds: 2
+          periodSeconds: 30
+          failureThreshold: 6
+        ports:
+          - name: jolokia
+            containerPort: 8778
+            protocol: TCP
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+          - name: https
+            containerPort: 8443
+            protocol: TCP
+        env:
+          - name: DATASOURCES
+            value: "RHPAM"
+          - name: RHPAM_DATABASE
+            value: "{{ kieserver_db_name }}"
+          - name: RHPAM_JNDI
+            value: "java:/jboss/datasources/rhpam"
+          - name: KIE_SERVER_PERSISTENCE_DS
+            value: "java:/jboss/datasources/rhpam"
+          - name: RHPAM_USERNAME
+            value: '{{ kieserver_db_user }}'
+          - name: RHPAM_PASSWORD
+            value: '{{ kieserver_db_pwd }}'
+          - name: RHPAM_JTA
+            value: "true"
+{% if kieserver_db_type == 'H2' %}
+          - name: RHPAM_DRIVER
+            value: "h2"
+          - name: RHPAM_XA_CONNECTION_PROPERTY_URL
+            value: "jdbc:h2:/opt/eap/standalone/data/rhpam"
+          - name: KIE_SERVER_PERSISTENCE_DIALECT
+            value: "org.hibernate.dialect.H2Dialect"
+          - name: RHPAM_SERVICE_HOST
+            value: "dummy_ignored"
+          - name: RHPAM_SERVICE_PORT
+            value: "12345"
+{% endif %}
+{% if kieserver_db_type == 'PostgreSQL' %}
+          - name: RHPAM_DRIVER
+            value: "postgresql"
+          - name: KIE_SERVER_PERSISTENCE_DIALECT
+            value: "org.hibernate.dialect.PostgreSQLDialect"
+          - name: RHPAM_SERVICE_HOST
+            value: "{{ kieserver_db_deployment }}"
+          - name: RHPAM_SERVICE_PORT
+            value: "5432"
+          - name: TIMER_SERVICE_DATA_STORE
+            value: "{{ kieserver_db_deployment }}"
+          - name: TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL
+            value: "30000"
+          - name: RHPAM_TX_ISOLATION
+            value: "{{ kieserver_db_tx_isolation }}"
+{% endif %}
+          - name: DROOLS_SERVER_FILTER_CLASSES
+            value: "true"
+          - name: KIE_ADMIN_USER
+            value: '{{ kie_admin_user }}'
+          - name: KIE_ADMIN_PWD
+            value: '{{ kie_admin_pwd }}'
+          - name: KIE_MBEANS
+            value: "enabled"
+          - name: KIE_SERVER_BYPASS_AUTH_USER
+            value: "false"
+          - name: KIE_SERVER_CONTROLLER_USER
+            value: '{{ controller_user }}'
+          - name: KIE_SERVER_CONTROLLER_PWD
+            value: '{{ controller_pwd }}'
+          - name: KIE_SERVER_CONTROLLER_SERVICE
+            value: '{{ kieserver_controller_svc }}'
+          - name: KIE_SERVER_ID
+            value: ""
+          - name: KIE_SERVER_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: KIE_SERVER_USER
+            value: '{{ kie_execution_user }}'
+          - name: KIE_SERVER_PWD
+            value: '{{ kie_execution_pwd }}'
+          - name: MAVEN_REPOS
+            value: "RHPAMCENTR,EXTERNAL"
+          - name: RHPAMCENTR_MAVEN_REPO_SERVICE
+            value: '{{ kieserver_businesscentral_maven_svc }}'
+          - name: RHPAMCENTR_MAVEN_REPO_PATH
+            value: "/maven2/"
+          - name: RHPAMCENTR_MAVEN_REPO_USERNAME
+            value: '{{ businesscentral_maven_repo_user }}'
+          - name: RHPAMCENTR_MAVEN_REPO_PASSWORD
+            value: '{{ businesscentral_maven_repo_pwd }}'
+{% if kieserver_external_maven_repo is defined %}
+          - name: EXTERNAL_MAVEN_REPO_URL
+            value: "{{ external_maven_repo_url }}"
+{% endif %}
+          - name: EXTERNAL_MAVEN_REPO_USERNAME
+            value: '{{ external_maven_repo_user }}'
+          - name: EXTERNAL_MAVEN_REPO_PASSWORD
+            value: '{{ external_maven_repo_pwd }}'
+          - name: HTTPS_KEYSTORE_DIR
+            value: "/etc/kieserver-certs"
+          - name: HTTPS_KEYSTORE
+            value: '{{ kieserver_keystore_name }}'
+          - name: HTTPS_NAME
+            value: '{{ kieserver_keystore_alias }}'
+          - name: HTTPS_PASSWORD
+            value: '{{ kieserver_keystore_pwd }}'
+{% if kieserver_ha %}
+          - name: OPENSHIFT_KUBE_PING_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: OPENSHIFT_KUBE_PING_LABELS
+            value: "app={{ application_name }}, service={{ kieserver_service_name }}"
+{% endif %}
+        volumeMounts:
+          - name: kieserver-certs
+            mountPath: "/etc/kieserver-certs"
+            readOnly: true
+{% if kieserver_db_type == 'H2' %}
+          - name: h2-storage
+            mountPath: "/opt/eap/standalone/data"
+{% endif %}
+      volumes:
+        - name: kieserver-certs
+          secret:
+            secretName: {{ ks_secret_name }}
+{% if kieserver_db_type == 'H2' %}
+        - name: h2-storage
+{% if kieserver_db_size == "" %}
+          emptyDir: {}
+{% else %}
+          persistentVolumeClaim:
+            claimName: {{ kieserver_deployment_name }}-h2-data
+{% endif %}
+{% endif %}

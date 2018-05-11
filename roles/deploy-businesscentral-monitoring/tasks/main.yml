@@ -1,0 +1,115 @@
+---
+- name: "[BUSINESS CENTRAL MONITORING] Configure HA"
+  block:
+    - name: "[BUSINESS CENTRAL MONITORING] set number of replicas to {{ businesscentral_monitoring_replicas_ha }}"
+      set_fact:
+        businesscentral_monitoring_replicas: '{{ businesscentral_monitoring_replicas_ha }}'
+
+    - name: "[BUSINESS CENTRAL MONITORING] set service account state to {{ state }}"
+      k8s_v1_service_account:
+        name: '{{ businesscentral_monitoring_deployment_name }}'
+        namespace: '{{ namespace }}'
+        state: "{{ state }}"
+        labels:
+          app: '{{ application_name }}'
+          service: '{{ businesscentral_monitoring_service_name }}'
+
+    - name: "[BUSINESS CENTRAL MONITORING] grant view permissions to service account"
+      k8s_v1_role_binding:
+        name: '{{ businesscentral_monitoring_deployment_name }}-view'
+        namespace: '{{ namespace }}'
+        state: "{{ state }}"
+        role_ref_kind: ClusterRole
+        role_ref_name: "view"
+        subjects:
+          - kind: ServiceAccount
+            name: '{{ businesscentral_monitoring_deployment_name }}'
+            namespace: '{{ namespace }}'
+  when: businesscentral_monitoring_ha
+
+- name: "[BUSINESS CENTRAL MONITORING] set service state to {{ state }}"
+  k8s_v1_service:
+    name: '{{ businesscentral_monitoring_deployment_name }}'
+    namespace: '{{ namespace }}'
+    state: '{{ state }}'
+    annotations:
+      description: All the Business Central Monitoring web server's ports.
+    labels:
+      app: '{{ application_name }}'
+      service: '{{ businesscentral_monitoring_service_name }}'
+    selector:
+      deploymentConfig: '{{ businesscentral_monitoring_deployment_name }}'
+    ports:
+      - name: http
+        port: 8080
+        target_port: 8080
+      - name: https
+        port: 8443
+        target_port: 8443
+      - name: git-ssh
+        port: 8001
+        target_port: 8001
+
+- name: "[BUSINESS CENTRAL MONITORING] set https route state to {{ state }}"
+  openshift_v1_route:
+    name: '{{ businesscentral_monitoring_deployment_name }}'
+    namespace: '{{ namespace }}'
+    state: '{{ state }}'
+    labels:
+      app: '{{ application_name }}'
+      service: '{{ businesscentral_monitoring_service_name }}'
+    tls_termination: passthrough
+    tls_insecure_edge_termination_policy: Redirect
+    to_name: '{{ businesscentral_monitoring_deployment_name }}'
+    spec_port_target_port: https
+  register: route_raw
+
+- name: "[BUSINESS CENTRAL MONITORING] set persistent volume claim state to {{ state }}"
+  k8s_v1_persistent_volume_claim:
+    name: '{{ businesscentral_monitoring_deployment_name }}-data'
+    namespace: '{{ namespace }}'
+    state: "{{ state }}"
+    labels:
+      app: '{{ application_name }}'
+      service: '{{ businesscentral_monitoring_service_name }}'
+    access_modes:
+      - ReadWriteOnce
+    resources_requests:
+      storage: '{{ businesscentral_monitoring_volume_size }}'
+  when: businesscentral_monitoring_volume_size != ""
+
+- name: "[BUSINESS CENTRAL MONITORING] Set default secret name if none provided"
+  set_fact:
+    bcm_secret_name: "{{ businesscentral_monitoring_default_secret_name }}"
+  when: businesscentral_monitoring_secret_name == ""
+
+- name: "[BUSINESS CENTRAL MONITORING] generate secret if not present"
+  include_role:
+    name: generate-secret
+  vars:
+    secret_name: '{{ bcm_secret_name }}'
+    service_name: '{{ businesscentral_monitoring_service_name }}'
+    route_host: '{{ route_raw.route.spec.host }}'
+
+- name: "[BUSINESS CENTRAL MONITORING] deploy business central"
+  block:
+  - name: "[BUSINESS CENTRAL MONITORING] process deployment config template"
+    template:
+      src: businesscentral-monitoring-dc.yml.j2
+      dest: '{{ tmp_folder }}/businesscentral-monitoring-dc.yml'
+    register: dc_raw
+
+  - name: "[BUSINESS CENTRAL MONITORING] create deployment config from template"
+    openshift_v1_deployment_config:
+      name: '{{ businesscentral_monitoring_deployment_name }}'
+      namespace: '{{ namespace }}'
+      state: present
+      src: '{{ dc_raw.dest | default(dc_raw.path) }}'
+  when: state == "present"
+
+- name: "[BUSINESS CENTRAL MONITORING] remove Business central deployment config"
+  openshift_v1_deployment_config:
+    name: '{{ businesscentral_monitoring_deployment_name }}'
+    namespace: '{{ namespace }}'
+    state: absent
+  when: state == "absent"

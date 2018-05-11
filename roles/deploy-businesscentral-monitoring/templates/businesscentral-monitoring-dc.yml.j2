@@ -1,0 +1,129 @@
+kind: DeploymentConfig
+apiVersion: v1
+metadata:
+  name: {{ businesscentral_monitoring_deployment_name }}
+  labels:
+    app: {{ application_name }}
+    service: {{ businesscentral_monitoring_service_name }}
+spec:
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - businesscentral-monitoring
+        from:
+          kind: ImageStreamTag
+          namespace: '{{ businesscentral_monitoring_image_namespace }}'
+          name: '{{ businesscentral_monitoring_image_name }}:{{ businesscentral_monitoring_image_tag}}'
+    - type: ConfigChange
+  replicas: {{ businesscentral_monitoring_replicas }}
+  selector:
+    app: '{{ application_name }}'
+    service: {{ businesscentral_monitoring_service_name }}
+  template:
+    metadata:
+      name: '{{ businesscentral_monitoring_deployment_name }}'
+      labels:
+        app: '{{ application_name }}'
+        service: {{ businesscentral_monitoring_service_name }}
+    spec:
+{% if businesscentral_monitoring_ha %}
+      serviceAccountName: '{{ businesscentral_monitoring_deployment_name }}'
+{% endif %}
+      containers:
+        - name: businesscentral-monitoring
+          image: ' '
+          imagePullPolicy: '{{ businesscentral_monitoring_image_pull_policy }}'
+          resources:
+            limits:
+              memory: '{{ businesscentral_monitoring_limits_memory }}'
+          livenessProbe:
+            httpGet:
+              path: /kie-wb.jsp
+              port: 8080
+            initialDelaySeconds: 180
+            timeoutSeconds: 2
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /kie-wb.jsp
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 2
+            periodSeconds: 30
+            failureThreshold: 6
+          ports:
+            - name: jolokia
+              containerPort: 8778
+              protocol: TCP
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+          env:
+            - name: KIE_ADMIN_PWD
+              value: '{{ KIE_ADMIN_PWD }}'
+            - name: KIE_ADMIN_USER
+              value: '{{ KIE_ADMIN_USER }}'
+            - name: KIE_MBEANS
+              value: "enabled"
+            - name: KIE_SERVER_CONTROLLER_PWD
+              value: '{{ KIE_SERVER_CONTROLLER_PWD }}'
+            - name: KIE_SERVER_CONTROLLER_USER
+              value: '{{ KIE_SERVER_CONTROLLER_USER }}'
+            - name: KIE_SERVER_PWD
+              value: '{{ KIE_SERVER_PWD }}'
+            - name: KIE_SERVER_USER
+              value: '{{ KIE_SERVER_USER }}'
+{% if MAVEN_REPO_URL is defined %}
+            - name: MAVEN_REPO_URL
+              value: '{{ MAVEN_REPO_URL }}'
+{% endif %}
+            - name: MAVEN_REPO_USERNAME
+              value: '{{ MAVEN_REPO_USERNAME }}'
+            - name: MAVEN_REPO_PASSWORD
+              value: '{{ MAVEN_REPO_PASSWORD }}'
+            - name: HTTPS_KEYSTORE_DIR
+              value: "/etc/businesscentral-certs"
+            - name: HTTPS_KEYSTORE
+              value: '{{ BUSINESS_CENTRAL_HTTPS_KEYSTORE }}'
+            - name: HTTPS_NAME
+              value: '{{ BUSINESS_CENTRAL_HTTPS_NAME }}'
+            - name: HTTPS_PASSWORD
+              value: '{{ BUSINESS_CENTRAL_HTTPS_PASSWORD }}'
+            - name: ADMIN_USERNAME
+              value: '{{ ADMIN_USERNAME }}'
+            - name: ADMIN_PASSWORD
+              value: '{{ ADMIN_PASSWORD }}'
+            - name: PROBE_IMPL
+              value: probe.eap.jolokia.EapProbe
+            - name: PROBE_DISABLE_BOOT_ERRORS_CHECK
+              value: 'true'
+{% if businesscentral_monitoring_ha %}
+            - name: OPENSHIFT_KUBE_PING_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: OPENSHIFT_KUBE_PING_LABELS
+              value: "app={{ application_name }}, service={{ businesscentral_monitoring_service_name }}"
+{% endif %}
+          volumeMounts:
+            - name: businesscentral-certs
+              mountPath: "/etc/businesscentral-certs"
+              readOnly: true
+            - name: businesscentral-data
+              mountPath: "/opt/eap/standalone/data/bpmsuite"
+      volumes:
+        - name: businesscentral-certs
+          secret:
+            secretName: {{ bcm_secret_name }}
+        - name: businesscentral-data
+{% if businesscentral_monitoring_volume_size != "" %}
+          persistentVolumeClaim:
+            claimName: '{{ businesscentral_monitoring_deployment_name }}-data'
+{% else %}
+          emptyDir: {}
+{% endif %}
