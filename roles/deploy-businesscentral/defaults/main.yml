@@ -1,0 +1,27 @@
+---
+businesscentral_image_name: rhpam70-businesscentral-openshift
+businesscentral_image_tag: 1.0
+businesscentral_image_namespace: openshift
+
+businesscentral_default_secret_name: "{{ application_name }}-rhpamcentr"
+businesscentral_image_pull_policy: IfNotPresent
+
+# Business Central configurable parameters
+businesscentral_deployment_name: "{{ application_name }}-rhpamcentr"
+businesscentral_service_name: "rhpam-businesscentral"
+businesscentral_hostname: "{{ abp_businesscentral_hostname | default('', true) | trim }}"
+businesscentral_volume_size: "{{ apb_businesscentral_volume_size | default('', true) | trim }}"
+businesscentral_limits_memory: "{{ apb_businesscentral_limits_memory }}"
+businesscentral_secret_name: "{{ apb_businesscentral_secret_name | default('', true) | trim }}"
+businesscentral_keystore_name: "{{ apb_businesscentral_keystore_name | default('', true) | trim }}"
+businesscentral_keystore_alias: "{{ apb_businesscentral_keystore_alias | default('', true) | trim }}"
+businesscentral_keystore_pwd: "{{ apb_businesscentral_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
+
+# SSO Integration
+sso_url: "{{ apb_sso_url | default('', true) | trim }}"
+sso_realm: "{{ apb_sso_realm | default('', true) | trim }}"
+sso_client: "{{ apb_sso_client | default('', true) | trim }}"
+sso_client_secret: "{{ apb_sso_client_secret | default('', true) | trim }}"
+sso_user: "{{ apb_sso_user | default('', true) | trim }}"
+sso_pwd: "{{ apb_sso_pwd }}"
+sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation }}"

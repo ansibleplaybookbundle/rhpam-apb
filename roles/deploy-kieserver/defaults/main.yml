@@ -1,0 +1,28 @@
+---
+kieserver_image_name: rhpam70-kieserver-openshift
+kieserver_image_tag: 1.0
+kieserver_image_namespace: openshift
+
+kieserver_default_secret_name: "{{ application_name }}-kieserver"
+kieserver_image_pull_policy: IfNotPresent
+
+kieserver_ha: false
+kieserver_deployment_name: "{{ application_name }}-kieserver"
+kieserver_service_name: "rhpam-kieserver"
+kieserver_controller_svc: "{{ application_name }}-rhpamcentr"
+kieserver_businesscentral_maven_svc: "{{ kieserver_controller_svc }}"
+kieserver_hostname: "{{ abp_kie_execution_hostname | default('', true) | trim }}"
+kieserver_volume_size: "{{ apb_kieserver_volume_size | default('', true) | trim }}"
+kieserver_limits_memory: "{{ apb_kie_execution_limits_memory }}"
+kieserver_secret_name: "{{ apb_kie_execution_secret_name | default('', true) | trim }}"
+kieserver_keystore_name: "{{ apb_kie_execution_keystore_name | default('', true) | trim }}"
+kieserver_keystore_alias: "{{ apb_kie_execution_keystore_alias | default('', true) | trim }}"
+kieserver_keystore_pwd: "{{ apb_kie_execution_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
+
+kieserver_db_type: "{{ apb_kie_execution_db_type }}"
+kieserver_db_size: "{{ apb_kie_execution_db_size | default('', true) | trim  }}"
+kieserver_db_tx_isolation: "TRANSACTION_READ_COMMITTED"
+
+kieserver_db_name: rhpam7
+kieserver_db_user: rhpam
+kieserver_db_pwd: "{{ lookup('password', tmp_folder + '/db_pwd chars=ascii_leters,digits') }}"
