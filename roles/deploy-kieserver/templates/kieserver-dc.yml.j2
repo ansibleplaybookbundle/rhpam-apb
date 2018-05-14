@@ -2,6 +2,7 @@ kind: DeploymentConfig
 apiVersion: v1
 metadata:
   name: {{ kieserver_deployment_name }}
+  namespace: {{ namespace }}
   labels:
     app: {{ application_name }}
     service: {{ kieserver_service_name }}
@@ -14,7 +15,7 @@ spec:
         automatic: true
         containerNames:
           - kieserver
-        from:
+        _from:
           kind: ImageStreamTag
           namespace: '{{ kieserver_image_namespace }}'
           name: '{{ kieserver_image_name }}:{{ kieserver_image_tag }}'
@@ -174,7 +175,7 @@ spec:
           - name: MAVEN_REPOS
             value: "EXTERNAL"
 {% endif %}
-{% if kieserver_external_maven_repo is defined %}
+{% if external_maven_repo_url != "" %}
           - name: EXTERNAL_MAVEN_REPO_URL
             value: "{{ external_maven_repo_url }}"
           - name: EXTERNAL_MAVEN_REPO_USERNAME

@@ -1,47 +1,62 @@
 ---
 - name: "[KIE SERVER] set service state to {{ state }}"
-  k8s_v1_service:
-    name: '{{ kieserver_deployment_name }}'
-    namespace: '{{ namespace }}'
+  k8s_raw:
     state: '{{ state }}'
-    labels:
-      app: '{{ application_name }}'
-      service: '{{ kieserver_service_name }}'
-    selector:
-      app: '{{ application_name }}'
-      service: '{{ kieserver_service_name }}'
-      deploymentconfig: '{{ kieserver_deployment_name }}'
-    ports:
-      - name: http
-        port: 8080
-        target_port: 8080
-      - name: https
-        port: 8443
-        target_port: 8443
+    definition:
+      apiVersion: v1
+      kind: Service
+      name: '{{ kieserver_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ kieserver_service_name }}'
+      spec:
+        selector:
+          app: '{{ application_name }}'
+          service: '{{ kieserver_service_name }}'
+          deploymentconfig: '{{ kieserver_deployment_name }}'
+        ports:
+          - name: http
+            port: 8080
+            target_port: 8080
+          - name: https
+            port: 8443
+            target_port: 8443
 
 - name: "[KIE SERVER] set https route state to {{ state }}"
-  openshift_v1_route:
-    name: '{{ kieserver_deployment_name }}'
-    namespace: '{{ namespace }}'
+  openshift_raw:
     state: '{{ state }}'
-    labels:
-      app: '{{ application_name }}'
-      service: '{{ kieserver_service_name }}'
-    tls_termination: passthrough
-    tls_insecure_edge_termination_policy: Redirect
-    to_name: '{{ kieserver_deployment_name }}'
-    spec_port_target_port: https
-    spec_host: '{{ kieserver_hostname }}'
+    definition:
+      apiVersion: v1
+      kind: Route
+      name: '{{ kieserver_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ kieserver_service_name }}'
+      spec:
+        host: '{{ kieserver_hostname }}'
+        port:
+          targetPort: https
+        tls:
+          termination: passthrough
+          insecureEdgeTerminationPolicy: Redirect
+        to:
+          kind: Service
+          name: '{{ kieserver_deployment_name }}'
   register: route_raw
 
 - name: "[KIE SERVER] set service account state to {{ state }}"
-  k8s_v1_service_account:
-    name: '{{ kieserver_deployment_name }}'
-    namespace: '{{ namespace }}'
+  openshift_raw:
     state: "{{ state }}"
-    labels:
-      app: '{{ application_name }}'
-      service: '{{ kieserver_service_name }}'
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      name: '{{ kieserver_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ kieserver_service_name }}'
   when:
     - kieserver_ha
 
@@ -58,20 +73,25 @@
     keystore_name: '{{ kieserver_keystore_name }}'
     keystore_alias: '{{ kieserver_keystore_alias }}'
     keystore_pwd: '{{ kieserver_keystore_pwd }}'
-    route_host: '{{ route_raw.route.spec.host }}'
+    route_host: '{{ route_raw.result.spec.host }}'
 
 - name: "[KIE SERVER] set persistent volume claim state to {{ state }}"
-  k8s_v1_persistent_volume_claim:
-    name: '{{ kieserver_deployment_name }}-h2-data'
-    namespace: '{{ namespace }}'
-    state: "{{ state }}"
-    labels:
-      app: '{{ application_name }}'
-      service: '{{ kieserver_service_name }}'
-    access_modes:
-      - ReadWriteOnce
-    resources_requests:
-      storage: '{{ kieserver_db_size }}'
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      name: '{{ kieserver_deployment_name }}-h2-data'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ kieserver_service_name }}'
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: '{{ kieserver_db_size }}'
   when:
     - kieserver_db_size != ""
     - kieserver_db_type == "H2"
@@ -96,24 +116,6 @@
   when: kieserver_db_type == "PostgreSQL"
 
 - name: "[KIE SERVER] deploy kieserver"
-  block:
-    - name: "[KIE SERVER] process deployment config template"
-      template:
-        src: kieserver-dc.yml.j2
-        dest: '{{ tmp_folder }}/kieserver-dc.yml'
-      register: dc_raw
-
-    - name: "[KIE SERVER] create deployment config from template"
-      openshift_v1_deployment_config:
-        name: '{{ kieserver_deployment_name }}'
-        namespace: '{{ namespace }}'
-        state: present
-        src: '{{ dc_raw.dest | default(dc_raw.path) }}'
-  when: state == "present"
-
-- name: "[KIE SERVER] remove KIE Server deployment config"
-  openshift_v1_deployment_config:
-    name: '{{ kieserver_deployment_name }}'
-    namespace: '{{ namespace }}'
-    state: absent
-  when: state == "absent"
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'kieserver-dc.yml.j2') | from_yaml }}"

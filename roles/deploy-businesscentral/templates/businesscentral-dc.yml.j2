@@ -2,6 +2,7 @@ kind: DeploymentConfig
 apiVersion: v1
 metadata:
   name: {{ businesscentral_deployment_name }}
+  namespace: {{ namespace }}
   labels:
     app: {{ application_name }}
     service: {{ businesscentral_service_name }}
@@ -11,8 +12,8 @@ spec:
       imageChangeParams:
         automatic: true
         containerNames:
-        - businesscentral
-        from:
+          - businesscentral
+        _from:
           kind: ImageStreamTag
           namespace: '{{ businesscentral_image_namespace }}'
           name: '{{ businesscentral_image_name }}:{{ businesscentral_image_tag}}'
@@ -124,7 +125,7 @@ spec:
             - name: SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
               value: '{{ sso_disable_ssl_cert_validation }}'
             - name: HOSTNAME_HTTPS
-              value: '{{ route_raw.route.spec.host }}'
+              value: '{{ route_raw.result.spec.host }}'
 {% endif %}
           volumeMounts:
             - name: businesscentral-certs

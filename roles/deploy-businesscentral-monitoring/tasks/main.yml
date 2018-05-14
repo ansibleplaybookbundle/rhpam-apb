@@ -89,7 +89,7 @@
   vars:
     secret_name: '{{ bcm_secret_name }}'
     service_name: '{{ businesscentral_monitoring_service_name }}'
-    route_host: '{{ route_raw.route.spec.host }}'
+    route_host: '{{ route_raw.result.spec.host }}'
 
 - name: "[BUSINESS CENTRAL MONITORING] deploy business central"
   block:

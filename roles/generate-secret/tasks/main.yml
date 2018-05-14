@@ -1,40 +1,35 @@
 ---
-- block:
-  - name: Get secret
-    k8s_v1_secret:
-      name: '{{ secret_name }}'
-      namespace: '{{ namespace }}'
-      state: '{{ state }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ service_name }}'
-    register: cert_secret
+- name: Set secret state to {{ state }}
+  k8s_raw:
+    api_version: v1
+    kind: Secret
+    name: '{{ secret_name }}'
+    namespace: '{{ namespace }}'
+    state: '{{ state }}'
+  register: cert_secret
 
-  - name: Generate secret if it does not exist
-    block:
-      - name: Generate keystore
-        shell: >
-          keytool --genkeypair -keyalg RSA -storetype pkcs12 -keysize 2048 -dname "CN={{ route_host }}" -alias {{ keystore_alias }} -keystore {{ keystore_path }} -keypass {{ keystore_pwd }} -storepass {{ keystore_pwd }}
+- name: Generate secret if it does not exist
+  block:
+    - name: Generate keystore
+      shell: >
+        keytool --genkeypair -keyalg RSA -storetype pkcs12 -keysize 2048 -dname "CN={{ route_host }}" -alias {{ keystore_alias }} -keystore {{ keystore_path }} -keypass {{ keystore_pwd }} -storepass {{ keystore_pwd }}
 
-      - name: Convert keystore to b64file
-        shell: >
-          cat '{{ keystore_path }}' | base64 -w 0 > '{{ keystore_path }}.txt'
+    - name: Convert keystore to b64file
+      shell: >
+        cat '{{ keystore_path }}' | base64 -w 0 > '{{ keystore_path }}.txt'
 
-      - name: Create secret from keystore
-        k8s_v1_secret:
+    - name: Create secret from keystore
+      k8s_raw:
+        state: '{{ state }}'
+        definition:
+          apiVersion: v1
+          kind: Secret
           name: '{{ secret_name }}'
           namespace: '{{ namespace }}'
-          state: '{{ state }}'
           labels:
             app: '{{ application_name }}'
             service: '{{ service_name }}'
           data: "{{ lookup('template', 'secret.yml.j2') | from_yaml }}"
-    when: cert_secret.changed
-  when: state == 'present'
-
-- name: Remove secret
-  k8s_v1_secret:
-    name: '{{ secret_name }}'
-    namespace: '{{ namespace }}'
-    state: absent
-  when: state == 'absent'
+  when:
+    - cert_secret.changed
+    - state == 'present'

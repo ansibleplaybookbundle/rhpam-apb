@@ -2,6 +2,7 @@ kind: DeploymentConfig
 apiVersion: v1
 metadata:
   name: {{ businesscentral_monitoring_deployment_name }}
+  namespace: {{ namespace }}
   labels:
     app: {{ application_name }}
     service: {{ businesscentral_monitoring_service_name }}
