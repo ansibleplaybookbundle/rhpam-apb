@@ -1,54 +1,71 @@
 ---
 - name: "[BUSINESS CENTRAL] set service state to {{ state }}"
-  k8s_v1_service:
-    name: '{{ businesscentral_deployment_name }}'
-    namespace: '{{ namespace }}'
+  k8s_raw:
     state: '{{ state }}'
-    labels:
-      app: '{{ application_name }}'
-      service: '{{ businesscentral_service_name }}'
-    selector:
-      app: '{{ application_name }}'
-      service: '{{ businesscentral_service_name }}'
-      deploymentconfig: '{{ businesscentral_deployment_name }}'
-    ports:
-      - name: http
-        port: 8080
-        target_port: 8080
-      - name: https
-        port: 8443
-        target_port: 8443
-      - name: git-ssh
-        port: 8001
-        target_port: 8001
+    definition:
+      apiVersion: v1
+      kind: Service
+      name: '{{ businesscentral_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ businesscentral_service_name }}'
+      spec:
+        selector:
+          app: '{{ application_name }}'
+          service: '{{ businesscentral_service_name }}'
+          deploymentconfig: '{{ businesscentral_deployment_name }}'
+        ports:
+          - name: http
+            port: 8080
+            targetPort: 8080
+          - name: https
+            port: 8443
+            targetPort: 8443
+          - name: git-ssh
+            port: 8001
+            targetPort: 8001
 
 - name: "[BUSINESS CENTRAL] set https route state to {{ state }}"
-  openshift_v1_route:
-    name: '{{ businesscentral_deployment_name }}'
-    namespace: '{{ namespace }}'
+  openshift_raw:
     state: '{{ state }}'
-    labels:
-      app: '{{ application_name }}'
-      service: '{{ businesscentral_service_name }}'
-    tls_termination: passthrough
-    tls_insecure_edge_termination_policy: Redirect
-    to_name: '{{ businesscentral_deployment_name }}'
-    spec_port_target_port: https
-    spec_host: '{{ businesscentral_hostname }}'
+    definition:
+      apiVersion: v1
+      kind: Route
+      name: '{{ businesscentral_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ businesscentral_service_name }}'
+      spec:
+        host: '{{ businesscentral_hostname }}'
+        port:
+          targetPort: https
+        tls:
+          termination: passthrough
+          insecureEdgeTerminationPolicy: Redirect
+        to:
+          kind: Service
+          name: '{{ businesscentral_deployment_name }}'
   register: route_raw
 
 - name: "[BUSINESS CENTRAL] set persistent volume claim state to {{ state }}"
-  k8s_v1_persistent_volume_claim:
-    name: '{{ businesscentral_deployment_name }}-data'
-    namespace: '{{ namespace }}'
-    state: "{{ state }}"
-    labels:
-      app: '{{ application_name }}'
-      service: '{{ businesscentral_service_name }}'
-    access_modes:
-      - ReadWriteOnce
-    resources_requests:
-      storage: '{{ businesscentral_volume_size }}'
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      name: '{{ businesscentral_deployment_name }}-data'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ businesscentral_service_name }}'
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: '{{ businesscentral_volume_size }}'
   when: businesscentral_volume_size != ""
 
 - name: "[BUSINESS CENTRAL] Set default secret name if none provided"
@@ -64,27 +81,9 @@
     keystore_name: '{{ businesscentral_keystore_name }}'
     keystore_alias: '{{ businesscentral_keystore_alias }}'
     keystore_pwd: '{{ businesscentral_keystore_pwd }}'
-    route_host: '{{ route_raw.route.spec.host }}'
+    route_host: '{{ route_raw.result.spec.host }}'
 
 - name: "[BUSINESS CENTRAL] deploy business central"
-  block:
-  - name: "[BUSINESS CENTRAL] process deployment config template"
-    template:
-      src: businesscentral-dc.yml.j2
-      dest: '{{ tmp_folder }}/businesscentral-dc.yml'
-    register: dc_raw
-
-  - name: "[BUSINESS CENTRAL] create deployment config from template"
-    openshift_v1_deployment_config:
-      name: '{{ businesscentral_deployment_name }}'
-      namespace: '{{ namespace }}'
-      state: present
-      src: '{{ dc_raw.dest | default(dc_raw.path) }}'
-  when: state == "present"
-
-- name: "[BUSINESS CENTRAL] remove Business central deployment config"
-  openshift_v1_deployment_config:
-    name: '{{ businesscentral_deployment_name }}'
-    namespace: '{{ namespace }}'
-    state: absent
-  when: state == "absent"
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'businesscentral-dc.yml.j2') | from_yaml }}"
