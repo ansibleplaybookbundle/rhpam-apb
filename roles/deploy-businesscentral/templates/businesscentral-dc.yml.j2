@@ -109,7 +109,7 @@ spec:
               value: 'true'
 {% if sso_url != "" %}
             - name: SSO_URL
-              value: 'sso_url'
+              value: '{{ sso_url }}'
             - name: SSO_OPENIDCONNECT_DEPLOYMENTS
               value: "ROOT.war"
             - name: SSO_SECRET
