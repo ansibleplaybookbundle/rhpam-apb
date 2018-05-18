@@ -16,11 +16,11 @@ spec:
       imageChangeParams:
         automatic: true
         containerNames:
-          - postgresql
+          - mysql
         _from:
           kind: ImageStreamTag
-          name: '{{ postgresql_image_name }}:{{ postgresql_image_tag }}'
-          namespace: '{{ postgresql_image_namespace }}'
+          name: '{{ mysql_image_name }}:{{ mysql_image_tag }}'
+          namespace: '{{ mysql_image_namespace }}'
   template:
     metadata:
       labels:
@@ -28,26 +28,26 @@ spec:
         service: '{{ service_name }}'
     spec:
       containers:
-        - name: postgresql
+        - name: mysql
           env:
-            - name: POSTGRESQL_DATABASE
-              value: '{{ postgresql_database }}'
-            - name: POSTGRESQL_USER
-              value: '{{ postgresql_user }}'
-            - name: POSTGRESQL_PASSWORD
-              value: '{{ postgresql_pwd }}'
+            - name: MYSQL_DATABASE
+              value: '{{ mysql_database }}'
+            - name: MYSQL_USER
+              value: '{{ mysql_user }}'
+            - name: MYSQL_PASSWORD
+              value: '{{ mysql_pwd }}'
           image: ' '
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5432
+            - containerPort: 3306
               protocol: TCP
           volumeMounts:
-            - name: postgresql-data
-              mountPath: /var/lib/pgsql/data
+            - name: mysql-data
+              mountPath: /var/lib/mysql/data
           workingDir: /
       volumes:
-      - name: postgresql-data
-{% if postgresql_volume_size == "" %}
+      - name: mysql-data
+{% if mysql_volume_size == "" %}
         emptyDir: []
 {% else %}
         persistentVolumeClaim:
