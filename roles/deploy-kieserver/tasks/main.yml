@@ -115,6 +115,18 @@
     postgresql_pwd: '{{ kieserver_db_pwd }}'
   when: kieserver_db_type == "PostgreSQL"
 
+- name: "[KIE SERVER] call MySQL role"
+  include_role:
+    name: deploy-mysql
+  vars:
+    service_name: '{{ kieserver_db_service }}'
+    deployment_name: '{{ kieserver_db_deployment }}'
+    mysql_volume_size: '{{ kieserver_db_size }}'
+    mysql_database: '{{ kieserver_db_name }}'
+    mysql_user: '{{ kieserver_db_user }}'
+    mysql_pwd: '{{ kieserver_db_pwd }}'
+  when: kieserver_db_type == "MySQL"
+
 - name: "[KIE SERVER] deploy kieserver"
   openshift_raw:
     state: '{{ state }}'

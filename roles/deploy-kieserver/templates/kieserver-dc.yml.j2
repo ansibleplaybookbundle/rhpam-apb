@@ -86,27 +86,22 @@ spec:
             value: '{{ kieserver_db_pwd }}'
           - name: RHPAM_JTA
             value: "true"
-{% if kieserver_db_type == 'H2' %}
           - name: RHPAM_DRIVER
-            value: "h2"
+            value: "{{ kieserver_db[kieserver_db_type].driver}}"
+          - name: KIE_SERVER_PERSISTENCE_DIALECT
+            value: "{{ kieserver_db[kieserver_db_type].dialect}}"
+{% if kieserver_db_type == 'H2' %}
           - name: RHPAM_XA_CONNECTION_PROPERTY_URL
             value: "jdbc:h2:/opt/eap/standalone/data/rhpam"
-          - name: KIE_SERVER_PERSISTENCE_DIALECT
-            value: "org.hibernate.dialect.H2Dialect"
           - name: RHPAM_SERVICE_HOST
             value: "dummy_ignored"
           - name: RHPAM_SERVICE_PORT
             value: "12345"
-{% endif %}
-{% if kieserver_db_type == 'PostgreSQL' %}
-          - name: RHPAM_DRIVER
-            value: "postgresql"
-          - name: KIE_SERVER_PERSISTENCE_DIALECT
-            value: "org.hibernate.dialect.PostgreSQLDialect"
+{% else %}
           - name: RHPAM_SERVICE_HOST
             value: "{{ kieserver_db_deployment }}"
           - name: RHPAM_SERVICE_PORT
-            value: "5432"
+            value: "{{ kieserver_db[kieserver_db_type].port}}"
           - name: TIMER_SERVICE_DATA_STORE
             value: "{{ kieserver_db_deployment }}"
           - name: TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL

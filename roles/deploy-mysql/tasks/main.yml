@@ -1,0 +1,45 @@
+---
+- name: "[MYSQL] set service state to {{ state }}"
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      name: '{{ deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ service_name }}'
+      spec:
+        selector:
+          app: '{{ application_name }}'
+          service: '{{ service_name }}'
+        ports:
+        - name: port-3306
+          port: 3306
+          protocol: TCP
+          targetPort: 3306
+
+- name: "[MYSQL] set persistent volume claim state to {{ state }}"
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      name: '{{ deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ service_name }}'
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: '{{ mysql_volume_size }}'
+  when: mysql_volume_size != ""
+
+- name: "[MYSQL] set deployment config state to {{ state }}"
+  openshift_raw:
+    state: '{{ state }}'
+    definition: "{{ lookup('template', 'mysql-dc.yml.j2') | from_yaml }}"

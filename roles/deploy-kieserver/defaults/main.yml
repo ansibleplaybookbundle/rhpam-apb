@@ -45,3 +45,16 @@ kieserver_db_tx_isolation: "TRANSACTION_READ_COMMITTED"
 kieserver_db_name: rhpam7
 kieserver_db_user: rhpam
 kieserver_db_pwd: "{{ lookup('password', tmp_folder + '/db_pwd chars=ascii_leters,digits') }}"
+
+kieserver_db:
+  H2:
+    driver: h2
+    dialect: org.hibernate.dialect.H2Dialect
+  PostgreSQL:
+    driver: postgresql
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    port: 5432
+  MySQL:
+    driver: mysql
+    dialect: org.hibernate.dialect.MySQL5Dialect
+    port: 3306
