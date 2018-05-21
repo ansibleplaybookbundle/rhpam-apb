@@ -58,3 +58,7 @@ kieserver_db:
     driver: mysql
     dialect: org.hibernate.dialect.MySQL5Dialect
     port: 3306
+
+# SSO Integration
+kieserver_sso_client: "{{ apb_sso_kie_execution_client | default('', true) | trim }}"
+kieserver_sso_client_secret: "{{ apb_sso_kie_execution_client_secret | default('', true) | trim }}"

@@ -190,6 +190,26 @@ spec:
             value: '{{ kieserver_keystore_alias }}'
           - name: HTTPS_PASSWORD
             value: '{{ kieserver_keystore_pwd }}'
+{% if sso_url != "" %}
+          - name: SSO_URL
+            value: '{{ sso_url }}'
+          - name: SSO_OPENIDCONNECT_DEPLOYMENTS
+            value: "ROOT.war"
+          - name: SSO_REALM
+            value: '{{ sso_realm }}'
+          - name: SSO_CLIENT
+            value: '{{ kieserver_sso_client }}'
+          - name: SSO_SECRET
+            value: '{{ kieserver_sso_client_secret }}'
+          - name: SSO_USERNAME
+            value: '{{ sso_user }}'
+          - name: SSO_PASSWORD
+            value: '{{ sso_pwd }}'
+          - name: SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
+            value: '{{ sso_disable_ssl_cert_validation }}'
+          - name: HOSTNAME_HTTPS
+            value: '{{ route_raw.result.spec.host }}'
+{% endif %}
 {% if kieserver_ha %}
           - name: OPENSHIFT_KUBE_PING_NAMESPACE
             valueFrom:

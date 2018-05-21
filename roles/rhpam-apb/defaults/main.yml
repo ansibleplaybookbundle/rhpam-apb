@@ -14,3 +14,11 @@ businesscentral_maven_repo_pwd: "{{ apb_businesscentral_maven_pwd | default(look
 external_maven_repo_url: "{{ apb_maven_repo_url | default('', true) | trim }}"
 external_maven_repo_user: "{{ apb_maven_repo_user | default('', true) | trim }}"
 external_maven_repo_pwd: "{{ apb_maven_repo_pwd }}"
+
+
+# SSO Integration
+sso_url: "{{ apb_sso_url | default('', true) | trim }}"
+sso_realm: "{{ apb_sso_realm | default('', true) | trim }}"
+sso_user: "{{ apb_sso_user | default('', true) | trim }}"
+sso_pwd: "{{ apb_sso_pwd | default('', true) | trim }}"
+sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation }}"
