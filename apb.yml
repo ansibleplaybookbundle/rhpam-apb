@@ -73,7 +73,33 @@ _apb_keystore_pwd: &_apb_keystore_pwd
   description: Password protecting both the Keystore and the Certificate. Generated if empty
   required: false
   type: string
+_apb_limits_memory: &_apb_limits_memory
+  title: Memory Limits
+  required: true
+  type: string
+  pattern: "^[0-9]+[mMgGtT]i?$"
+_apb_volume_size: &_apb_volume_size
+  title: Workspace Storage Size
+  required: false
+  type: string
+  pattern: "^[0-9]+[mMgGtT]i?$"
+# Business Central
+_apb_businesscentral_maven_user: &_apb_businesscentral_maven_user
+  name: apb_businesscentral_maven_user
+  title: Maven repository username
+  description: Username used to interact with the Maven Repository hosted by Business Central
+  required: true
+  type: string
+  default: mavenUser
+  display_group: Business Central
+_apb_businesscentral_maven_pwd: &_apb_businesscentral_maven_pwd
+  name: apb_businesscentral_maven_pwd
+  title: Maven repository password
+  description: User password used to interact with the Maven Repository hosted by Business Central. Generated if emtpy
+  required: false
+  type: string
   display_type: password
+  display_group: Business Central
 # KIE Execution Server
 _apb_kie_execution_user: &_apb_kie_execution_user
   name: apb_kie_execution_user
@@ -99,12 +125,9 @@ _abp_kie_execution_hostname: &_abp_kie_execution_hostname
   type: string
   display_group: KIE Execution Server
 _apb_kie_execution_limits_memory: &_apb_kie_execution_limits_memory
+  <<: *_apb_limits_memory
   name: apb_kie_execution_limits_memory
-  title: Memory Limits
   description: Memory limits to set for KIE Execution Server.
-  required: true
-  type: string
-  pattern: "^[0-9]+[mMgGtT]i?$"
   default: 1Gi
   display_group: KIE Execution Server
 _apb_kie_execution_db_type: &_apb_kie_execution_db_type
@@ -117,13 +140,12 @@ _apb_kie_execution_db_type: &_apb_kie_execution_db_type
   default: H2
   display_group: KIE Execution Server
 _apb_kie_execution_db_size: &_apb_kie_execution_db_size
+  <<: *_apb_volume_size
   name: apb_kie_execution_db_size
   title: Database Storage Size
   description: Specify the Persistent Volume Claim size to create for the Database. Leave empty for ephemeral storage. e.g. 10Gi
-  required: false
-  type: string
-  pattern: "^[0-9]+[mMgGtT]i?$"
   display_group: KIE Execution Server
+
 # Controller
 _apb_controller_svc: &_apb_controller_svc
   name: apb_controller_svc
@@ -191,18 +213,13 @@ _apb_sso_realm: &_apb_sso_realm
   type: string
   display_group: Red Hat - Single Sign-On
 _apb_sso_client: &_apb_sso_client
-  name: apb_sso_client
-  title: RH-SSO Client
-  description: Red Hat Single Sign-On Client name. If the secret, user and password are provided it will be created. E.g. businesscentral
   required: false
   type: string
   display_group: Red Hat - Single Sign-On
 _apb_sso_client_secret: &_apb_sso_client_secret
-  name: apb_sso_client_secret
-  title: RH-SSO Client Secret
-  description: Red Hat Single Sign-On Client secret.
   required: false
   type: string
+  display_type: password
   display_group: Red Hat - Single Sign-On
 _apb_sso_user: &_apb_sso_user
   name: apb_sso_user
@@ -227,7 +244,7 @@ _apb_sso_disable_ssl_cert_validation: &_apb_sso_disable_ssl_cert_validation
   type: boolean
   display_group: Red Hat - Single Sign-On
 
-version: 1.0
+version: 1.1
 name: rhpam-apb
 description: RHPAM
 bindable: false
@@ -297,41 +314,37 @@ plans:
         name: apb_businesscentral_keystore_pwd
         display_group: Business Central
 
-      - name: apb_businesscentral_limits_memory
-        title: Memory Limits
+      - <<: *_apb_limits_memory
+        name: apb_businesscentral_limits_memory
         description: Memory limits to set for Business Central.
-        required: true
-        type: string
-        pattern: "^[0-9]+[mMgGtT]i?$"
         default: 2Gi
         display_group: Business Central
-      - name: apb_businesscentral_volume_size
-        title: Workspace Storage Size
+      - <<: *_apb_volume_size
+        name: apb_businesscentral_volume_size
         description: Specify the Persistent Volume Claim size to create for storing the Workspace. Leave empty for ephemeral storage. e.g. 10Gi
-        required: false
-        type: string
-        pattern: "^[0-9]+[mMgGtT]i?$"
         display_group: Business Central
-      - name: apb_businesscentral_maven_user
-        title: Maven repository username
-        description: Username used to interact with the Maven Repository hosted by Business Central
-        required: true
-        type: string
-        default: mavenUser
-        display_group: Business Central
-      - name: apb_businesscentral_maven_pwd
-        title: Maven repository password
-        description: User password used to interact with the Maven Repository hosted by Business Central. Generated if emtpy
-        required: false
-        type: string
-        display_type: password
-        display_group: Business Central
+      - *_apb_businesscentral_maven_user
+      - *_apb_businesscentral_maven_pwd
 
-      # Business Central SSO
+      # RH - SSO
       - *_apb_sso_url
       - *_apb_sso_realm
-      - *_apb_sso_client
-      - *_apb_sso_client_secret
+      - <<: *_apb_sso_client
+        name: apb_sso_businesscentral_client
+        title: RH-SSO Business Central - Client
+        description: Red Hat Single Sign-On Client name for Business Central. If the secret, user and password are provided it will be created. E.g. businesscentral
+      - <<: *_apb_sso_client_secret
+        name: apb_sso_businesscentral_client_secret
+        title: RH-SSO Business Central - Client Secret
+        description: Red Hat Single Sign-On Client secret for Business Central.
+      - <<: *_apb_sso_client
+        name: apb_sso_kie_execution_client
+        title: RH-SSO Client - KIE Execution Server
+        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+      - <<: *_apb_sso_client_secret
+        name: apb_sso_kie_execution_client_secret
+        title: RH-SSO KIE Execution Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
@@ -410,20 +423,8 @@ plans:
       - *_apb_controller_user
       - *_apb_controller_pwd
 
-      - name: apb_businesscentral_maven_user
-        title: Maven repository username
-        description: Username used to interact with the Maven Repository hosted by Business Central
-        required: true
-        type: string
-        default: mavenUser
-        display_group: Business Central
-      - name: apb_businesscentral_maven_pwd
-        title: Maven repository password
-        description: User password used to interact with the Maven Repository hosted by Business Central. Generated if emtpy
-        required: false
-        type: string
-        display_type: password
-        display_group: Business Central
+      - *_apb_businesscentral_maven_user
+      - *_apb_businesscentral_maven_pwd
 
       # KIE Execution Server
       - *_apb_kie_execution_user
@@ -452,7 +453,20 @@ plans:
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
-
+      # RH - SSO
+      - *_apb_sso_url
+      - *_apb_sso_realm
+      - <<: *_apb_sso_client
+        name: apb_sso_kie_execution_client
+        title: RH-SSO Client - KIE Execution Server
+        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+      - <<: *_apb_sso_client_secret
+        name: apb_sso_kie_execution_client_secret
+        title: RH-SSO KIE Execution Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+      - *_apb_sso_user
+      - *_apb_sso_pwd
+      - *_apb_sso_disable_ssl_cert_validation
 
   - name: production
     description: Deploy RHPAM Production

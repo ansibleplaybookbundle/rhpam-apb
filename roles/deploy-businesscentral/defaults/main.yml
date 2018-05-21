@@ -18,10 +18,5 @@ businesscentral_keystore_alias: "{{ apb_businesscentral_keystore_alias | default
 businesscentral_keystore_pwd: "{{ apb_businesscentral_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
 
 # SSO Integration
-sso_url: "{{ apb_sso_url | default('', true) | trim }}"
-sso_realm: "{{ apb_sso_realm | default('', true) | trim }}"
-sso_client: "{{ apb_sso_client | default('', true) | trim }}"
-sso_client_secret: "{{ apb_sso_client_secret | default('', true) | trim }}"
-sso_user: "{{ apb_sso_user | default('', true) | trim }}"
-sso_pwd: "{{ apb_sso_pwd }}"
-sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation }}"
+businesscentral_sso_client: "{{ apb_sso_businesscentral_client | default('', true) | trim }}"
+businesscentral_sso_client_secret: "{{ apb_sso_businesscentral_client_secret | default('', true) | trim }}"
