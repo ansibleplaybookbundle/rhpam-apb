@@ -20,7 +20,11 @@ spec:
           namespace: '{{ kieserver_image_namespace }}'
           name: '{{ kieserver_image_name }}:{{ kieserver_image_tag }}'
     - type: ConfigChange
-  replicas: 1
+{% if kieserver_ha %}
+  replicas: {{ kieserver_replicas_ha }}
+{% else %}
+  replicas: {{ kieserver_replicas }}
+{% endif %}
   selector:
     app: {{ application_name }}
     service: {{ kieserver_service_name }}
@@ -31,9 +35,6 @@ spec:
         app: {{ application_name }}
         service: {{ kieserver_service_name }}
     spec:
-{% if kieserver_ha %}
-      serviceAccountName: {{ kieserver_deployment_name }}
-{% endif %}
       containers:
       - name: kieserver
         image: ' '
@@ -71,6 +72,11 @@ spec:
           - name: https
             containerPort: 8443
             protocol: TCP
+{% if kieserver_ha %}
+          - name: ping
+            containerPort: 8888
+            protocol: TCP
+{% endif %}
         env:
           - name: DATASOURCES
             value: "RHPAM"
@@ -107,7 +113,11 @@ spec:
           - name: TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL
             value: "30000"
           - name: RHPAM_TX_ISOLATION
-            value: "{{ kieserver_db_tx_isolation }}"
+{% if kieserver_ha %}
+            value: "TRANSACTION_READ_UNCOMMITTED"
+{% else %}
+            value: "TRANSACTION_READ_COMMITTED"
+{% endif %}
 {% endif %}
           - name: DROOLS_SERVER_FILTER_CLASSES
             value: "true"
@@ -211,12 +221,12 @@ spec:
             value: '{{ route_raw.result.spec.host }}'
 {% endif %}
 {% if kieserver_ha %}
-          - name: OPENSHIFT_KUBE_PING_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: OPENSHIFT_KUBE_PING_LABELS
-            value: "app={{ application_name }}, service={{ kieserver_service_name }}"
+          - name: JGROUPS_PING_PROTOCOL
+            value: "openshift.DNS_PING"
+          - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+            value: '{{ kieserver_deployment_name }}-ping'
+          - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+            value: "8888"
 {% endif %}
         volumeMounts:
           - name: kieserver-certs

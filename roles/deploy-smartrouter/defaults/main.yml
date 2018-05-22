@@ -1,0 +1,22 @@
+---
+smartrouter_image_name: rhpam70-smartrouter-openshift
+smartrouter_image_tag: 1.0
+smartrouter_image_namespace: openshift
+
+smartrouter_image_pull_policy: IfNotPresent
+
+smartrouter_ha: "{{ apb_ha | default(false) }}"
+smartrouter_replicas: 1
+smartrouter_replicas_ha: 3
+smartrouter_deployment_name: "{{ application_name }}-smartrouter"
+smartrouter_service_name: "rhpam-smartrouter"
+
+# Smart Router configurable parameters
+smartrouter_hostname: "{{ abp_smartrouter_hostname | default('', true) | trim }}"
+smartrouter_volume_size: "{{ apb_smartrouter_volume_size | default('', true) | trim }}"
+smartrouter_limits_memory: "{{ apb_smartrouter_limits_memory }}"
+
+smartrouter_port: "9000"
+smartrouter_protocol: http
+smartrouter_name: "KIE Server Router"
+smartrouter_id: "kie-server-router"

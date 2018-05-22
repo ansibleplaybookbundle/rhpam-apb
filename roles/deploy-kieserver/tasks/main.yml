@@ -23,6 +23,31 @@
             port: 8443
             target_port: 8443
 
+- name: "[KIE SERVER] set PING service state to {{ state }}"
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      name: '{{ kieserver_deployment_name }}-ping'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ kieserver_service_name }}'
+      annotations:
+        service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+        description: "The JGroups ping port for clustering."
+      spec:
+        selector:
+          app: '{{ application_name }}'
+          service: '{{ kieserver_service_name }}'
+          deploymentconfig: '{{ kieserver_deployment_name }}'
+        ports:
+          - name: ping
+            port: 8888
+            targetPort: 8888
+  when: kieserver_ha
+
 - name: "[KIE SERVER] set https route state to {{ state }}"
   openshift_raw:
     state: '{{ state }}'
@@ -45,20 +70,6 @@
           kind: Service
           name: '{{ kieserver_deployment_name }}'
   register: route_raw
-
-- name: "[KIE SERVER] set service account state to {{ state }}"
-  openshift_raw:
-    state: "{{ state }}"
-    definition:
-      apiVersion: v1
-      kind: ServiceAccount
-      name: '{{ kieserver_deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ kieserver_service_name }}'
-  when:
-    - kieserver_ha
 
 - name: "[KIE SERVER] set default secret name if none provided"
   set_fact:

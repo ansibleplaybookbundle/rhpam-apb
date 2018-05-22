@@ -6,10 +6,13 @@ kieserver_image_namespace: openshift
 kieserver_default_secret_name: "{{ application_name }}-kieserver"
 kieserver_image_pull_policy: IfNotPresent
 
-kieserver_ha: false
+kieserver_ha: "{{ apb_ha | default(false) }}"
 has_rhpamcentr: false
 has_router: false
 has_external_controller: false
+
+kieserver_replicas: 1
+kieserver_replicas_ha: 3
 
 kieserver_deployment_name: "{{ application_name }}-kieserver"
 kieserver_service_name: "rhpam-kieserver"
@@ -40,7 +43,6 @@ kieserver_startup_strategy: LocalContainersStartupStrategy
 
 kieserver_db_type: "{{ apb_kie_execution_db_type }}"
 kieserver_db_size: "{{ apb_kie_execution_db_size | default('', true) | trim  }}"
-kieserver_db_tx_isolation: "TRANSACTION_READ_COMMITTED"
 
 kieserver_db_name: rhpam7
 kieserver_db_user: rhpam

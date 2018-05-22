@@ -1,0 +1,83 @@
+kind: DeploymentConfig
+apiVersion: v1
+metadata:
+  name: {{ smartrouter_deployment_name }}
+  namespace: {{ namespace }}
+  labels:
+    app: {{ application_name }}
+    service: {{ smartrouter_service_name }}
+spec:
+  strategy:
+    type: Recreate
+  triggers:
+  - type: ImageChange
+    imageChangeParams:
+      automatic: true
+      containerNames:
+      - smartrouter
+      _from:
+        kind: ImageStreamTag
+        namespace: '{{ smartrouter_image_namespace }}'
+        name: '{{ smartrouter_image_name }}:{{ smartrouter_image_tag }}'
+  - type: ConfigChange
+{% if kieserver_ha %}
+  replicas: {{ smartrouter_replicas_ha }}
+{% else %}
+  replicas: {{ smartrouter_replicas }}
+{% endif %}
+  selector:
+    app: {{ application_name }}
+    service: {{ smartrouter_service_name }}
+  template:
+    metadata:
+      name: {{ smartrouter_deployment_name }}
+      labels:
+        app: {{ application_name }}
+        service: {{ smartrouter_service_name }}
+    spec:
+      containers:
+      - name: smartrouter
+        image: ' '
+        imagePullPolicy: '{{ smartrouter_image_pull_policy }}'
+        resources:
+          limits:
+            memory: '{{ smartrouter_limits_memory }}'
+        ports:
+        - name: http
+          containerPort: 9000
+          protocol: TCP
+        env:
+        - name: KIE_SERVER_ROUTER_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: KIE_SERVER_ROUTER_PORT
+          value: "9000"
+        - name: KIE_SERVER_ROUTER_URL_EXTERNAL
+          value: "{{ smartrouter_hostname }}"
+        - name: KIE_SERVER_ROUTER_ID
+          value: "{{ smartrouter_id }}"
+        - name: KIE_SERVER_ROUTER_NAME
+          value: "{{ smartrouter_name }}"
+        - name: KIE_SERVER_ROUTER_PROTOCOL
+          value: "{{ smartrouter_protocol}}"
+        - name: KIE_SERVER_CONTROLLER_USER
+          value: "{{ controller_user }}"
+        - name: KIE_SERVER_CONTROLLER_PWD
+          value: "{{ controller_pwd }}"
+        - name: KIE_SERVER_CONTROLLER_SERVICE
+          value: "{{ controller_svc }}"
+        - name: KIE_SERVER_ROUTER_REPO
+          value: "/opt/rhpam-smartrouter/data"
+        - name: KIE_SERVER_ROUTER_CONFIG_WATCHER_ENABLED
+          value: "true"
+        volumeMounts:
+        - name: "smartrouter-data"
+          mountPath: "/opt/rhpam-smartrouter/data"
+      volumes:
+      - name: "smartrouter-data"
+{% if smartrouter_volume_size != "" %}
+        persistentVolumeClaim:
+          claimName: "{{ smartrouter_deployment_name }}-data"
+{% else %}
+        emptyDir: {}
