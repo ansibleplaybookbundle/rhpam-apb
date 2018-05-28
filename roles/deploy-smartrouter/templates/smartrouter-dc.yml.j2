@@ -20,7 +20,7 @@ spec:
         namespace: '{{ smartrouter_image_namespace }}'
         name: '{{ smartrouter_image_name }}:{{ smartrouter_image_tag }}'
   - type: ConfigChange
-{% if kieserver_ha %}
+{% if smartrouter_ha %}
   replicas: {{ smartrouter_replicas_ha }}
 {% else %}
   replicas: {{ smartrouter_replicas }}
@@ -35,6 +35,7 @@ spec:
         app: {{ application_name }}
         service: {{ smartrouter_service_name }}
     spec:
+      terminationGracePeriodSeconds: 60
       containers:
       - name: smartrouter
         image: ' '
@@ -51,16 +52,12 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        - name: KIE_SERVER_ROUTER_PORT
-          value: "9000"
         - name: KIE_SERVER_ROUTER_URL_EXTERNAL
           value: "{{ smartrouter_hostname }}"
         - name: KIE_SERVER_ROUTER_ID
           value: "{{ smartrouter_id }}"
         - name: KIE_SERVER_ROUTER_NAME
           value: "{{ smartrouter_name }}"
-        - name: KIE_SERVER_ROUTER_PROTOCOL
-          value: "{{ smartrouter_protocol}}"
         - name: KIE_SERVER_CONTROLLER_USER
           value: "{{ controller_user }}"
         - name: KIE_SERVER_CONTROLLER_PWD
@@ -81,3 +78,4 @@ spec:
           claimName: "{{ smartrouter_deployment_name }}-data"
 {% else %}
         emptyDir: {}
+{% endif %}

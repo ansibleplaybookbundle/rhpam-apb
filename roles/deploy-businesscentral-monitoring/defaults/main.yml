@@ -12,7 +12,7 @@ businesscentral_monitoring_replicas_ha: 3
 # Business Central configurable parameters
 businesscentral_monitoring_deployment_name: "{{ application_name }}-rhpamcentrmon"
 businesscentral_monitoring_service_name: "rhpam-businesscentral-monitoring"
-businesscentral_monitoring_hostname: "{{ abp_businesscentral_monitoring_hostname | default('', true) | trim }}"
+businesscentral_monitoring_hostname: "{{ apb_businesscentral_monitoring_hostname | default('', true) | trim }}"
 businesscentral_monitoring_volume_size: "{{ apb_businesscentral_monitoring_volume_size | default('', true) | trim }}"
 businesscentral_monitoring_limits_memory: "{{ apb_businesscentral_monitoring_limits_memory }}"
 businesscentral_monitoring_secret_name: "{{ apb_businesscentral_monitoring_secret_name | default('', true) | trim }}"

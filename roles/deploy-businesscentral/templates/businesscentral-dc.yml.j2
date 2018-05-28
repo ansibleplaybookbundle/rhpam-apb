@@ -7,6 +7,8 @@ metadata:
     app: {{ application_name }}
     service: {{ businesscentral_service_name }}
 spec:
+  strategy:
+    type: Recreate
   triggers:
     - type: ImageChange
       imageChangeParams:
@@ -29,6 +31,7 @@ spec:
         app: '{{ application_name }}'
         service: {{ businesscentral_service_name }}
     spec:
+      terminationGracePeriodSeconds: 60
       containers:
         - name: businesscentral
           image: ' '
@@ -47,10 +50,10 @@ spec:
             httpGet:
               path: /kie-wb.jsp
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             timeoutSeconds: 2
-            periodSeconds: 15
-            failureThreshold: 10
+            periodSeconds: 30
+            failureThreshold: 6
           ports:
             - name: jolokia
               containerPort: 8778

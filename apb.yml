@@ -125,8 +125,8 @@ _apb_kie_execution_pwd: &_apb_kie_execution_pwd
   type: string
   display_type: password
   display_group: KIE Execution Server
-_abp_kie_execution_hostname: &_abp_kie_execution_hostname
-  name: abp_kie_execution_hostname
+_apb_kie_execution_hostname: &_apb_kie_execution_hostname
+  name: apb_kie_execution_hostname
   title: Public Hostname
   description: Public hostname where the Execution Server will be accessed from. Generated if empty
   required: false
@@ -302,7 +302,7 @@ plans:
         title: Business Central Password
         description: User password to access to the Business Central UI. Generated if empty
         display_group: Business Central
-      - name: abp_businesscentral_hostname
+      - name: apb_businesscentral_hostname
         title: Public Hostname
         description: Public hostname where Business Central will be accessed from. Generated if empty
         required: false
@@ -360,7 +360,7 @@ plans:
       # KIE Execution Server
       - *_apb_kie_execution_user
       - *_apb_kie_execution_pwd
-      - *_abp_kie_execution_hostname
+      - *_apb_kie_execution_hostname
       - *_apb_kie_execution_limits_memory
       - *_apb_kie_execution_db_type
       - *_apb_kie_execution_db_size
@@ -437,7 +437,7 @@ plans:
       # KIE Execution Server
       - *_apb_kie_execution_user
       - *_apb_kie_execution_pwd
-      - *_abp_kie_execution_hostname
+      - *_apb_kie_execution_hostname
       - *_apb_kie_execution_limits_memory
       - *_apb_kie_execution_db_type
       - *_apb_kie_execution_db_size
@@ -500,7 +500,7 @@ plans:
         title: Business Central Monitoring Password
         description: User password to access to the Business Central Monitoring UI. Generated if empty
         display_group: Business Central Monitoring
-      - name: abp_businesscentral_monitoring_hostname
+      - name: apb_businesscentral_monitoring_hostname
         title: Public Hostname
         description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
         required: false
@@ -556,7 +556,7 @@ plans:
       - *_apb_sso_disable_ssl_cert_validation
 
       # Smart Router
-      - name: abp_smartrouter_hostname
+      - name: apb_smartrouter_hostname
         title: Public Hostname
         description: Public hostname where Smart Router will be accessed from. Generated if empty
         required: false
@@ -576,7 +576,7 @@ plans:
       # KIE Execution Server
       - *_apb_kie_execution_user
       - *_apb_kie_execution_pwd
-      - *_abp_kie_execution_hostname
+      - *_apb_kie_execution_hostname
       - *_apb_kie_execution_limits_memory
       - *_apb_kie_execution_db_type
       - *_apb_kie_execution_db_size

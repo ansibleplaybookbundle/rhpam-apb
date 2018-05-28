@@ -1,2 +1,2 @@
 ---
-keystore_path: "{{ tmp_folder }}/{{ service_name }}-{{ keystore_name | default('keystore.jks', true) }}"
+keystore_path: "{{ tmp_folder }}/{{ secret_name }}-{{ keystore_name | default('keystore.jks', true) }}"

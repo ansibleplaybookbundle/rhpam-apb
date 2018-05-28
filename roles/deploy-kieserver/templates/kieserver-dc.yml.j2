@@ -35,6 +35,7 @@ spec:
         app: {{ application_name }}
         service: {{ kieserver_service_name }}
     spec:
+      terminationGracePeriodSeconds: 60
       containers:
       - name: kieserver
         image: ' '
@@ -93,9 +94,9 @@ spec:
           - name: RHPAM_JTA
             value: "true"
           - name: RHPAM_DRIVER
-            value: "{{ kieserver_db[kieserver_db_type].driver}}"
+            value: "{{ kieserver_db[kieserver_db_type].driver }}"
           - name: KIE_SERVER_PERSISTENCE_DIALECT
-            value: "{{ kieserver_db[kieserver_db_type].dialect}}"
+            value: "{{ kieserver_db[kieserver_db_type].dialect }}"
 {% if kieserver_db_type == 'H2' %}
           - name: RHPAM_XA_CONNECTION_PROPERTY_URL
             value: "jdbc:h2:/opt/eap/standalone/data/rhpam"

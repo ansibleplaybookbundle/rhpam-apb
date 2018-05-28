@@ -30,6 +30,7 @@
     set_fact:
       controller_pwd: "{{ apb_controller_pwd | default(lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8'), true) }}"
       controller_svc: "{{ application_name }}-rhpamcentrmon"
+      smartrouter_deployment_name: "{{ application_name }}-smartrouter"
 
   - name: "[RHPAM] Deploy Business Central Monitoring"
     include_role:
@@ -45,8 +46,12 @@
     include_role:
       name: deploy-kieserver
     vars:
+      kieserver_mgmt_disabled: true
+      kieserver_startup_strategy: "LocalContainersStartupStrategy"
       has_router: true
-      kieserver_ha: true
+      router_svc: "{{ smartrouter_deployment_name }}"
+      kieserver_deployment_name: "{{ application_name }}-kieserver-{{ item }}"
+    with_sequence: start=1 count={{ kieserver_sets }}
 
   when: _apb_plan_id == "managed"
 
@@ -55,6 +60,7 @@
     name: deploy-kieserver
   vars:
     kieserver_mgmt_disabled: true
+    kieserver_startup_strategy: "LocalContainersStartupStrategy"
     controller_pwd: "{{ apb_controller_pwd | default('', true) | trim  }}"
     has_external_controller: true
     has_router: true

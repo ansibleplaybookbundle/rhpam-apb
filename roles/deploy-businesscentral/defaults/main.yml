@@ -9,7 +9,7 @@ businesscentral_image_pull_policy: IfNotPresent
 # Business Central configurable parameters
 businesscentral_deployment_name: "{{ application_name }}-rhpamcentr"
 businesscentral_service_name: "rhpam-businesscentral"
-businesscentral_hostname: "{{ abp_businesscentral_hostname | default('', true) | trim }}"
+businesscentral_hostname: "{{ apb_businesscentral_hostname | default('', true) | trim }}"
 businesscentral_volume_size: "{{ apb_businesscentral_volume_size | default('', true) | trim }}"
 businesscentral_limits_memory: "{{ apb_businesscentral_limits_memory }}"
 businesscentral_secret_name: "{{ apb_businesscentral_secret_name | default('', true) | trim }}"
