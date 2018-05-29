@@ -109,47 +109,47 @@ _apb_businesscentral_maven_pwd: &_apb_businesscentral_maven_pwd
   display_type: password
   display_group: Business Central
 # KIE Execution Server
-_apb_kie_execution_user: &_apb_kie_execution_user
-  name: apb_kie_execution_user
+_apb_kieserver_user: &_apb_kieserver_user
+  name: apb_kieserver_user
   title: Execution Server Username
   description: User to interact with the REST API
   required: true
   type: string
   default: executionUser
   display_group: KIE Execution Server
-_apb_kie_execution_pwd: &_apb_kie_execution_pwd
-  name: apb_kie_execution_pwd
+_apb_kieserver_pwd: &_apb_kieserver_pwd
+  name: apb_kieserver_pwd
   title: Execution Server Password
   description: User password to interact with the REST API. Generated if empty
   required: false
   type: string
   display_type: password
   display_group: KIE Execution Server
-_apb_kie_execution_hostname: &_apb_kie_execution_hostname
-  name: apb_kie_execution_hostname
+_apb_kieserver_hostname: &_apb_kieserver_hostname
+  name: apb_kieserver_hostname
   title: Public Hostname
   description: Public hostname where the Execution Server will be accessed from. Generated if empty
   required: false
   type: string
   display_group: KIE Execution Server
-_apb_kie_execution_limits_memory: &_apb_kie_execution_limits_memory
+_apb_kieserver_limits_memory: &_apb_kieserver_limits_memory
   <<: *_apb_limits_memory
-  name: apb_kie_execution_limits_memory
+  name: apb_kieserver_limits_memory
   description: Memory limits to set for KIE Execution Server.
   default: 1Gi
   display_group: KIE Execution Server
-_apb_kie_execution_db_type: &_apb_kie_execution_db_type
-  name: apb_kie_execution_db_type
+_apb_kieserver_db_type: &_apb_kieserver_db_type
+  name: apb_kieserver_db_type
   title: Database Type
-  description: Database Type to persist the KIE Execution Server runtime information
+  description: Database Type to persist the KIE Execution Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Execution Server
   required: true
   type: enum
   enum: ['H2', 'PostgreSQL', 'MySQL']
-  default: H2
+  default: PostgreSQL
   display_group: KIE Execution Server
-_apb_kie_execution_db_size: &_apb_kie_execution_db_size
+_apb_kieserver_db_size: &_apb_kieserver_db_size
   <<: *_apb_volume_size
-  name: apb_kie_execution_db_size
+  name: apb_kieserver_db_size
   title: Database Storage Size
   description: Specify the Persistent Volume Claim size to create for the Database. Leave empty for ephemeral storage. e.g. 10Gi
   display_group: KIE Execution Server
@@ -254,16 +254,17 @@ _apb_sso_disable_ssl_cert_validation: &_apb_sso_disable_ssl_cert_validation
 
 version: 1.1
 name: rhpam-apb
-description: RHPAM
+description:  Red Hat Process Automation Manager 7.0 (APB)
 bindable: false
 async: unsupported
 metadata:
-  displayName: RHPAM (APB)
+  displayName:
   documentationUrl: https://developers.redhat.com/products/bpmsuite/docs-and-apis/
   longDescription:
-    An APB that deploys Red Hat Process Automation Manager 7.0 (RHPAM) on OpenShift.
-    Offers different plans depending on the requirements to deploy an Authoring environment
-    or a Production server with immutable monitor.
+    As a system engineer, you can deploy a Red Hat Process Automation Manager immutable server environment
+    on Red Hat OpenShift Container Platform to provide an infrastructure to execute processes and other business assets.
+    You can use standard integration tools to manage the immutable Process Server image.
+    You can create new server images to add and update processes.
   console.openshift.io/iconClass: icon-processserver
   providerDisplayName: "Red Hat, Inc."
   serviceName: rhpam
@@ -280,10 +281,13 @@ tags:
   - rhpam
 plans:
   - name: authoring
-    description: Deploys Business Central and KIE Execution Server
+    description:
+      An environment for creating and modifying processes using Business Central. It consists of
+      pods that provide Business Central for the authoring work and a Process Server for test execution of the processes.
+      For instructions about deploying this environment
     free: true
     metadata:
-      displayName: RHPAM Authoring
+      displayName: Authoring
     parameters:
       # Common Credentials
       - *_apb_eap_admin_user
@@ -358,25 +362,25 @@ plans:
       - *_apb_sso_disable_ssl_cert_validation
 
       # KIE Execution Server
-      - *_apb_kie_execution_user
-      - *_apb_kie_execution_pwd
-      - *_apb_kie_execution_hostname
-      - *_apb_kie_execution_limits_memory
-      - *_apb_kie_execution_db_type
-      - *_apb_kie_execution_db_size
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - *_apb_kieserver_hostname
+      - *_apb_kieserver_limits_memory
+      - *_apb_kieserver_db_type
+      - *_apb_kieserver_db_size
 
       # Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_kie_execution_secret_name
+        name: apb_kieserver_secret_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_name
-        name: apb_kie_execution_keystore_name
+        name: apb_kieserver_keystore_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_alias
-        name: apb_kie_execution_keystore_alias
+        name: apb_kieserver_keystore_alias
         display_group: KIE Execution Server
       - <<: *_apb_keystore_pwd
-        name: apb_kie_execution_keystore_pwd
+        name: apb_kieserver_keystore_pwd
         display_group: KIE Execution Server
 
       # External Maven Repository
@@ -384,17 +388,22 @@ plans:
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
-  - name: kieserver
-    description: Deploy KIE Execution Server
+  - name: immutable-kieserver
+    description:
+      In this environment, when you deploy a Process Server pod, it builds an image that loads and starts
+      a process or group of processes. You cannot stop any process on the pod or add any new process to the pod.
+      If you want to use another version of a process or modify the configuration in any other way, you deploy a new
+      server image and displace the old one.
     free: true
     metadata:
-      displayName: KIE Execution Server
+      displayName: Immutable Server - KIE Server
     parameters:
       # Common Credentials
       - *_apb_eap_admin_user
       - *_apb_eap_admin_pwd
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_ha
 
       # Router
       - name: apb_router_svc
@@ -428,38 +437,88 @@ plans:
       - *_apb_controller_port
       - *_apb_controller_protocol
       - *_apb_controller_token
-      - *_apb_controller_user
+      - <<: *_apb_controller_user
+        default: monitorUser
       - *_apb_controller_pwd
 
-      - *_apb_businesscentral_maven_user
-      - *_apb_businesscentral_maven_pwd
-
       # KIE Execution Server
-      - *_apb_kie_execution_user
-      - *_apb_kie_execution_pwd
-      - *_apb_kie_execution_hostname
-      - *_apb_kie_execution_limits_memory
-      - *_apb_kie_execution_db_type
-      - *_apb_kie_execution_db_size
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - *_apb_kieserver_hostname
+      - *_apb_kieserver_limits_memory
+      - *_apb_kieserver_db_type
+      - *_apb_kieserver_db_size
 
       # Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_kie_execution_secret_name
+        name: apb_kieserver_secret_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_name
-        name: apb_kie_execution_keystore_name
+        name: apb_kieserver_keystore_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_alias
-        name: apb_kie_execution_keystore_alias
+        name: apb_kieserver_keystore_alias
         display_group: KIE Execution Server
       - <<: *_apb_keystore_pwd
-        name: apb_kie_execution_keystore_pwd
+        name: apb_kieserver_keystore_pwd
         display_group: KIE Execution Server
+
+      # Artifact Source
+      - name: apb_kieserver_source_url
+        title: Git Repository URL
+        description: Git source URI for application. E.g. https://github.com/jboss-container-images/rhpam-7-openshift-image.git
+        required: true
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_source_ref
+        title: Git Repository Reference
+        description: Git branch/tag reference. E.g. master
+        required: true
+        type: string
+        default: master
+        display_group: Artifact source
+      - name: apb_kieserver_source_context
+        title: Git Repository Context Dir
+        description: Path within Git project to build; empty for root project directory. E.g. quickstarts/library-process/library
+        required: false
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_github_webhook_secret
+        title: Github Webhook Secret
+        description: Secret key to use when configuring a GitHub Webhook. Generated if empty.
+        required: false
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_generic_webhook_secret
+        title: Generic Webhook Secret
+        description: Secret key to use when configuring a Generic Webhook. Generated if empty.
+        required: false
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_artifact_dir
+        title: Artifact directories
+        description: List of directories from which archives will be copied into the deployment folder. If unspecified, all archives in /target will be copied.
+        required: false
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_container_deployment
+        title: KIE Server Container Deployment
+        description: 'KIE Server Container deployment configuration in format: containerId=groupId:artifactId:version|c2=g2:a2:v2'
+        required: true
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_maven_mirror
+        title: Maven mirror URL
+        description: Maven mirror to use for S2I builds
+        required: false
+        type: string
+        display_group: Artifact source
 
       # External Maven Repository
       - *_apb_maven_repo_url
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
+
 
       # RH - SSO
       - *_apb_sso_url
@@ -477,7 +536,12 @@ plans:
       - *_apb_sso_disable_ssl_cert_validation
 
   - name: managed
-    description: Managed Environment. Deploys Business Central Monitoring and a set of clusters of KIE Servers, all managed by a Smart Router.
+    description:
+      An environment for running existing processes for staging and production purposes.
+      This environment includes several groups of Process Server pods; you can deploy and undeploy
+      processes on every such group and also scale the group up or down as necessary. Use Business
+      Central Monitoring to deploy, run, and stop the processes and to monitor their execution.
+      For instructions about deploying this environment
     free: true
     metadata:
       displayName: Managed Environment
@@ -487,7 +551,7 @@ plans:
       - *_apb_eap_admin_pwd
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
-      - <<: *_apb_ha
+      - *_apb_ha
 
       # Business Central Monitoring
       - <<: *_apb_controller_user
@@ -574,7 +638,7 @@ plans:
         display_group: Smart Router
 
       # KIE Execution Server
-      - name: apb_kie_execution_sets
+      - name: apb_kieserver_sets
         title: Sets of KIE Servers
         description:
           Number of KIE Server cluster + DB that will be deployed.
@@ -585,25 +649,25 @@ plans:
         type: number
         display_group: KIE Execution Server
 
-      - *_apb_kie_execution_user
-      - *_apb_kie_execution_pwd
-      - *_apb_kie_execution_hostname
-      - *_apb_kie_execution_limits_memory
-      - *_apb_kie_execution_db_type
-      - *_apb_kie_execution_db_size
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - *_apb_kieserver_hostname
+      - *_apb_kieserver_limits_memory
+      - *_apb_kieserver_db_type
+      - *_apb_kieserver_db_size
 
       # Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_kie_execution_secret_name
+        name: apb_kieserver_secret_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_name
-        name: apb_kie_execution_keystore_name
+        name: apb_kieserver_keystore_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_alias
-        name: apb_kie_execution_keystore_alias
+        name: apb_kieserver_keystore_alias
         display_group: KIE Execution Server
       - <<: *_apb_keystore_pwd
-        name: apb_kie_execution_keystore_pwd
+        name: apb_kieserver_keystore_pwd
         display_group: KIE Execution Server
 
       # External Maven Repository
@@ -611,3 +675,19 @@ plans:
         required: true
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
+
+  - name: immutable-monitor
+    description:
+      Use Business Central Monitoring to monitor the performance of the environment and to stop and
+      restart some of the process instances, but not to deploy additional processes to any Process Server
+      or undeploy any existing ones (you can not add or remove containers)
+    free: true
+    metadata:
+      displayName: Immutable Server - Monitor
+    parameters:
+      # Common Credentials
+      - *_apb_eap_admin_user
+      - *_apb_eap_admin_pwd
+      - *_apb_kie_admin_user
+      - *_apb_kie_admin_pwd
+      - *_apb_ha

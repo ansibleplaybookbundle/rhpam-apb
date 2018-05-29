@@ -9,6 +9,7 @@ kieserver_ha: "{{ apb_ha | default(false) }}"
 has_rhpamcentr: false
 has_router: false
 has_external_controller: false
+kieserver_s2i: false
 
 kieserver_replicas: 1
 kieserver_replicas_ha: 3
@@ -17,13 +18,13 @@ kieserver_deployment_name: "{{ application_name }}-kieserver"
 kieserver_default_secret_name: "{{ kieserver_deployment_name }}"
 kieserver_service_name: "rhpam-kieserver"
 kieserver_businesscentral_maven_svc: "{{ controller_svc }}"
-kieserver_hostname: "{{ apb_kie_execution_hostname | default('', true) | trim }}"
+kieserver_hostname: "{{ apb_kieserver_hostname | default('', true) | trim }}"
 kieserver_volume_size: "{{ apb_kieserver_volume_size | default('', true) | trim }}"
-kieserver_limits_memory: "{{ apb_kie_execution_limits_memory }}"
-kieserver_secret_name: "{{ apb_kie_execution_secret_name | default('', true) | trim }}"
-kieserver_keystore_name: "{{ apb_kie_execution_keystore_name | default('', true) | trim }}"
-kieserver_keystore_alias: "{{ apb_kie_execution_keystore_alias | default('', true) | trim }}"
-kieserver_keystore_pwd: "{{ apb_kie_execution_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
+kieserver_limits_memory: "{{ apb_kieserver_limits_memory }}"
+kieserver_secret_name: "{{ apb_kieserver_secret_name | default('', true) | trim }}"
+kieserver_keystore_name: "{{ apb_kieserver_keystore_name | default('', true) | trim }}"
+kieserver_keystore_alias: "{{ apb_kieserver_keystore_alias | default('', true) | trim }}"
+kieserver_keystore_pwd: "{{ apb_kieserver_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
 
 router_svc: "{{ apb_router_svc | default('', true) | trim }}"
 router_host:  "{{ apb_router_host | default('', true) | trim }}"
@@ -41,8 +42,8 @@ controller_token: "{{ apb_controller_token | default('', true) | trim }}"
 kieserver_mgmt_disabled: false
 kieserver_startup_strategy: ""
 
-kieserver_db_type: "{{ apb_kie_execution_db_type }}"
-kieserver_db_size: "{{ apb_kie_execution_db_size | default('', true) | trim  }}"
+kieserver_db_type: "{{ apb_kieserver_db_type }}"
+kieserver_db_size: "{{ apb_kieserver_db_size | default('', true) | trim  }}"
 
 kieserver_db_name: rhpam7
 kieserver_db_user: rhpam
@@ -64,3 +65,13 @@ kieserver_db:
 # SSO Integration
 kieserver_sso_client: "{{ apb_sso_kie_execution_client | default('', true) | trim }}"
 kieserver_sso_client_secret: "{{ apb_sso_kie_execution_client_secret | default('', true) | trim }}"
+
+# S2I Integration
+kieserver_source_url: "{{ apb_kieserver_source_url | default('', true) | trim }}"
+kieserver_source_ref: "{{ apb_kieserver_source_ref | default('', true) | trim }}"
+kieserver_source_context: "{{ apb_kieserver_source_context | default('', true) | trim }}"
+kieserver_github_webhook_secret: "{{ apb_kieserver_github_webhook_secret | default(lookup('password', tmp_folder + '/github_webhook chars=ascii_letters,digits length=8'), true) }}"
+kieserver_generic_webhook_secret: "{{ apb_kieserver_generic_webhook_secret | default(lookup('password', tmp_folder + '/generic_webhook chars=ascii_letters,digits length=8'), true) }}"
+kieserver_artifact_dir: "{{ apb_kieserver_artifact_dir | default('', true) | trim }}"
+kieserver_container_deployment: "{{ apb_kieserver_container_deployment | default('', true) | trim }}"
+kieserver_maven_mirror: "{{ apb_kieserver_maven_mirror | default('', true) | trim }}"

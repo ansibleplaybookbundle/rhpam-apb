@@ -16,9 +16,14 @@ spec:
         containerNames:
           - kieserver
         _from:
+{% if kieserver_s2i != "" %}
+          kind: ImageStream
+          name: {{ kieserver_deployment_name }}
+{% else %}
           kind: ImageStreamTag
           namespace: '{{ kieserver_image_namespace }}'
           name: '{{ kieserver_image_name }}:{{ kieserver_image_tag }}'
+{% endif %}
     - type: ConfigChange
 {% if kieserver_ha %}
   replicas: {{ kieserver_replicas_ha }}

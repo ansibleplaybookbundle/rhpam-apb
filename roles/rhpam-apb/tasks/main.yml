@@ -64,4 +64,5 @@
     controller_pwd: "{{ apb_controller_pwd | default('', true) | trim  }}"
     has_external_controller: true
     has_router: true
-  when: _apb_plan_id == "kieserver"
+    kieserver_s2i: true
+  when: _apb_plan_id == "immutable-kieserver"

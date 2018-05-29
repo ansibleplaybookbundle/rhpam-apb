@@ -4,8 +4,8 @@ eap_admin_user: "{{ apb_eap_admin_user }}"
 eap_admin_pwd: "{{ apb_eap_admin_pwd | default(lookup('password', tmp_folder + '/eapadmin_pwd chars=ascii_letters,digits length=8'), true) }}"
 kie_admin_user: "{{ apb_kie_admin_user }}"
 kie_admin_pwd: "{{ apb_kie_admin_pwd | default(lookup('password', tmp_folder + '/kieadmin_pwd chars=ascii_letters,digits length=8'), true)}}"
-kie_execution_user: "{{ apb_kie_execution_user }}"
-kie_execution_pwd: "{{ apb_kie_execution_pwd | default(lookup('password', tmp_folder + '/kie_execution_pwd chars=ascii_letters,digits length=8'), true)}}"
+kie_execution_user: "{{ apb_kieserver_user }}"
+kie_execution_pwd: "{{ apb_kieserver_pwd | default(lookup('password', tmp_folder + '/kie_execution_pwd chars=ascii_letters,digits length=8'), true)}}"
 controller_user: "{{ apb_controller_user | default('', true) | trim }}"
 
 # Maven repositories
@@ -24,4 +24,4 @@ sso_pwd: "{{ apb_sso_pwd | default('', true) | trim }}"
 sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation }}"
 
 # HA
-kie_execution_sets: "{{ apb_kie_execution_sets | default(2) }}"
+kie_execution_sets: "{{ apb_kieserver_sets | default(2) }}"
