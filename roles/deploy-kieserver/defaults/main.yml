@@ -3,18 +3,21 @@ kieserver_image_name: rhpam70-kieserver-openshift
 kieserver_image_tag: 1.0
 kieserver_image_namespace: openshift
 
-kieserver_default_secret_name: "{{ application_name }}-kieserver"
 kieserver_image_pull_policy: IfNotPresent
 
-kieserver_ha: false
+kieserver_ha: "{{ apb_ha | default(false) }}"
 has_rhpamcentr: false
 has_router: false
 has_external_controller: false
 
+kieserver_replicas: 1
+kieserver_replicas_ha: 3
+
 kieserver_deployment_name: "{{ application_name }}-kieserver"
+kieserver_default_secret_name: "{{ kieserver_deployment_name }}"
 kieserver_service_name: "rhpam-kieserver"
 kieserver_businesscentral_maven_svc: "{{ controller_svc }}"
-kieserver_hostname: "{{ abp_kie_execution_hostname | default('', true) | trim }}"
+kieserver_hostname: "{{ apb_kie_execution_hostname | default('', true) | trim }}"
 kieserver_volume_size: "{{ apb_kieserver_volume_size | default('', true) | trim }}"
 kieserver_limits_memory: "{{ apb_kie_execution_limits_memory }}"
 kieserver_secret_name: "{{ apb_kie_execution_secret_name | default('', true) | trim }}"
@@ -36,11 +39,10 @@ controller_protocol: "{{ apb_controller_protocol | default('', true) | trim }}"
 controller_token: "{{ apb_controller_token | default('', true) | trim }}"
 
 kieserver_mgmt_disabled: false
-kieserver_startup_strategy: LocalContainersStartupStrategy
+kieserver_startup_strategy: ""
 
 kieserver_db_type: "{{ apb_kie_execution_db_type }}"
 kieserver_db_size: "{{ apb_kie_execution_db_size | default('', true) | trim  }}"
-kieserver_db_tx_isolation: "TRANSACTION_READ_COMMITTED"
 
 kieserver_db_name: rhpam7
 kieserver_db_user: rhpam

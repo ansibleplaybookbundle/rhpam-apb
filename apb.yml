@@ -27,6 +27,14 @@ _apb_kie_admin_pwd: &_apb_kie_admin_pwd
   required: false
   type: string
   display_type: password
+# HA
+_apb_ha: &_apb_ha
+  name: apb_ha
+  title: Deploy in HA
+  description: Deploys the system in High Availability
+  required: true
+  type: boolean
+  default: false
 # External Maven Repository
 _apb_maven_repo_url: &_apb_maven_repo_url
   name: apb_maven_repo_url
@@ -117,8 +125,8 @@ _apb_kie_execution_pwd: &_apb_kie_execution_pwd
   type: string
   display_type: password
   display_group: KIE Execution Server
-_abp_kie_execution_hostname: &_abp_kie_execution_hostname
-  name: abp_kie_execution_hostname
+_apb_kie_execution_hostname: &_apb_kie_execution_hostname
+  name: apb_kie_execution_hostname
   title: Public Hostname
   description: Public hostname where the Execution Server will be accessed from. Generated if empty
   required: false
@@ -294,7 +302,7 @@ plans:
         title: Business Central Password
         description: User password to access to the Business Central UI. Generated if empty
         display_group: Business Central
-      - name: abp_businesscentral_hostname
+      - name: apb_businesscentral_hostname
         title: Public Hostname
         description: Public hostname where Business Central will be accessed from. Generated if empty
         required: false
@@ -352,7 +360,7 @@ plans:
       # KIE Execution Server
       - *_apb_kie_execution_user
       - *_apb_kie_execution_pwd
-      - *_abp_kie_execution_hostname
+      - *_apb_kie_execution_hostname
       - *_apb_kie_execution_limits_memory
       - *_apb_kie_execution_db_type
       - *_apb_kie_execution_db_size
@@ -429,7 +437,7 @@ plans:
       # KIE Execution Server
       - *_apb_kie_execution_user
       - *_apb_kie_execution_pwd
-      - *_abp_kie_execution_hostname
+      - *_apb_kie_execution_hostname
       - *_apb_kie_execution_limits_memory
       - *_apb_kie_execution_db_type
       - *_apb_kie_execution_db_size
@@ -468,79 +476,138 @@ plans:
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
 
-  - name: production
-    description: Deploy RHPAM Production
+  - name: managed
+    description: Managed Environment. Deploys Business Central Monitoring and a set of clusters of KIE Servers, all managed by a Smart Router.
     free: true
     metadata:
-      displayName: RHPAM Production
+      displayName: Managed Environment
     parameters:
-      # Business Central Monitoring
-      - name: apb_businesscentral_monitoring_volume_size
-        type: string
-        title: Workspace Storage Size
-        pattern: "^[0-9]+[mMgGtT]i?$"
-        required: false
-        description: Specify the Persistent Volume Claim size to create for storing the Workspace. Leave empty for ephemeral storage. e.g. 10Gi
-        display_group: Business Central Monitoring
-      - name: apb_businesscentral_monitoring_limits_memory
-        type: string
-        title: Memory Limits
-        pattern: "^[0-9]+[mMgGtT]i?$"
-        required: true
-        default: 2Gi
-        description: Memory limits to set for Business Central.
-        display_group: Business Central Monitoring
-      - name: apb_businesscentral_monitoring_secret_name
-        type: string
-        title: Secret name
-        required: false
-        description: Name of the Secret containing the keystore to use. Leave empty to generate one.
-        display_group: Business Central Monitoring
-      # - name: apb_businesscentral_monitoring_ha
-      #   type: boolean
-      #   title: High Availability (HA)
-      #   required: true
-      #   description: Deploy Business Central Monitoring in High Availability.
-      #   display_group: Business Central Monitoring
+      # Common Credentials
+      - *_apb_eap_admin_user
+      - *_apb_eap_admin_pwd
+      - *_apb_kie_admin_user
+      - *_apb_kie_admin_pwd
+      - <<: *_apb_ha
 
-      # KIE Server
-      - name: apb_kieserver_db_type
-        type: enum
-        title: Database Type
-        default: H2
-        enum: ['H2', 'PostgreSQL', 'MySQL']
+      # Business Central Monitoring
+      - <<: *_apb_controller_user
+        title: Business Central Monitoring Username
+        description: Username to access to the Business Central Monitoring UI
         required: true
-        display_group: KIE Server
-      - name: apb_kieserver_db_size
-        type: string
-        title: Database Storage Size
-        pattern: "^[0-9]+[mMgGtT]i?$"
+        default: controllerUser
+        display_group: Business Central Monitoring
+      - <<: *_apb_controller_pwd
+        title: Business Central Monitoring Password
+        description: User password to access to the Business Central Monitoring UI. Generated if empty
+        display_group: Business Central Monitoring
+      - name: apb_businesscentral_monitoring_hostname
+        title: Public Hostname
+        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
         required: false
-        description: Specify the Persistent Volume Claim size to create for the Database. Leave empty for ephemeral storage. e.g. 10Gi
-        display_group: KIE Server
-      - name: apb_kieserver_limits_memory
         type: string
-        title: Memory Limits
-        pattern: "^[0-9]+[mMgGtT]i?$"
+        display_group: Business Central Monitoring
+
+      # Keystore and Secret
+      - <<: *_apb_secret_name
+        name: apb_businesscentral_monitoring_secret_name
+        display_group: Business Central Monitoring
+      - <<: *_apb_keystore_name
+        name: apb_businesscentral_monitoring_keystore_name
+        display_group: Business Central Monitoring
+      - <<: *_apb_keystore_alias
+        name: apb_businesscentral_monitoring_keystore_alias
+        display_group: Business Central Monitoring
+      - <<: *_apb_keystore_pwd
+        name: apb_businesscentral_monitoring_keystore_pwd
+        display_group: Business Central Monitoring
+
+      - <<: *_apb_limits_memory
+        name: apb_businesscentral_monitoring_limits_memory
+        description: Memory limits to set for Business Central Monitoring.
+        default: 2Gi
+        display_group: Business Central Monitoring
+      - <<: *_apb_volume_size
+        name: apb_businesscentral_nonitoring_volume_size
+        description: Specify the Persistent Volume Claim size to create for storing the user data. Leave empty for ephemeral storage. e.g. 64Mi
+        default: 64Mi
+        display_group: Business Central Monitoring
+
+      # RH - SSO
+      - *_apb_sso_url
+      - *_apb_sso_realm
+      - <<: *_apb_sso_client
+        name: apb_sso_businesscentral_monitoring_client
+        title: RH-SSO Business Central Monitoring - Client
+        description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
+      - <<: *_apb_sso_client_secret
+        name: apb_sso_businesscentral_monitoring_client_secret
+        title: RH-SSO Business Central Monitoring - Client Secret
+        description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
+      - <<: *_apb_sso_client
+        name: apb_sso_kie_execution_client
+        title: RH-SSO Client - KIE Execution Server
+        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+      - <<: *_apb_sso_client_secret
+        name: apb_sso_kie_execution_client_secret
+        title: RH-SSO KIE Execution Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+      - *_apb_sso_user
+      - *_apb_sso_pwd
+      - *_apb_sso_disable_ssl_cert_validation
+
+      # Smart Router
+      - name: apb_smartrouter_hostname
+        title: Public Hostname
+        description: Public hostname where Smart Router will be accessed from. Generated if empty
+        required: false
+        type: string
+        display_group: Smart Router
+      - <<: *_apb_limits_memory
+        name: apb_smartrouter_limits_memory
+        description: Memory limits to set for Smart Router
+        default: 512Mi
+        display_group: Smart Router
+      - <<: *_apb_volume_size
+        name: apb_smartrouter_volume_size
+        description: Specify the Persistent Volume Claim size to create. Leave empty for ephemeral storage. e.g. 64Mi
+        default: 64Mi
+        display_group: Smart Router
+
+      # KIE Execution Server
+      - name: apb_kie_execution_sets
+        title: Sets of KIE Servers
+        description:
+          Number of KIE Server cluster + DB that will be deployed.
+          For example, when using HA it will deploy a 2 x ( 3 x KIE Server + 1 x Database ).
+          All managed by the Smart Router
+        default: 2
         required: true
-        default: 1Gi
-        description: Memory limits to set for KIE Server.
-        display_group: KIE Server
-      - name: apb_kieserver_secret_name
-        type: string
-        title: Secret name
-        required: false
-        description: Name of the Secret containing the keystore to use. Leave empty to generate one.
-        display_group: KIE Server
-      - name: apb_kieserver_external_maven_repo
-        type: string
-        title: External Maven Repository
-        required: false
-        description: Name of the Secret containing the keystore to use. Leave empty to generate one.
-        display_group: KIE Server
-      # - name: apb_kieserver_ha
-      #   type: boolean
-      #   title: High Availability (HA)
-      #   required: true
-      #   description: Deploy KIE Server in High Availability. Will deploy multiple instances
-      #   display_group: KIE Server
+        type: number
+        display_group: KIE Execution Server
+
+      - *_apb_kie_execution_user
+      - *_apb_kie_execution_pwd
+      - *_apb_kie_execution_hostname
+      - *_apb_kie_execution_limits_memory
+      - *_apb_kie_execution_db_type
+      - *_apb_kie_execution_db_size
+
+      # Keystore and Secret
+      - <<: *_apb_secret_name
+        name: apb_kie_execution_secret_name
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_name
+        name: apb_kie_execution_keystore_name
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_alias
+        name: apb_kie_execution_keystore_alias
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_pwd
+        name: apb_kie_execution_keystore_pwd
+        display_group: KIE Execution Server
+
+      # External Maven Repository
+      - <<: *_apb_maven_repo_url
+        required: true
+      - *_apb_maven_repo_user
+      - *_apb_maven_repo_pwd

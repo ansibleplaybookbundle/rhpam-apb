@@ -7,18 +7,24 @@ metadata:
     app: {{ application_name }}
     service: {{ businesscentral_monitoring_service_name }}
 spec:
+  strategy:
+    type: Recreate
   triggers:
     - type: ImageChange
       imageChangeParams:
         automatic: true
         containerNames:
         - businesscentral-monitoring
-        from:
+        _from:
           kind: ImageStreamTag
           namespace: '{{ businesscentral_monitoring_image_namespace }}'
           name: '{{ businesscentral_monitoring_image_name }}:{{ businesscentral_monitoring_image_tag}}'
     - type: ConfigChange
+{% if businesscentral_monitoring_ha %}
+  replicas: {{ businesscentral_monitoring_replicas_ha }}
+{% else %}
   replicas: {{ businesscentral_monitoring_replicas }}
+{% endif %}
   selector:
     app: '{{ application_name }}'
     service: {{ businesscentral_monitoring_service_name }}
@@ -29,9 +35,7 @@ spec:
         app: '{{ application_name }}'
         service: {{ businesscentral_monitoring_service_name }}
     spec:
-{% if businesscentral_monitoring_ha %}
-      serviceAccountName: '{{ businesscentral_monitoring_deployment_name }}'
-{% endif %}
+      terminationGracePeriodSeconds: 60
       containers:
         - name: businesscentral-monitoring
           image: ' '
@@ -64,53 +68,72 @@ spec:
             - name: https
               containerPort: 8443
               protocol: TCP
+            - name: ping
+              containerPort: 8888
+              protocol: TCP
           env:
-            - name: KIE_ADMIN_PWD
-              value: '{{ KIE_ADMIN_PWD }}'
             - name: KIE_ADMIN_USER
-              value: '{{ KIE_ADMIN_USER }}'
+              value: '{{ kie_admin_user }}'
+            - name: KIE_ADMIN_PWD
+              value: '{{ kie_admin_pwd }}'
             - name: KIE_MBEANS
               value: "enabled"
-            - name: KIE_SERVER_CONTROLLER_PWD
-              value: '{{ KIE_SERVER_CONTROLLER_PWD }}'
             - name: KIE_SERVER_CONTROLLER_USER
-              value: '{{ KIE_SERVER_CONTROLLER_USER }}'
-            - name: KIE_SERVER_PWD
-              value: '{{ KIE_SERVER_PWD }}'
+              value: '{{ controller_user }}'
+            - name: KIE_SERVER_CONTROLLER_PWD
+              value: '{{ controller_pwd }}'
             - name: KIE_SERVER_USER
-              value: '{{ KIE_SERVER_USER }}'
-{% if MAVEN_REPO_URL is defined %}
+              value: '{{ kie_execution_user }}'
+            - name: KIE_SERVER_PWD
+              value: '{{ kie_execution_pwd }}'
             - name: MAVEN_REPO_URL
-              value: '{{ MAVEN_REPO_URL }}'
-{% endif %}
+              value: '{{ external_maven_repo_url }}'
             - name: MAVEN_REPO_USERNAME
-              value: '{{ MAVEN_REPO_USERNAME }}'
+              value: '{{ external_maven_repo_user }}'
             - name: MAVEN_REPO_PASSWORD
-              value: '{{ MAVEN_REPO_PASSWORD }}'
+              value: '{{ external_maven_repo_pwd }}'
             - name: HTTPS_KEYSTORE_DIR
               value: "/etc/businesscentral-certs"
             - name: HTTPS_KEYSTORE
-              value: '{{ BUSINESS_CENTRAL_HTTPS_KEYSTORE }}'
+              value: '{{ businesscentral_monitoring_keystore_name }}'
             - name: HTTPS_NAME
-              value: '{{ BUSINESS_CENTRAL_HTTPS_NAME }}'
+              value: '{{ businesscentral_monitoring_keystore_alias }}'
             - name: HTTPS_PASSWORD
-              value: '{{ BUSINESS_CENTRAL_HTTPS_PASSWORD }}'
+              value: '{{ businesscentral_monitoring_keystore_pwd }}'
             - name: ADMIN_USERNAME
-              value: '{{ ADMIN_USERNAME }}'
+              value: '{{ eap_admin_user }}'
             - name: ADMIN_PASSWORD
-              value: '{{ ADMIN_PASSWORD }}'
+              value: '{{ eap_admin_pwd }}'
             - name: PROBE_IMPL
               value: probe.eap.jolokia.EapProbe
             - name: PROBE_DISABLE_BOOT_ERRORS_CHECK
               value: 'true'
-{% if businesscentral_monitoring_ha %}
-            - name: OPENSHIFT_KUBE_PING_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: OPENSHIFT_KUBE_PING_LABELS
-              value: "app={{ application_name }}, service={{ businesscentral_monitoring_service_name }}"
+{% if sso_url != "" %}
+            - name: SSO_URL
+              value: '{{ sso_url }}'
+            - name: SSO_OPENIDCONNECT_DEPLOYMENTS
+              value: "ROOT.war"
+            - name: SSO_REALM
+              value: '{{ sso_realm }}'
+            - name: SSO_CLIENT
+              value: '{{ businesscentral_monitoring_sso_client }}'
+            - name: SSO_SECRET
+              value: '{{ businesscentral_monitoring_sso_client_secret }}'
+            - name: SSO_USERNAME
+              value: '{{ sso_user }}'
+            - name: SSO_PASSWORD
+              value: '{{ sso_pwd }}'
+            - name: SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
+              value: '{{ sso_disable_ssl_cert_validation }}'
+            - name: HOSTNAME_HTTPS
+              value: '{{ route_raw.result.spec.host }}'
 {% endif %}
+            - name: JGROUPS_PING_PROTOCOL
+              value: "openshift.DNS_PING"
+            - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+              value: '{{ businesscentral_monitoring_deployment_name }}-ping'
+            - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+              value: "8888"
           volumeMounts:
             - name: businesscentral-certs
               mountPath: "/etc/businesscentral-certs"

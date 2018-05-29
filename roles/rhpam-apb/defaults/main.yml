@@ -22,3 +22,6 @@ sso_realm: "{{ apb_sso_realm | default('', true) | trim }}"
 sso_user: "{{ apb_sso_user | default('', true) | trim }}"
 sso_pwd: "{{ apb_sso_pwd | default('', true) | trim }}"
 sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation }}"
+
+# HA
+kie_execution_sets: "{{ apb_kie_execution_sets | default(2) }}"
