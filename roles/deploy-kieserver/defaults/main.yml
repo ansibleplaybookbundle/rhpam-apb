@@ -63,8 +63,8 @@ kieserver_db:
     port: 3306
 
 # SSO Integration
-kieserver_sso_client: "{{ apb_sso_kie_execution_client | default('', true) | trim }}"
-kieserver_sso_client_secret: "{{ apb_sso_kie_execution_client_secret | default('', true) | trim }}"
+kieserver_sso_client: "{{ apb_kieserver_sso_client | default('', true) | trim }}"
+kieserver_sso_client_secret: "{{ apb_kieserver_sso_client_secret | default('', true) | trim }}"
 
 # S2I Integration
 kieserver_source_url: "{{ apb_kieserver_source_url | default('', true) | trim }}"

@@ -258,7 +258,7 @@ description:  Red Hat Process Automation Manager 7.0 (APB)
 bindable: false
 async: unsupported
 metadata:
-  displayName:
+  displayName: Red Hat Process Automation Manager 7.0 (APB)
   documentationUrl: https://developers.redhat.com/products/bpmsuite/docs-and-apis/
   longDescription:
     As a system engineer, you can deploy a Red Hat Process Automation Manager immutable server environment
@@ -350,11 +350,11 @@ plans:
         title: RH-SSO Business Central - Client Secret
         description: Red Hat Single Sign-On Client secret for Business Central.
       - <<: *_apb_sso_client
-        name: apb_sso_kie_execution_client
+        name: apb_kieserver_sso_client
         title: RH-SSO Client - KIE Execution Server
         description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
-        name: apb_sso_kie_execution_client_secret
+        name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Execution Server - Client Secret
         description: Red Hat Single Sign-On Client secret for KIE Execution Server.
       - *_apb_sso_user
@@ -524,11 +524,11 @@ plans:
       - *_apb_sso_url
       - *_apb_sso_realm
       - <<: *_apb_sso_client
-        name: apb_sso_kie_execution_client
+        name: apb_kieserver_sso_client
         title: RH-SSO Client - KIE Execution Server
         description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
-        name: apb_sso_kie_execution_client_secret
+        name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Execution Server - Client Secret
         description: Red Hat Single Sign-On Client secret for KIE Execution Server.
       - *_apb_sso_user
@@ -608,11 +608,11 @@ plans:
         title: RH-SSO Business Central Monitoring - Client Secret
         description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
       - <<: *_apb_sso_client
-        name: apb_sso_kie_execution_client
+        name: apb_kieserver_sso_client
         title: RH-SSO Client - KIE Execution Server
         description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
-        name: apb_sso_kie_execution_client_secret
+        name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Execution Server - Client Secret
         description: Red Hat Single Sign-On Client secret for KIE Execution Server.
       - *_apb_sso_user
@@ -685,9 +685,91 @@ plans:
     metadata:
       displayName: Immutable Server - Monitor
     parameters:
-      # Common Credentials
-      - *_apb_eap_admin_user
-      - *_apb_eap_admin_pwd
-      - *_apb_kie_admin_user
-      - *_apb_kie_admin_pwd
-      - *_apb_ha
+    # Common Credentials
+    - *_apb_eap_admin_user
+    - *_apb_eap_admin_pwd
+    - *_apb_kie_admin_user
+    - *_apb_kie_admin_pwd
+    - *_apb_ha
+
+    # Business Central Monitoring
+    - <<: *_apb_controller_user
+      title: Business Central Monitoring Username
+      description: Username to access to the Business Central Monitoring UI
+      required: true
+      default: controllerUser
+      display_group: Business Central Monitoring
+    - <<: *_apb_controller_pwd
+      title: Business Central Monitoring Password
+      description: User password to access to the Business Central Monitoring UI. Generated if empty
+      display_group: Business Central Monitoring
+    - name: apb_businesscentral_monitoring_hostname
+      title: Public Hostname
+      description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+      required: false
+      type: string
+      display_group: Business Central Monitoring
+
+    # Keystore and Secret
+    - <<: *_apb_secret_name
+      name: apb_businesscentral_monitoring_secret_name
+      display_group: Business Central Monitoring
+    - <<: *_apb_keystore_name
+      name: apb_businesscentral_monitoring_keystore_name
+      display_group: Business Central Monitoring
+    - <<: *_apb_keystore_alias
+      name: apb_businesscentral_monitoring_keystore_alias
+      display_group: Business Central Monitoring
+    - <<: *_apb_keystore_pwd
+      name: apb_businesscentral_monitoring_keystore_pwd
+      display_group: Business Central Monitoring
+
+    - <<: *_apb_limits_memory
+      name: apb_businesscentral_monitoring_limits_memory
+      description: Memory limits to set for Business Central Monitoring.
+      default: 2Gi
+      display_group: Business Central Monitoring
+    - <<: *_apb_volume_size
+      name: apb_businesscentral_nonitoring_volume_size
+      description: Specify the Persistent Volume Claim size to create for storing the user data. Leave empty for ephemeral storage. e.g. 64Mi
+      default: 64Mi
+      display_group: Business Central Monitoring
+
+    # RH - SSO
+    - *_apb_sso_url
+    - *_apb_sso_realm
+    - <<: *_apb_sso_client
+      name: apb_sso_businesscentral_monitoring_client
+      title: RH-SSO Business Central Monitoring - Client
+      description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
+    - <<: *_apb_sso_client_secret
+      name: apb_sso_businesscentral_monitoring_client_secret
+      title: RH-SSO Business Central Monitoring - Client Secret
+      description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
+    - *_apb_sso_user
+    - *_apb_sso_pwd
+    - *_apb_sso_disable_ssl_cert_validation
+
+    # Smart Router
+    - name: apb_smartrouter_hostname
+      title: Public Hostname
+      description: Public hostname where Smart Router will be accessed from. Generated if empty
+      required: false
+      type: string
+      display_group: Smart Router
+    - <<: *_apb_limits_memory
+      name: apb_smartrouter_limits_memory
+      description: Memory limits to set for Smart Router
+      default: 512Mi
+      display_group: Smart Router
+    - <<: *_apb_volume_size
+      name: apb_smartrouter_volume_size
+      description: Specify the Persistent Volume Claim size to create. Leave empty for ephemeral storage. e.g. 64Mi
+      default: 64Mi
+      display_group: Smart Router
+
+    # External Maven Repository
+    - <<: *_apb_maven_repo_url
+      required: true
+    - *_apb_maven_repo_user
+    - *_apb_maven_repo_pwd
