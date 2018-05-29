@@ -24,4 +24,4 @@ sso_pwd: "{{ apb_sso_pwd | default('', true) | trim }}"
 sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation }}"
 
 # HA
-kieserver_sets: 2
+kie_execution_sets: "{{ apb_kie_execution_sets | default(2) }}"

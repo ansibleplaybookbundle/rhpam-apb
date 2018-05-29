@@ -477,10 +477,10 @@ plans:
       - *_apb_sso_disable_ssl_cert_validation
 
   - name: managed
-    description: Managed environment. Deploys Business Central Monitoring and two sets of KIE Servers managed by a Smart Router
+    description: Managed Environment. Deploys Business Central Monitoring and a set of clusters of KIE Servers, all managed by a Smart Router.
     free: true
     metadata:
-      displayName: Managed RHPAM (Production)
+      displayName: Managed Environment
     parameters:
       # Common Credentials
       - *_apb_eap_admin_user
@@ -574,6 +574,17 @@ plans:
         display_group: Smart Router
 
       # KIE Execution Server
+      - name: apb_kie_execution_sets
+        title: Sets of KIE Servers
+        description:
+          Number of KIE Server cluster + DB that will be deployed.
+          For example, when using HA it will deploy a 2 x ( 3 x KIE Server + 1 x Database ).
+          All managed by the Smart Router
+        default: 2
+        required: true
+        type: number
+        display_group: KIE Execution Server
+
       - *_apb_kie_execution_user
       - *_apb_kie_execution_pwd
       - *_apb_kie_execution_hostname
