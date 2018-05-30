@@ -11,10 +11,10 @@ businesscentral_deployment_name: "{{ application_name }}-rhpamcentr"
 businesscentral_service_name: "rhpam-businesscentral"
 businesscentral_hostname: "{{ apb_businesscentral_hostname | default('', true) | trim }}"
 businesscentral_volume_size: "{{ apb_businesscentral_volume_size | default('', true) | trim }}"
-businesscentral_limits_memory: "{{ apb_businesscentral_limits_memory }}"
+businesscentral_limits_memory: "{{ apb_businesscentral_limits_memory | default('2Gi', true) | trim }}"
 businesscentral_secret_name: "{{ apb_businesscentral_secret_name | default('', true) | trim }}"
-businesscentral_keystore_name: "{{ apb_businesscentral_keystore_name | default('', true) | trim }}"
-businesscentral_keystore_alias: "{{ apb_businesscentral_keystore_alias | default('', true) | trim }}"
+businesscentral_keystore_name: "{{ apb_businesscentral_keystore_name | default('keystore.jks', true) | trim }}"
+businesscentral_keystore_alias: "{{ apb_businesscentral_keystore_alias | default('jboss', true) | trim }}"
 businesscentral_keystore_pwd: "{{ apb_businesscentral_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
 
 # SSO Integration

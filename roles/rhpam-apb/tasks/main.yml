@@ -3,6 +3,28 @@
   file:
     path: '{{ tmp_folder }}'
     state: directory
+- name: "[RHPAM] Authoring Plan"
+  block:
+    - name: "[RHPAM] Set defaults"
+      set_fact:
+        eap_admin_pwd: "{{ default_trial_pwd }}"
+        kie_admin_pwd: "{{ default_trial_pwd }}"
+        controller_pwd: "{{ default_trial_pwd }}"
+        controller_svc: "{{ application_name }}-rhpamcentr"
+        has_rhpamcentr: true
+
+    - name: "[RHPAM] Deploy Business Central"
+      include_role:
+        name: deploy-businesscentral
+      vars:
+        businesscentral_deployment_name: "{{ controller_svc }}"
+
+    - name: "[RHPAM] Deploy KIE Execution Server"
+      include_role:
+        name: deploy-kieserver
+      vars:
+        kieserver_db_type: 'H2'
+  when: _apb_plan_id == "trial"
 
 - name: "[RHPAM] Authoring Plan"
   block:

@@ -16,8 +16,8 @@ businesscentral_monitoring_hostname: "{{ apb_businesscentral_monitoring_hostname
 businesscentral_monitoring_volume_size: "{{ apb_businesscentral_monitoring_volume_size | default('', true) | trim }}"
 businesscentral_monitoring_limits_memory: "{{ apb_businesscentral_monitoring_limits_memory }}"
 businesscentral_monitoring_secret_name: "{{ apb_businesscentral_monitoring_secret_name | default('', true) | trim }}"
-businesscentral_monitoring_keystore_name: "{{ apb_businesscentral_monitoring_keystore_name | default('', true) | trim }}"
-businesscentral_monitoring_keystore_alias: "{{ apb_businesscentral_monitoring_keystore_alias | default('', true) | trim }}"
+businesscentral_monitoring_keystore_name: "{{ apb_businesscentral_monitoring_keystore_name | default('keystore.jks', true) | trim }}"
+businesscentral_monitoring_keystore_alias: "{{ apb_businesscentral_monitoring_keystore_alias | default('jboss', true) | trim }}"
 businesscentral_monitoring_keystore_pwd: "{{ apb_businesscentral_monitoring_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
 
 # SSO Integration

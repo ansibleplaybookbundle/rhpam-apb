@@ -53,7 +53,7 @@ spec:
             command:
             - "/bin/bash"
             - "-c"
-            - "curl --fail --silent -u ${KIE_ADMIN_USER}:${KIE_ADMIN_PWD} http://localhost:8080/services/rest/server/healthcheck"
+            - "curl --fail --silent -u '${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}' http://localhost:8080/services/rest/server/healthcheck"
           initialDelaySeconds: 180
           timeoutSeconds: 2
           periodSeconds: 15
@@ -63,7 +63,7 @@ spec:
             command:
             - "/bin/bash"
             - "-c"
-            - "curl --fail --silent -u ${KIE_ADMIN_USER}:${KIE_ADMIN_PWD} http://localhost:8080/services/rest/server/readycheck"
+            - "curl --fail --silent -u '${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}' http://localhost:8080/services/rest/server/readycheck"
           initialDelaySeconds: 60
           timeoutSeconds: 2
           periodSeconds: 30
