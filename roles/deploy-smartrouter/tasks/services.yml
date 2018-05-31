@@ -1,0 +1,20 @@
+---
+- name: "[SMART ROUTER] set service state to {{ state }}"
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      name: '{{ smartrouter_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ smartrouter_service_name }}'
+      spec:
+        selector:
+          app: '{{ application_name }}'
+          service: '{{ smartrouter_service_name }}'
+          deploymentconfig: '{{ smartrouter_deployment_name }}'
+        ports:
+          - port: 9000
+            targetPort: 9000

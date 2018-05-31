@@ -1,208 +1,82 @@
 ---
-- name: "[KIE SERVER] set service state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: Service
-      name: '{{ kieserver_deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ kieserver_service_name }}'
-      spec:
-        selector:
-          app: '{{ application_name }}'
-          service: '{{ kieserver_service_name }}'
-          deploymentconfig: '{{ kieserver_deployment_name }}'
-        ports:
-          - name: http
-            port: 8080
-            target_port: 8080
-          - name: https
-            port: 8443
-            target_port: 8443
-
-- name: "[KIE SERVER] set PING service state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: Service
-      name: '{{ kieserver_deployment_name }}-ping'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ kieserver_service_name }}'
-      annotations:
-        service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-        description: "The JGroups ping port for clustering."
-      spec:
-        selector:
-          app: '{{ application_name }}'
-          service: '{{ kieserver_service_name }}'
-          deploymentconfig: '{{ kieserver_deployment_name }}'
-        ports:
-          - name: ping
-            port: 8888
-            targetPort: 8888
-
-- name: "[KIE SERVER] set https route state to {{ state }}"
-  openshift_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: Route
-      name: '{{ kieserver_deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ kieserver_service_name }}'
-      spec:
-        host: '{{ kieserver_hostname }}'
-        port:
-          targetPort: https
-        tls:
-          termination: passthrough
-          insecureEdgeTerminationPolicy: Redirect
-        to:
-          kind: Service
-          name: '{{ kieserver_deployment_name }}'
-  register: route_raw
-
-- name: "[KIE SERVER] set default secret name if none provided"
-  set_fact:
-    ks_secret_name: "{{ kieserver_secret_name | default(kieserver_default_secret_name, true) }}"
-
-- name: "[KIE SERVER] generate secret if not present"
-  include_role:
-    name: generate-secret
-  vars:
-    secret_name: '{{ ks_secret_name }}'
-    service_name: '{{ kieserver_service_name }}'
-    keystore_name: '{{ kieserver_keystore_name }}'
-    keystore_alias: '{{ kieserver_keystore_alias }}'
-    keystore_pwd: '{{ kieserver_keystore_pwd }}'
-    route_host: '{{ route_raw.result.spec.host }}'
-
-- name: "[KIE SERVER] set persistent volume claim state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: PersistentVolumeClaim
-      name: '{{ kieserver_deployment_name }}-h2-data'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ kieserver_service_name }}'
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: '{{ kieserver_db_size }}'
-  when:
-    - kieserver_db_size != ""
-    - kieserver_db_type == "H2"
-
-- name: "[KIE SERVER] set db facts for any DB"
-  set_fact:
-    # e.g. authoring-kieserver-postgresql
-    kieserver_db_deployment: '{{ kieserver_deployment_name }}-{{ kieserver_db_type | lower }}'
-    # e.g. rhpam-kieserver-postgresql
-    kieserver_db_service: '{{ kieserver_service_name }}-{{ kieserver_db_type | lower }}'
-
-- name: "[KIE SERVER] call PostgreSQL role"
-  include_role:
-    name: deploy-postgresql
-  vars:
-    service_name: '{{ kieserver_db_service }}'
-    deployment_name: '{{ kieserver_db_deployment }}'
-    postgresql_volume_size: '{{ kieserver_db_size }}'
-    postgresql_database: '{{ kieserver_db_name }}'
-    postgresql_user: '{{ kieserver_db_user }}'
-    postgresql_pwd: '{{ kieserver_db_pwd }}'
-  when: kieserver_db_type == "PostgreSQL"
-
-- name: "[KIE SERVER] call MySQL role"
-  include_role:
-    name: deploy-mysql
-  vars:
-    service_name: '{{ kieserver_db_service }}'
-    deployment_name: '{{ kieserver_db_deployment }}'
-    mysql_volume_size: '{{ kieserver_db_size }}'
-    mysql_database: '{{ kieserver_db_name }}'
-    mysql_user: '{{ kieserver_db_user }}'
-    mysql_pwd: '{{ kieserver_db_pwd }}'
-  when: kieserver_db_type == "MySQL"
-
-- name: "[KIE SERVER] set s2i specific objects"
-  when: kieserver_s2i
+- name: "[KIE SERVER] check requirements"
   block:
-    - name: "[KIE SERVER] set imagestream state to {{ state }}"
+    - include_role:
+        name: check-image-requirements
+      vars:
+        image_namespace: "{{ kieserver_image_namespace }}"
+        image_name: "{{ kieserver_image_name }}"
+        image_tag: "{{ kieserver_image_tag }}"
+
+    - include_tasks: check-ha-configuration.yml
+  when: state == "present"
+
+- name: "[KIE SERVER] configure application"
+  block:
+    - name: "[KIE SERVER] configure services"
+      include_tasks: services.yml
+
+    - name: "[KIE SERVER] configure routes"
+      include_tasks: routes.yml
+
+    - name: "[KIE SERVER] set default secret name if none provided"
+      set_fact:
+        ks_secret_name: "{{ kieserver_secret_name | default(kieserver_default_secret_name, true) }}"
+
+    - name: "[KIE SERVER] generate secret if not present"
+      include_role:
+        name: generate-secret
+      vars:
+        secret_name: '{{ ks_secret_name }}'
+        service_name: '{{ kieserver_service_name }}'
+        keystore_name: '{{ kieserver_keystore_name }}'
+        keystore_alias: '{{ kieserver_keystore_alias }}'
+        keystore_pwd: '{{ kieserver_keystore_pwd }}'
+        route_host: '{{ route_raw.result.spec.host }}'
+
+    - name: "[KIE SERVER] configure persistence"
+      include_tasks: persistence.yml
+      when:
+        - kieserver_db_size != ""
+        - kieserver_db_type == "H2"
+
+    - name: "[KIE SERVER] set db facts for any DB"
+      set_fact:
+        # e.g. authoring-kieserver-postgresql
+        kieserver_db_deployment: '{{ kieserver_deployment_name }}-{{ kieserver_db_type | lower }}'
+        # e.g. rhpam-kieserver-postgresql
+        kieserver_db_service: '{{ kieserver_service_name }}-{{ kieserver_db_type | lower }}'
+
+    - name: "[KIE SERVER] call PostgreSQL role"
+      include_role:
+        name: deploy-postgresql
+      vars:
+        service_name: '{{ kieserver_db_service }}'
+        deployment_name: '{{ kieserver_db_deployment }}'
+        postgresql_volume_size: '{{ kieserver_db_size }}'
+        postgresql_database: '{{ kieserver_db_name }}'
+        postgresql_user: '{{ kieserver_db_user }}'
+        postgresql_pwd: '{{ kieserver_db_pwd }}'
+      when: kieserver_db_type == "PostgreSQL"
+
+    - name: "[KIE SERVER] call MySQL role"
+      include_role:
+        name: deploy-mysql
+      vars:
+        service_name: '{{ kieserver_db_service }}'
+        deployment_name: '{{ kieserver_db_deployment }}'
+        mysql_volume_size: '{{ kieserver_db_size }}'
+        mysql_database: '{{ kieserver_db_name }}'
+        mysql_user: '{{ kieserver_db_user }}'
+        mysql_pwd: '{{ kieserver_db_pwd }}'
+      when: kieserver_db_type == "MySQL"
+
+    - name: "[KIE SERVER] configure S2I"
+      include_tasks: s2i.yml
+      when: kieserver_s2i
+
+    - name: "[KIE SERVER] set kieserver state to {{ state }}"
       openshift_raw:
         state: '{{ state }}'
-        definition:
-          apiVersion: v1
-          kind: ImageStream
-          metadata:
-            name: '{{ kieserver_deployment_name }}'
-            namespace: '{{ namespace }}'
-            labels:
-              app: '{{ application_name }}'
-              service: '{{ kieserver_service_name }}'
-
-    - name: "[KIE SERVER] set buildconfig state to {{ state }}"
-      openshift_raw:
-        state: '{{ state }}'
-        definition:
-          apiVersion: v1
-          kind: BuildConfig
-          metadata:
-            name: '{{ kieserver_deployment_name }}'
-            namespace: '{{ namespace }}'
-            labels:
-              app: '{{ application_name }}'
-              service: '{{ kieserver_service_name }}'
-            spec:
-              source:
-                type: Git
-                git:
-                  uri: "{{ kieserver_source_url }}"
-                  ref: "{{ kieserver_source_ref }}"
-                contextDir: "{{ kieserver_source_context }}"
-              strategy:
-                type: Source
-                sourceStrategy:
-                  env:
-                  - name: KIE_SERVER_CONTAINER_DEPLOYMENT
-                    value: "{{ kieserver_container_deployment }}"
-                  - name: MAVEN_MIRROR_URL
-                    value: "{{ kieserver_maven_mirror }}"
-                  - name: ARTIFACT_DIR
-                    value: "{{ kieserver_artifact_dir }}"
-                  forcePull: true
-                  _from:
-                    kind: ImageStreamTag
-                    namespace: "{{ kieserver_image_namespace }}"
-                    name: "{{ kieserver_image_name }}:{{ kieserver_image_tag }}"
-              output:
-                to:
-                  kind: ImageStreamTag
-                  name: "{{ kieserver_deployment_name }}:latest"
-              triggers:
-              - type: GitHub
-                github:
-                  secret: "{{ kieserver_github_webhook_secret }}"
-              - type: Generic
-                generic:
-                  secret: "{{ kieserver_generic_webhook_secret }}"
-              - type: ImageChange
-                imageChange: {}
-              - type: ConfigChange
-
-- name: "[KIE SERVER] deploy kieserver"
-  openshift_raw:
-    state: '{{ state }}'
-    definition: "{{ lookup('template', 'kieserver-dc.yml.j2') | from_yaml }}"
+        definition: "{{ lookup('template', 'kieserver-dc.yml.j2') | from_yaml }}"
+  when: not provision_failed

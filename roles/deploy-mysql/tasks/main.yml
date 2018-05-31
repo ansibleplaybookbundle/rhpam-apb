@@ -1,45 +1,24 @@
 ---
-- name: "[MYSQL] set service state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: Service
-      name: '{{ deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ service_name }}'
-      spec:
-        selector:
-          app: '{{ application_name }}'
-          service: '{{ service_name }}'
-        ports:
-        - name: port-3306
-          port: 3306
-          protocol: TCP
-          targetPort: 3306
+- name: "[MYSQL] check requirements"
+  include_role:
+    name: check-image-requirements
+  vars:
+    image_namespace: "{{ mysql_image_namespace }}"
+    image_name: "{{ mysql_image_name }}"
+    image_tag: "{{ mysql_image_tag }}"
+  when: state == "present"
 
-- name: "[MYSQL] set persistent volume claim state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: PersistentVolumeClaim
-      name: '{{ deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ service_name }}'
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: '{{ mysql_volume_size }}'
-  when: mysql_volume_size != ""
+- name: "[MYSQL] configure application"
+  block:
+    - name: "[MYSQL] configure services"
+      include_tasks: services.yml
 
-- name: "[MYSQL] set deployment config state to {{ state }}"
-  openshift_raw:
-    state: '{{ state }}'
-    definition: "{{ lookup('template', 'mysql-dc.yml.j2') | from_yaml }}"
+    - name: "[MYSQL] configure persistence"
+      include_tasks: persistence.yml
+      when: mysql_volume_size != ""
+
+    - name: "[MYSQL] set deployment config state to {{ state }}"
+      openshift_raw:
+        state: '{{ state }}'
+        definition: "{{ lookup('template', 'mysql-dc.yml.j2') | from_yaml }}"
+  when: not provision_failed

@@ -1,0 +1,23 @@
+---
+- name: "[BUSINESS CENTRAL] set https route state to {{ state }}"
+  openshift_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Route
+      name: '{{ businesscentral_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ businesscentral_service_name }}'
+      spec:
+        host: '{{ businesscentral_hostname }}'
+        port:
+          targetPort: https
+        tls:
+          termination: passthrough
+          insecureEdgeTerminationPolicy: Redirect
+        to:
+          kind: Service
+          name: '{{ businesscentral_deployment_name }}'
+  register: route_raw

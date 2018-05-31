@@ -4,7 +4,7 @@
     path: '{{ tmp_folder }}'
     state: directory
 
-- name: "[RHPAM] Authoring Plan"
+- name: "[RHPAM] Trial Plan"
   block:
     - name: "[RHPAM] Set defaults"
       set_fact:
@@ -78,7 +78,6 @@
       router_svc: "{{ smartrouter_deployment_name }}"
       kieserver_deployment_name: "{{ application_name }}-kieserver-{{ item }}"
     with_sequence: start=1 count={{ kie_execution_sets }}
-
   when: _apb_plan_id == "managed"
 
 - name: "[RHPAM] KIE Execution Server Plan"
@@ -92,3 +91,7 @@
     has_router: true
     kieserver_s2i: true
   when: _apb_plan_id == "immutable-kieserver"
+
+- name: "[RHPAM] Fail if there were errors"
+  fail: msg="[Bundle Failed! - Plan - '{{ _apb_plan_id }}']"
+  when: provision_failed

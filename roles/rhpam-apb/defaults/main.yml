@@ -26,3 +26,5 @@ sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation | defau
 
 # HA
 kie_execution_sets: "{{ apb_kieserver_sets | default(2) }}"
+
+provision_failed: false
