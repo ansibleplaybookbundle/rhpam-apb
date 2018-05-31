@@ -1,0 +1,17 @@
+---
+- name: "[REQUIREMENTS] Check ImageStreamTag {{ image_namespace }}/{{ image_name }}:{{ image_tag }} is present"
+  block:
+    - name: "[REQUIREMENTS] Get ImageStreamTag {{ image_namespace }}/{{ image_name }}:{{ image_tag }}"
+      shell: >
+        oc get istag -n {{ image_namespace }} {{ image_name }}:{{ image_tag }} -o name --no-headers
+      ignore_errors: yes
+      register: img_cmd
+
+    - name: "[REQUIREMENTS] Log missing ImageStreamTag error"
+      shell: >
+        echo "[Missing ImageStreamTag Error] - {{ image_namespace }}/{{ image_name }}:{{ image_tag }}" > /dev/termination-log
+      when: img_cmd.rc != 0
+
+    - set_fact:
+        provision_failed: true
+      when: img_cmd.rc != 0

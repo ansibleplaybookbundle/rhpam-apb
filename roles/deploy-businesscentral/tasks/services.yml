@@ -1,0 +1,27 @@
+---
+- name: "[BUSINESS CENTRAL] set service state to {{ state }}"
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      name: '{{ businesscentral_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ businesscentral_service_name }}'
+      spec:
+        selector:
+          app: '{{ application_name }}'
+          service: '{{ businesscentral_service_name }}'
+          deploymentconfig: '{{ businesscentral_deployment_name }}'
+        ports:
+          - name: http
+            port: 8080
+            targetPort: 8080
+          - name: https
+            port: 8443
+            targetPort: 8443
+          - name: git-ssh
+            port: 8001
+            targetPort: 8001

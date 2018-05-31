@@ -1,0 +1,18 @@
+---
+- name: "[MYSQL] set persistent volume claim state to {{ state }}"
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      name: '{{ deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ service_name }}'
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: '{{ mysql_volume_size }}'

@@ -4,6 +4,30 @@
     path: '{{ tmp_folder }}'
     state: directory
 
+- name: "[RHPAM] Trial Plan"
+  block:
+    - name: "[RHPAM] Set defaults"
+      set_fact:
+        eap_admin_pwd: "{{ default_trial_pwd }}"
+        kie_admin_pwd: "{{ default_trial_pwd }}"
+        controller_pwd: "{{ default_trial_pwd }}"
+        controller_svc: "{{ application_name }}-rhpamcentr"
+        has_rhpamcentr: true
+
+    - name: "[RHPAM] Deploy Business Central"
+      include_role:
+        name: deploy-businesscentral
+      vars:
+        businesscentral_deployment_name: "{{ controller_svc }}"
+
+    - name: "[RHPAM] Deploy KIE Execution Server"
+      include_role:
+        name: deploy-kieserver
+      vars:
+        kieserver_db_type: 'H2'
+        kieserver_replicas: 1
+  when: _apb_plan_id == "trial"
+
 - name: "[RHPAM] Authoring Plan"
   block:
     - name: "[RHPAM] Set defaults"
@@ -21,6 +45,8 @@
     - name: "[RHPAM] Deploy KIE Execution Server"
       include_role:
         name: deploy-kieserver
+      vars:
+        kieserver_replicas: 1
   when: _apb_plan_id == "authoring"
 
 
@@ -52,7 +78,6 @@
       router_svc: "{{ smartrouter_deployment_name }}"
       kieserver_deployment_name: "{{ application_name }}-kieserver-{{ item }}"
     with_sequence: start=1 count={{ kie_execution_sets }}
-
   when: _apb_plan_id == "managed"
 
 - name: "[RHPAM] KIE Execution Server Plan"
@@ -64,4 +89,9 @@
     controller_pwd: "{{ apb_controller_pwd | default('', true) | trim  }}"
     has_external_controller: true
     has_router: true
-  when: _apb_plan_id == "kieserver"
+    kieserver_s2i: true
+  when: _apb_plan_id == "immutable-kieserver"
+
+- name: "[RHPAM] Fail if there were errors"
+  fail: msg="[Bundle Failed! - Plan - '{{ _apb_plan_id }}']"
+  when: provision_failed

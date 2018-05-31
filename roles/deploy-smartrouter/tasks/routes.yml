@@ -1,0 +1,18 @@
+---
+- name: "[SMART ROUTER] set https route state to {{ state }}"
+  openshift_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Route
+      name: '{{ smartrouter_deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ smartrouter_service_name }}'
+      spec:
+        host: '{{ smartrouter_hostname }}'
+        to:
+          kind: Service
+          name: '{{ smartrouter_deployment_name }}'
+  register: route_raw

@@ -20,11 +20,7 @@ spec:
           namespace: '{{ businesscentral_monitoring_image_namespace }}'
           name: '{{ businesscentral_monitoring_image_name }}:{{ businesscentral_monitoring_image_tag}}'
     - type: ConfigChange
-{% if businesscentral_monitoring_ha %}
-  replicas: {{ businesscentral_monitoring_replicas_ha }}
-{% else %}
   replicas: {{ businesscentral_monitoring_replicas }}
-{% endif %}
   selector:
     app: '{{ application_name }}'
     service: {{ businesscentral_monitoring_service_name }}
@@ -44,16 +40,20 @@ spec:
             limits:
               memory: '{{ businesscentral_monitoring_limits_memory }}'
           livenessProbe:
-            httpGet:
-              path: /kie-wb.jsp
-              port: 8080
+            exec:
+              command:
+              - "/bin/bash"
+              - "-c"
+              - "curl --fail --silent -u '${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}' http://localhost:8080/kie-wb.jsp"
             initialDelaySeconds: 180
             timeoutSeconds: 2
             periodSeconds: 15
           readinessProbe:
-            httpGet:
-              path: /kie-wb.jsp
-              port: 8080
+            exec:
+              command:
+              - "/bin/bash"
+              - "-c"
+              - "curl --fail --silent -u '${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}' http://localhost:8080/kie-wb.jsp"
             initialDelaySeconds: 60
             timeoutSeconds: 2
             periodSeconds: 30

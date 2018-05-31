@@ -1,45 +1,24 @@
 ---
-- name: "[POSTGRESQL] set service state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: Service
-      name: '{{ deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ service_name }}'
-      spec:
-        selector:
-          app: '{{ application_name }}'
-          service: '{{ service_name }}'
-        ports:
-        - name: port-5432
-          port: 5432
-          protocol: TCP
-          targetPort: 5432
+- name: "[POSTGRESQL] check requirements"
+  include_role:
+    name: check-image-requirements
+  vars:
+    image_namespace: "{{ postgresql_image_namespace }}"
+    image_name: "{{ postgresql_image_name }}"
+    image_tag: "{{ postgresql_image_tag }}"
+  when: state == "present"
 
-- name: "[POSTGRESQL] set persistent volume claim state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: PersistentVolumeClaim
-      name: '{{ deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ service_name }}'
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: '{{ postgresql_volume_size }}'
-  when: postgresql_volume_size != ""
+- name: "[POSTGRESQL] configure application"
+  block:
+    - name: "[POSTGRESQL] configure services"
+      include_tasks: services.yml
 
-- name: "[POSTGRESQL] set deployment config state to {{ state }}"
-  openshift_raw:
-    state: '{{ state }}'
-    definition: "{{ lookup('template', 'postgresql-dc.yml.j2') | from_yaml }}"
+    - name: "[POSTGRESQL] configure persistence"
+      include_tasks: persistence.yml
+      when: postgresql_volume_size != ""
+
+    - name: "[POSTGRESQL] set deployment config state to {{ state }}"
+      openshift_raw:
+        state: '{{ state }}'
+        definition: "{{ lookup('template', 'postgresql-dc.yml.j2') | from_yaml }}"
+  when: not provision_failed

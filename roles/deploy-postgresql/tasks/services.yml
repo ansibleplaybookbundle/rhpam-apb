@@ -1,0 +1,21 @@
+---
+- name: "[POSTGRESQL] set service state to {{ state }}"
+  k8s_raw:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      name: '{{ deployment_name }}'
+      namespace: '{{ namespace }}'
+      labels:
+        app: '{{ application_name }}'
+        service: '{{ service_name }}'
+      spec:
+        selector:
+          app: '{{ application_name }}'
+          service: '{{ service_name }}'
+        ports:
+        - name: port-5432
+          port: 5432
+          protocol: TCP
+          targetPort: 5432

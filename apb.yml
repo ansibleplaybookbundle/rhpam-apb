@@ -1,18 +1,4 @@
 # Common Credentials
-_apb_eap_admin_user: &_apb_eap_admin_user
-  name: apb_eap_admin_user
-  title: EAP Admin Username
-  description: Admin username for all EAP Servers
-  required: true
-  type: string
-  default: eapadmin
-_apb_eap_admin_pwd: &_apb_eap_admin_pwd
-  name: apb_eap_admin_pwd
-  title: EAP Admin Password
-  description: Admin username for all EAP Servers. Generated if empty
-  required: false
-  type: string
-  display_type: password
 _apb_kie_admin_user: &_apb_kie_admin_user
   name: apb_kie_admin_user
   title: Admin Username
@@ -28,13 +14,13 @@ _apb_kie_admin_pwd: &_apb_kie_admin_pwd
   type: string
   display_type: password
 # HA
-_apb_ha: &_apb_ha
-  name: apb_ha
-  title: Deploy in HA
-  description: Deploys the system in High Availability
+_apb_replicas: &_apb_replicas
+  title: Number of replicas
+  description: Number of Replicas that will be initially deployed
+  default: 3
   required: true
-  type: boolean
-  default: false
+  type: number
+
 # External Maven Repository
 _apb_maven_repo_url: &_apb_maven_repo_url
   name: apb_maven_repo_url
@@ -109,47 +95,47 @@ _apb_businesscentral_maven_pwd: &_apb_businesscentral_maven_pwd
   display_type: password
   display_group: Business Central
 # KIE Execution Server
-_apb_kie_execution_user: &_apb_kie_execution_user
-  name: apb_kie_execution_user
+_apb_kieserver_user: &_apb_kieserver_user
+  name: apb_kieserver_user
   title: Execution Server Username
   description: User to interact with the REST API
   required: true
   type: string
   default: executionUser
   display_group: KIE Execution Server
-_apb_kie_execution_pwd: &_apb_kie_execution_pwd
-  name: apb_kie_execution_pwd
+_apb_kieserver_pwd: &_apb_kieserver_pwd
+  name: apb_kieserver_pwd
   title: Execution Server Password
   description: User password to interact with the REST API. Generated if empty
   required: false
   type: string
   display_type: password
   display_group: KIE Execution Server
-_apb_kie_execution_hostname: &_apb_kie_execution_hostname
-  name: apb_kie_execution_hostname
+_apb_kieserver_hostname: &_apb_kieserver_hostname
+  name: apb_kieserver_hostname
   title: Public Hostname
   description: Public hostname where the Execution Server will be accessed from. Generated if empty
   required: false
   type: string
   display_group: KIE Execution Server
-_apb_kie_execution_limits_memory: &_apb_kie_execution_limits_memory
+_apb_kieserver_limits_memory: &_apb_kieserver_limits_memory
   <<: *_apb_limits_memory
-  name: apb_kie_execution_limits_memory
+  name: apb_kieserver_limits_memory
   description: Memory limits to set for KIE Execution Server.
   default: 1Gi
   display_group: KIE Execution Server
-_apb_kie_execution_db_type: &_apb_kie_execution_db_type
-  name: apb_kie_execution_db_type
+_apb_kieserver_db_type: &_apb_kieserver_db_type
+  name: apb_kieserver_db_type
   title: Database Type
-  description: Database Type to persist the KIE Execution Server runtime information
+  description: Database Type to persist the KIE Execution Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Execution Server
   required: true
   type: enum
   enum: ['H2', 'PostgreSQL', 'MySQL']
-  default: H2
+  default: PostgreSQL
   display_group: KIE Execution Server
-_apb_kie_execution_db_size: &_apb_kie_execution_db_size
+_apb_kieserver_db_size: &_apb_kieserver_db_size
   <<: *_apb_volume_size
-  name: apb_kie_execution_db_size
+  name: apb_kieserver_db_size
   title: Database Storage Size
   description: Specify the Persistent Volume Claim size to create for the Database. Leave empty for ephemeral storage. e.g. 10Gi
   display_group: KIE Execution Server
@@ -212,30 +198,30 @@ _apb_sso_url: &_apb_sso_url
   description: Red Hat Single Sign-On URL. Leave empty to avoid using SSO. E.g. https://rhsso.example.com/auth
   required: false
   type: string
-  display_group: Red Hat - Single Sign-On
+  display_group: Red Hat - Single Sign-On (Optional)
 _apb_sso_realm: &_apb_sso_realm
   name: apb_sso_realm
   title: RH-SSO Realm
   description: Red Hat Single Sign-On Realm name. E.g. rhpam
   required: false
   type: string
-  display_group: Red Hat - Single Sign-On
+  display_group: Red Hat - Single Sign-On (Optional)
 _apb_sso_client: &_apb_sso_client
   required: false
   type: string
-  display_group: Red Hat - Single Sign-On
+  display_group: Red Hat - Single Sign-On (Optional)
 _apb_sso_client_secret: &_apb_sso_client_secret
   required: false
   type: string
   display_type: password
-  display_group: Red Hat - Single Sign-On
+  display_group: Red Hat - Single Sign-On (Optional)
 _apb_sso_user: &_apb_sso_user
   name: apb_sso_user
   title: RH-SSO Admin User
   description: Red Hat Single Sign-On User to be used to create the Client if it doesn't exist. The user must be able to create secrets on the given realm.
   required: false
   type: string
-  display_group: Red Hat - Single Sign-On
+  display_group: Red Hat - Single Sign-On (Optional)
 _apb_sso_pwd: &_apb_sso_pwd
   name: apb_sso_pwd
   title: RH-SSO Admin Password
@@ -243,27 +229,28 @@ _apb_sso_pwd: &_apb_sso_pwd
   required: false
   type: string
   display_type: password
-  display_group: Red Hat - Single Sign-On
+  display_group: Red Hat - Single Sign-On (Optional)
 _apb_sso_disable_ssl_cert_validation: &_apb_sso_disable_ssl_cert_validation
   name: apb_sso_disable_ssl_cert_validation
   title: RH-SSO Disable SSL Validation
   description: Disable SSL Certificate Validation when connecting to RH-SSO
   required: false
   type: boolean
-  display_group: Red Hat - Single Sign-On
+  display_group: Red Hat - Single Sign-On (Optional)
 
 version: 1.1
 name: rhpam-apb
-description: RHPAM
+description:  Red Hat Process Automation Manager 7.0 (APB)
 bindable: false
 async: unsupported
 metadata:
-  displayName: RHPAM (APB)
+  displayName: Red Hat Process Automation Manager 7.0 (APB)
   documentationUrl: https://developers.redhat.com/products/bpmsuite/docs-and-apis/
   longDescription:
-    An APB that deploys Red Hat Process Automation Manager 7.0 (RHPAM) on OpenShift.
-    Offers different plans depending on the requirements to deploy an Authoring environment
-    or a Production server with immutable monitor.
+    As a system engineer, you can deploy a Red Hat Process Automation Manager immutable server environment
+    on Red Hat OpenShift Container Platform to provide an infrastructure to execute processes and other business assets.
+    You can use standard integration tools to manage the immutable Process Server image.
+    You can create new server images to add and update processes.
   console.openshift.io/iconClass: icon-processserver
   providerDisplayName: "Red Hat, Inc."
   serviceName: rhpam
@@ -279,15 +266,34 @@ tags:
   - jbpm
   - rhpam
 plans:
-  - name: authoring
-    description: Deploys Business Central and KIE Execution Server
+  - name: trial
+    description:
+      Deploy an ephemeral environment for testing Business Central and KIE Server. A default `adminUser` user will be created with the `RedHat` password.
+      In case the generated routes need to be overridden, it is possible to set custom routes for both applications.
     free: true
     metadata:
-      displayName: RHPAM Authoring
+      displayName: Trial Environment
+    parameters:
+      # Business Central
+      - name: apb_businesscentral_hostname
+        title: Public Hostname
+        description: Public hostname where Business Central will be accessed from. Generated if empty
+        required: false
+        type: string
+        display_group: Business Central
+      # KIE Execution Server
+      - *_apb_kieserver_hostname
+
+  - name: authoring
+    description:
+      An environment for creating and modifying processes using Business Central. It consists of
+      pods that provide Business Central for the authoring work and a Process Server for test execution of the processes.
+      For instructions about deploying this environment
+    free: true
+    metadata:
+      displayName: Authoring
     parameters:
       # Common Credentials
-      - *_apb_eap_admin_user
-      - *_apb_eap_admin_pwd
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
 
@@ -334,6 +340,33 @@ plans:
       - *_apb_businesscentral_maven_user
       - *_apb_businesscentral_maven_pwd
 
+      # KIE Execution Server
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - *_apb_kieserver_hostname
+      - *_apb_kieserver_limits_memory
+      - *_apb_kieserver_db_type
+      - *_apb_kieserver_db_size
+
+      # Keystore and Secret
+      - <<: *_apb_secret_name
+        name: apb_kieserver_secret_name
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_name
+        name: apb_kieserver_keystore_name
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_alias
+        name: apb_kieserver_keystore_alias
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_pwd
+        name: apb_kieserver_keystore_pwd
+        display_group: KIE Execution Server
+
+      # External Maven Repository
+      - *_apb_maven_repo_url
+      - *_apb_maven_repo_user
+      - *_apb_maven_repo_pwd
+
       # RH - SSO
       - *_apb_sso_url
       - *_apb_sso_realm
@@ -346,55 +379,34 @@ plans:
         title: RH-SSO Business Central - Client Secret
         description: Red Hat Single Sign-On Client secret for Business Central.
       - <<: *_apb_sso_client
-        name: apb_sso_kie_execution_client
+        name: apb_kieserver_sso_client
         title: RH-SSO Client - KIE Execution Server
         description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
-        name: apb_sso_kie_execution_client_secret
+        name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Execution Server - Client Secret
         description: Red Hat Single Sign-On Client secret for KIE Execution Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
 
-      # KIE Execution Server
-      - *_apb_kie_execution_user
-      - *_apb_kie_execution_pwd
-      - *_apb_kie_execution_hostname
-      - *_apb_kie_execution_limits_memory
-      - *_apb_kie_execution_db_type
-      - *_apb_kie_execution_db_size
-
-      # Keystore and Secret
-      - <<: *_apb_secret_name
-        name: apb_kie_execution_secret_name
-        display_group: KIE Execution Server
-      - <<: *_apb_keystore_name
-        name: apb_kie_execution_keystore_name
-        display_group: KIE Execution Server
-      - <<: *_apb_keystore_alias
-        name: apb_kie_execution_keystore_alias
-        display_group: KIE Execution Server
-      - <<: *_apb_keystore_pwd
-        name: apb_kie_execution_keystore_pwd
-        display_group: KIE Execution Server
-
-      # External Maven Repository
-      - *_apb_maven_repo_url
-      - *_apb_maven_repo_user
-      - *_apb_maven_repo_pwd
-
-  - name: kieserver
-    description: Deploy KIE Execution Server
+  - name: immutable-kieserver
+    description:
+      In this environment, when you deploy a Process Server pod, it builds an image that loads and starts
+      a process or group of processes. You cannot stop any process on the pod or add any new process to the pod.
+      If you want to use another version of a process or modify the configuration in any other way, you deploy a new
+      server image and displace the old one.
     free: true
     metadata:
-      displayName: KIE Execution Server
+      displayName: Immutable Server - KIE Server
     parameters:
       # Common Credentials
-      - *_apb_eap_admin_user
-      - *_apb_eap_admin_pwd
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      # HA
+      - <<: *_apb_replicas
+        name: apb_kieserver_replicas
+        default: 2
 
       # Router
       - name: apb_router_svc
@@ -428,68 +440,227 @@ plans:
       - *_apb_controller_port
       - *_apb_controller_protocol
       - *_apb_controller_token
-      - *_apb_controller_user
+      - <<: *_apb_controller_user
+        default: monitorUser
       - *_apb_controller_pwd
 
-      - *_apb_businesscentral_maven_user
-      - *_apb_businesscentral_maven_pwd
-
       # KIE Execution Server
-      - *_apb_kie_execution_user
-      - *_apb_kie_execution_pwd
-      - *_apb_kie_execution_hostname
-      - *_apb_kie_execution_limits_memory
-      - *_apb_kie_execution_db_type
-      - *_apb_kie_execution_db_size
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - *_apb_kieserver_hostname
+      - *_apb_kieserver_limits_memory
+      - *_apb_kieserver_db_type
+      - *_apb_kieserver_db_size
 
       # Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_kie_execution_secret_name
+        name: apb_kieserver_secret_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_name
-        name: apb_kie_execution_keystore_name
+        name: apb_kieserver_keystore_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_alias
-        name: apb_kie_execution_keystore_alias
+        name: apb_kieserver_keystore_alias
         display_group: KIE Execution Server
       - <<: *_apb_keystore_pwd
-        name: apb_kie_execution_keystore_pwd
+        name: apb_kieserver_keystore_pwd
         display_group: KIE Execution Server
+
+      # Artifact Source
+      - name: apb_kieserver_source_url
+        title: Git Repository URL
+        description: Git source URI for application. E.g. https://github.com/jboss-container-images/rhpam-7-openshift-image.git
+        required: true
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_source_ref
+        title: Git Repository Reference
+        description: Git branch/tag reference. E.g. master
+        required: true
+        type: string
+        default: master
+        display_group: Artifact source
+      - name: apb_kieserver_source_context
+        title: Git Repository Context Dir
+        description: Path within Git project to build; empty for root project directory. E.g. quickstarts/library-process/library
+        required: false
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_github_webhook_secret
+        title: Github Webhook Secret
+        description: Secret key to use when configuring a GitHub Webhook. Generated if empty.
+        required: false
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_generic_webhook_secret
+        title: Generic Webhook Secret
+        description: Secret key to use when configuring a Generic Webhook. Generated if empty.
+        required: false
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_artifact_dir
+        title: Artifact directories
+        description: List of directories from which archives will be copied into the deployment folder. If unspecified, all archives in /target will be copied.
+        required: false
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_container_deployment
+        title: KIE Server Container Deployment
+        description: 'KIE Server Container deployment configuration in format: containerId=groupId:artifactId:version|c2=g2:a2:v2'
+        required: true
+        type: string
+        display_group: Artifact source
+      - name: apb_kieserver_maven_mirror
+        title: Maven mirror URL
+        description: Maven mirror to use for S2I builds
+        required: false
+        type: string
+        display_group: Artifact source
 
       # External Maven Repository
       - *_apb_maven_repo_url
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
+
       # RH - SSO
       - *_apb_sso_url
       - *_apb_sso_realm
       - <<: *_apb_sso_client
-        name: apb_sso_kie_execution_client
+        name: apb_kieserver_sso_client
         title: RH-SSO Client - KIE Execution Server
         description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
-        name: apb_sso_kie_execution_client_secret
+        name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Execution Server - Client Secret
         description: Red Hat Single Sign-On Client secret for KIE Execution Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
 
+  - name: immutable-monitor
+    description:
+      Use Business Central Monitoring to monitor the performance of the environment and to stop and
+      restart some of the process instances, but not to deploy additional processes to any Process Server
+      or undeploy any existing ones (you can not add or remove containers)
+    free: true
+    metadata:
+      displayName: Immutable Server - Monitor
+    parameters:
+      # Common Credentials
+      - *_apb_kie_admin_user
+      - *_apb_kie_admin_pwd
+
+      # Business Central Monitoring
+      - <<: *_apb_replicas
+        name: apb_businesscentral_replicas
+        default: 1
+        display_group: Business Central Monitoring
+      - <<: *_apb_controller_user
+        title: Business Central Monitoring Username
+        description: Username to access to the Business Central Monitoring UI
+        required: true
+        default: monitorUser
+        display_group: Business Central Monitoring
+      - <<: *_apb_controller_pwd
+        title: Business Central Monitoring Password
+        description: User password to access to the Business Central Monitoring UI. Generated if empty
+        display_group: Business Central Monitoring
+      - name: apb_businesscentral_monitoring_hostname
+        title: Public Hostname
+        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+        required: false
+        type: string
+        display_group: Business Central Monitoring
+
+      # Keystore and Secret
+      - <<: *_apb_secret_name
+        name: apb_businesscentral_monitoring_secret_name
+        display_group: Business Central Monitoring
+      - <<: *_apb_keystore_name
+        name: apb_businesscentral_monitoring_keystore_name
+        display_group: Business Central Monitoring
+      - <<: *_apb_keystore_alias
+        name: apb_businesscentral_monitoring_keystore_alias
+        display_group: Business Central Monitoring
+      - <<: *_apb_keystore_pwd
+        name: apb_businesscentral_monitoring_keystore_pwd
+        display_group: Business Central Monitoring
+
+      - <<: *_apb_limits_memory
+        name: apb_businesscentral_monitoring_limits_memory
+        description: Memory limits to set for Business Central Monitoring.
+        default: 2Gi
+        display_group: Business Central Monitoring
+      - <<: *_apb_volume_size
+        name: apb_businesscentral_nonitoring_volume_size
+        description: Specify the Persistent Volume Claim size to create for storing the user data. Leave empty for ephemeral storage. e.g. 64Mi
+        default: 64Mi
+        display_group: Business Central Monitoring
+
+      # RH - SSO
+      - *_apb_sso_url
+      - *_apb_sso_realm
+      - <<: *_apb_sso_client
+        name: apb_sso_businesscentral_monitoring_client
+        title: RH-SSO Business Central Monitoring - Client
+        description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
+      - <<: *_apb_sso_client_secret
+        name: apb_sso_businesscentral_monitoring_client_secret
+        title: RH-SSO Business Central Monitoring - Client Secret
+        description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
+      - *_apb_sso_user
+      - *_apb_sso_pwd
+      - *_apb_sso_disable_ssl_cert_validation
+
+      # Smart Router
+      - <<: *_apb_replicas
+        name: apb_smartrouter_replicas
+        default: 2
+        display_group: Smart Router
+
+      - name: apb_smartrouter_hostname
+        title: Public Hostname
+        description: Public hostname where Smart Router will be accessed from. Generated if empty
+        required: false
+        type: string
+        display_group: Smart Router
+      - <<: *_apb_limits_memory
+        name: apb_smartrouter_limits_memory
+        description: Memory limits to set for Smart Router
+        default: 512Mi
+        display_group: Smart Router
+      - <<: *_apb_volume_size
+        name: apb_smartrouter_volume_size
+        description: Specify the Persistent Volume Claim size to create. Leave empty for ephemeral storage. e.g. 64Mi
+        default: 64Mi
+        display_group: Smart Router
+
+      # External Maven Repository
+      - <<: *_apb_maven_repo_url
+        required: true
+      - *_apb_maven_repo_user
+      - *_apb_maven_repo_pwd
+
   - name: managed
-    description: Managed Environment. Deploys Business Central Monitoring and a set of clusters of KIE Servers, all managed by a Smart Router.
+    description:
+      An environment for running existing processes for staging and production purposes.
+      This environment includes several groups of Process Server pods; you can deploy and undeploy
+      processes on every such group and also scale the group up or down as necessary. Use Business
+      Central Monitoring to deploy, run, and stop the processes and to monitor their execution.
+      For instructions about deploying this environment
     free: true
     metadata:
       displayName: Managed Environment
     parameters:
       # Common Credentials
-      - *_apb_eap_admin_user
-      - *_apb_eap_admin_pwd
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
-      - <<: *_apb_ha
 
       # Business Central Monitoring
+      - <<: *_apb_replicas
+        name: apb_businesscentral_replicas
+        display_group: Business Central Monitoring
       - <<: *_apb_controller_user
         title: Business Central Monitoring Username
         description: Username to access to the Business Central Monitoring UI
@@ -544,11 +715,11 @@ plans:
         title: RH-SSO Business Central Monitoring - Client Secret
         description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
       - <<: *_apb_sso_client
-        name: apb_sso_kie_execution_client
+        name: apb_kieserver_sso_client
         title: RH-SSO Client - KIE Execution Server
         description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
-        name: apb_sso_kie_execution_client_secret
+        name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Execution Server - Client Secret
         description: Red Hat Single Sign-On Client secret for KIE Execution Server.
       - *_apb_sso_user
@@ -556,6 +727,10 @@ plans:
       - *_apb_sso_disable_ssl_cert_validation
 
       # Smart Router
+      - <<: *_apb_replicas
+        name: apb_smartrouter_replicas
+        default: 2
+        display_group: Smart Router
       - name: apb_smartrouter_hostname
         title: Public Hostname
         description: Public hostname where Smart Router will be accessed from. Generated if empty
@@ -574,7 +749,11 @@ plans:
         display_group: Smart Router
 
       # KIE Execution Server
-      - name: apb_kie_execution_sets
+      - <<: *_apb_replicas
+        name: apb_kieserver_replicas
+        default: 3
+        display_group: KIE Execution Server
+      - name: apb_kieserver_sets
         title: Sets of KIE Servers
         description:
           Number of KIE Server cluster + DB that will be deployed.
@@ -585,25 +764,25 @@ plans:
         type: number
         display_group: KIE Execution Server
 
-      - *_apb_kie_execution_user
-      - *_apb_kie_execution_pwd
-      - *_apb_kie_execution_hostname
-      - *_apb_kie_execution_limits_memory
-      - *_apb_kie_execution_db_type
-      - *_apb_kie_execution_db_size
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - *_apb_kieserver_hostname
+      - *_apb_kieserver_limits_memory
+      - *_apb_kieserver_db_type
+      - *_apb_kieserver_db_size
 
       # Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_kie_execution_secret_name
+        name: apb_kieserver_secret_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_name
-        name: apb_kie_execution_keystore_name
+        name: apb_kieserver_keystore_name
         display_group: KIE Execution Server
       - <<: *_apb_keystore_alias
-        name: apb_kie_execution_keystore_alias
+        name: apb_kieserver_keystore_alias
         display_group: KIE Execution Server
       - <<: *_apb_keystore_pwd
-        name: apb_kie_execution_keystore_pwd
+        name: apb_kieserver_keystore_pwd
         display_group: KIE Execution Server
 
       # External Maven Repository

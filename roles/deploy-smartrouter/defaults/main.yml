@@ -5,9 +5,7 @@ smartrouter_image_namespace: openshift
 
 smartrouter_image_pull_policy: IfNotPresent
 
-smartrouter_ha: "{{ apb_ha | default(false) }}"
-smartrouter_replicas: 1
-smartrouter_replicas_ha: 2
+smartrouter_replicas: "{{ apb_smartrouter_replicas | default(2, true) | trim }}"
 smartrouter_deployment_name: "{{ application_name }}-smartrouter"
 smartrouter_service_name: "rhpam-smartrouter"
 

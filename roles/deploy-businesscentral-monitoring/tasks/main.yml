@@ -1,110 +1,42 @@
 ---
-- name: "[BUSINESS CENTRAL MONITORING] set service state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: Service
-      name: '{{ businesscentral_monitoring_deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ businesscentral_monitoring_service_name }}'
-      spec:
-        selector:
-          app: '{{ application_name }}'
-          service: '{{ businesscentral_monitoring_service_name }}'
-          deploymentconfig: '{{ businesscentral_monitoring_deployment_name }}'
-        ports:
-          - name: http
-            port: 8080
-            targetPort: 8080
-          - name: https
-            port: 8443
-            targetPort: 8443
-
-- name: "[BUSINESS CENTRAL MONITORING] set PING service state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: Service
-      name: '{{ businesscentral_monitoring_deployment_name }}-ping'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ businesscentral_monitoring_service_name }}'
-      annotations:
-        service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-        description: "The JGroups ping port for clustering."
-      spec:
-        selector:
-          app: '{{ application_name }}'
-          service: '{{ businesscentral_monitoring_service_name }}'
-          deploymentconfig: '{{ businesscentral_monitoring_deployment_name }}'
-        ports:
-          - name: ping
-            port: 8888
-            targetPort: 8888
-
-- name: "[BUSINESS CENTRAL MONITORING] set https route state to {{ state }}"
-  openshift_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: Route
-      name: '{{ businesscentral_monitoring_deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ businesscentral_monitoring_service_name }}'
-      spec:
-        host: '{{ businesscentral_monitoring_hostname }}'
-        port:
-          targetPort: https
-        tls:
-          termination: passthrough
-          insecureEdgeTerminationPolicy: Redirect
-        to:
-          kind: Service
-          name: '{{ businesscentral_monitoring_deployment_name }}'
-  register: route_raw
-
-- name: "[BUSINESS CENTRAL MONITORING] set persistent volume claim state to {{ state }}"
-  k8s_raw:
-    state: '{{ state }}'
-    definition:
-      apiVersion: v1
-      kind: PersistentVolumeClaim
-      name: '{{ businesscentral_monitoring_deployment_name }}-data'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ businesscentral_monitoring_service_name }}'
-      spec:
-        accessModes:
-          - ReadWriteMany
-        resources:
-          requests:
-            storage: '{{ businesscentral_monitoring_volume_size }}'
-  when: businesscentral_monitoring_volume_size != ""
-
-- name: "[BUSINESS CENTRAL MONITORING] Set default secret name if none provided"
-  set_fact:
-    bcm_secret_name: "{{ businesscentral_monitoring_secret_name | default(businesscentral_monitoring_default_secret_name, true) }}"
-
-- name: "[BUSINESS CENTRAL MONITORING] generate secret if not present"
+- name: "[BUSINESS CENTRAL MONITORING] check requirements"
   include_role:
-    name: generate-secret
+    name: check-image-requirements
   vars:
-    secret_name: '{{ bcm_secret_name }}'
-    service_name: '{{ businesscentral_monitoring_service_name }}'
-    keystore_name: '{{ businesscentral_monitoring_keystore_name }}'
-    keystore_alias: '{{ businesscentral_monitoring_keystore_alias }}'
-    keystore_pwd: '{{ businesscentral_monitoring_keystore_pwd }}'
-    route_host: '{{ route_raw.result.spec.host }}'
+    image_namespace: "{{ businesscentral_monitoring_image_namespace }}"
+    image_name: "{{ businesscentral_monitoring_image_name }}"
+    image_tag: "{{ businesscentral_monitoring_image_tag }}"
+  when: state == "present"
 
-- name: "[BUSINESS CENTRAL MONITORING] deploy business central monitoring"
-  openshift_raw:
-    state: '{{ state }}'
-    definition: "{{ lookup('template', 'businesscentral-monitoring-dc.yml.j2') | from_yaml }}"
+- name: "[BUSINESS CENTRAL MONITORING] configure application"
+  block:
+    - name: "[BUSINESS CENTRAL MONITORING] configure services"
+      include_tasks: services.yml
+
+    - name: "[BUSINESS CENTRAL MONITORING] configure routes"
+      include_tasks: routes.yml
+
+    - name: "[BUSINESS CENTRAL MONITORING] configure persistence"
+      include_tasks: persistence.yml
+      when: businesscentral_monitoring_volume_size != ""
+
+    - name: "[BUSINESS CENTRAL MONITORING] Set default secret name if none provided"
+      set_fact:
+        bcm_secret_name: "{{ businesscentral_monitoring_secret_name | default(businesscentral_monitoring_default_secret_name, true) }}"
+
+    - name: "[BUSINESS CENTRAL MONITORINGs] generate secret if not present"
+      include_role:
+        name: generate-secret
+      vars:
+        secret_name: '{{ bcm_secret_name }}'
+        service_name: '{{ businesscentral_monitoring_service_name }}'
+        keystore_name: '{{ businesscentral_monitoring_keystore_name }}'
+        keystore_alias: '{{ businesscentral_monitoring_keystore_alias }}'
+        keystore_pwd: '{{ businesscentral_monitoring_keystore_pwd }}'
+        route_host: '{{ route_raw.result.spec.host }}'
+
+    - name: "[BUSINESS CENTRAL MONITORING] deploy business central monitoring"
+      openshift_raw:
+        state: '{{ state }}'
+        definition: "{{ lookup('template', 'businesscentral-monitoring-dc.yml.j2') | from_yaml }}"
+  when: not provision_failed
