@@ -3,6 +3,7 @@
   file:
     path: '{{ tmp_folder }}'
     state: directory
+
 - name: "[RHPAM] Authoring Plan"
   block:
     - name: "[RHPAM] Set defaults"
@@ -24,6 +25,7 @@
         name: deploy-kieserver
       vars:
         kieserver_db_type: 'H2'
+        kieserver_replicas: 1
   when: _apb_plan_id == "trial"
 
 - name: "[RHPAM] Authoring Plan"
@@ -43,6 +45,8 @@
     - name: "[RHPAM] Deploy KIE Execution Server"
       include_role:
         name: deploy-kieserver
+      vars:
+        kieserver_replicas: 1
   when: _apb_plan_id == "authoring"
 
 

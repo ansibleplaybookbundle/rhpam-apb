@@ -5,14 +5,12 @@ kieserver_image_namespace: openshift
 
 kieserver_image_pull_policy: IfNotPresent
 
-kieserver_ha: "{{ apb_ha | default(false) }}"
 has_rhpamcentr: false
 has_router: false
 has_external_controller: false
 kieserver_s2i: false
 
-kieserver_replicas: 1
-kieserver_replicas_ha: 3
+kieserver_replicas: "{{ apb_kieserver_replicas | default(3, true) | trim }}"
 
 kieserver_deployment_name: "{{ application_name }}-kieserver"
 kieserver_default_secret_name: "{{ kieserver_deployment_name }}"

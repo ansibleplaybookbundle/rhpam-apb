@@ -20,11 +20,7 @@ spec:
           namespace: '{{ businesscentral_monitoring_image_namespace }}'
           name: '{{ businesscentral_monitoring_image_name }}:{{ businesscentral_monitoring_image_tag}}'
     - type: ConfigChange
-{% if businesscentral_monitoring_ha %}
-  replicas: {{ businesscentral_monitoring_replicas_ha }}
-{% else %}
   replicas: {{ businesscentral_monitoring_replicas }}
-{% endif %}
   selector:
     app: '{{ application_name }}'
     service: {{ businesscentral_monitoring_service_name }}

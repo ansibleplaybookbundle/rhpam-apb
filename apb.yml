@@ -14,13 +14,13 @@ _apb_kie_admin_pwd: &_apb_kie_admin_pwd
   type: string
   display_type: password
 # HA
-_apb_ha: &_apb_ha
-  name: apb_ha
-  title: Deploy in HA
-  description: Deploys the system in High Availability
+_apb_replicas: &_apb_replicas
+  title: Number of replicas
+  description: Number of Replicas that will be initially deployed
+  default: 3
   required: true
-  type: boolean
-  default: false
+  type: number
+
 # External Maven Repository
 _apb_maven_repo_url: &_apb_maven_repo_url
   name: apb_maven_repo_url
@@ -403,7 +403,10 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
-      - *_apb_ha
+      # HA
+      - <<: *_apb_replicas
+        name: apb_kieserver_replicas
+        default: 2
 
       # Router
       - name: apb_router_svc
@@ -547,9 +550,12 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
-      - *_apb_ha
 
       # Business Central Monitoring
+      - <<: *_apb_replicas
+        name: apb_businesscentral_replicas
+        default: 1
+        display_group: Business Central Monitoring
       - <<: *_apb_controller_user
         title: Business Central Monitoring Username
         description: Username to access to the Business Central Monitoring UI
@@ -608,6 +614,11 @@ plans:
       - *_apb_sso_disable_ssl_cert_validation
 
       # Smart Router
+      - <<: *_apb_replicas
+        name: apb_smartrouter_replicas
+        default: 2
+        display_group: Smart Router
+
       - name: apb_smartrouter_hostname
         title: Public Hostname
         description: Public hostname where Smart Router will be accessed from. Generated if empty
@@ -645,9 +656,11 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
-      - *_apb_ha
 
       # Business Central Monitoring
+      - <<: *_apb_replicas
+        name: apb_businesscentral_replicas
+        display_group: Business Central Monitoring
       - <<: *_apb_controller_user
         title: Business Central Monitoring Username
         description: Username to access to the Business Central Monitoring UI
@@ -714,6 +727,10 @@ plans:
       - *_apb_sso_disable_ssl_cert_validation
 
       # Smart Router
+      - <<: *_apb_replicas
+        name: apb_smartrouter_replicas
+        default: 2
+        display_group: Smart Router
       - name: apb_smartrouter_hostname
         title: Public Hostname
         description: Public hostname where Smart Router will be accessed from. Generated if empty
@@ -732,6 +749,10 @@ plans:
         display_group: Smart Router
 
       # KIE Execution Server
+      - <<: *_apb_replicas
+        name: apb_kieserver_replicas
+        default: 3
+        display_group: KIE Execution Server
       - name: apb_kieserver_sets
         title: Sets of KIE Servers
         description:

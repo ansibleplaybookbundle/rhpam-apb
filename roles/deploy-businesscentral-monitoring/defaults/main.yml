@@ -5,9 +5,7 @@ businesscentral_monitoring_image_namespace: openshift
 
 businesscentral_monitoring_default_secret_name: '{{ application_name }}-rhpamcentrmon'
 businesscentral_monitoring_image_pull_policy: IfNotPresent
-businesscentral_monitoring_ha: "{{ apb_ha | default(false) }}"
-businesscentral_monitoring_replicas: 1
-businesscentral_monitoring_replicas_ha: 3
+businesscentral_monitoring_replicas: "{{ apb_businesscentral_replicas | default(3, true) }}"
 
 # Business Central configurable parameters
 businesscentral_monitoring_deployment_name: "{{ application_name }}-rhpamcentrmon"

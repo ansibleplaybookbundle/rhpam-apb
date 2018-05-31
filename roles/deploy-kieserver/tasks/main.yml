@@ -46,7 +46,6 @@
           - name: ping
             port: 8888
             targetPort: 8888
-  when: kieserver_ha
 
 - name: "[KIE SERVER] set https route state to {{ state }}"
   openshift_raw:

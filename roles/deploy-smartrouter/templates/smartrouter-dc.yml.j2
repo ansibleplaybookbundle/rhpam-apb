@@ -20,11 +20,7 @@ spec:
         namespace: '{{ smartrouter_image_namespace }}'
         name: '{{ smartrouter_image_name }}:{{ smartrouter_image_tag }}'
   - type: ConfigChange
-{% if smartrouter_ha %}
-  replicas: {{ smartrouter_replicas_ha }}
-{% else %}
   replicas: {{ smartrouter_replicas }}
-{% endif %}
   selector:
     app: {{ application_name }}
     service: {{ smartrouter_service_name }}
