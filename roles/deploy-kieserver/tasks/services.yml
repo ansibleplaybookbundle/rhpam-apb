@@ -24,6 +24,7 @@
             target_port: 8443
 
 - name: "[KIE SERVER] set PING service state to {{ state }}"
+  when: _apb_plan_id != 'trial'
   k8s_raw:
     state: '{{ state }}'
     definition:

@@ -12,7 +12,7 @@ smartrouter_service_name: "rhpam-smartrouter"
 # Smart Router configurable parameters
 smartrouter_hostname: "{{ apb_smartrouter_hostname | default('', true) | trim }}"
 smartrouter_volume_size: "{{ apb_smartrouter_volume_size | default('', true) | trim }}"
-smartrouter_limits_memory: "{{ apb_smartrouter_limits_memory }}"
+smartrouter_limits_memory: "512Mi"
 
 smartrouter_protocol: https
 smartrouter_name: "KIE Server Router"

@@ -20,7 +20,12 @@ _apb_replicas: &_apb_replicas
   default: 3
   required: true
   type: number
-
+_apb_protocol_type: &_apb_protocol_type
+  title: Host Protocol
+  description: Host protocol (http/https)
+  required: false
+  type: enum
+  enum: ['http', 'https']
 # External Maven Repository
 _apb_maven_repo_url: &_apb_maven_repo_url
   name: apb_maven_repo_url
@@ -67,33 +72,25 @@ _apb_keystore_pwd: &_apb_keystore_pwd
   description: Password protecting both the Keystore and the Certificate. Generated if empty
   required: false
   type: string
-_apb_limits_memory: &_apb_limits_memory
-  title: Memory Limits
-  required: true
-  type: string
-  pattern: "^[0-9]+[mMgGtT]i?$"
 _apb_volume_size: &_apb_volume_size
   title: Workspace Storage Size
-  required: false
-  type: string
-  pattern: "^[0-9]+[mMgGtT]i?$"
-# Business Central
-_apb_businesscentral_maven_user: &_apb_businesscentral_maven_user
-  name: apb_businesscentral_maven_user
-  title: Maven repository username
-  description: Username used to interact with the Maven Repository hosted by Business Central
   required: true
   type: string
-  default: mavenUser
-  display_group: Business Central
-_apb_businesscentral_maven_pwd: &_apb_businesscentral_maven_pwd
-  name: apb_businesscentral_maven_pwd
-  title: Maven repository password
-  description: User password used to interact with the Maven Repository hosted by Business Central. Generated if emtpy
+  pattern: "^[0-9]+[mMgGtT]i?$"
+_apb_hostname: &_apb_hostname
+  title: Public Hostname
   required: false
   type: string
-  display_type: password
-  display_group: Business Central
+# Business Central
+_apb_businesscentral_hostname: &_apb_businesscentral_hostname
+  <<: *_apb_hostname
+  name: apb_businesscentral_hostname
+  description: Public hostname where the Business Central will be accessed from. Generated if empty
+_apb_businesscentral_monitoring_hostname: &_apb_businesscentral_monitoring_hostname
+  <<: *_apb_hostname
+  name: apb_businesscentral_monitoring_hostname
+  description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+  display_group: Business Central Monitoring
 # KIE Execution Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
@@ -112,34 +109,61 @@ _apb_kieserver_pwd: &_apb_kieserver_pwd
   display_type: password
   display_group: KIE Execution Server
 _apb_kieserver_hostname: &_apb_kieserver_hostname
+  <<: *_apb_hostname
   name: apb_kieserver_hostname
-  title: Public Hostname
   description: Public hostname where the Execution Server will be accessed from. Generated if empty
-  required: false
-  type: string
-  display_group: KIE Execution Server
-_apb_kieserver_limits_memory: &_apb_kieserver_limits_memory
-  <<: *_apb_limits_memory
-  name: apb_kieserver_limits_memory
-  description: Memory limits to set for KIE Execution Server.
-  default: 1Gi
-  display_group: KIE Execution Server
 _apb_kieserver_db_type: &_apb_kieserver_db_type
   name: apb_kieserver_db_type
   title: Database Type
   description: Database Type to persist the KIE Execution Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Execution Server
   required: true
   type: enum
-  enum: ['H2', 'PostgreSQL', 'MySQL']
+  enum: ['H2', 'PostgreSQL', 'MySQL', 'External']
   default: PostgreSQL
   display_group: KIE Execution Server
 _apb_kieserver_db_size: &_apb_kieserver_db_size
   <<: *_apb_volume_size
   name: apb_kieserver_db_size
   title: Database Storage Size
-  description: Specify the Persistent Volume Claim size to create for the Database. Leave empty for ephemeral storage. e.g. 10Gi
+  description: Specify the Persistent Volume Claim size to create for the Database. e.g. 1Gi. Ignored if External is selected
+  default: 1Gi
   display_group: KIE Execution Server
-
+_apb_kieserver_external_db_driver: &_apb_kieserver_external_db_driver
+  name: apb_kieserver_external_db_driver
+  title: Driver name
+  description: Database driver type. Required for External database. e.g. mysql or postgresql
+  type: string
+  display_group: External Database (only if Database type is External)
+_apb_kieserver_external_db_dialect: &_apb_kieserver_external_db_dialect
+  name: apb_kieserver_external_db_dialect
+  title: Dialect class
+  description: Hibernate dialect class to use. Required for External database. e.g. org.hibernate.dialect.MySQL5Dialect
+  type: string
+  display_group: External Database (only if Database type is External)
+_apb_kieserver_external_db_host: &_apb_kieserver_external_db_host
+  name: apb_kieserver_external_db_host
+  title: Host
+  description: Host. Required for External database. e.g. 127.0.0.1
+  type: string
+  display_group: External Database (only if Database type is External)
+_apb_kieserver_external_db_port: &_apb_kieserver_external_db_port
+  name: apb_kieserver_external_db_port
+  title: Port
+  description: Port. Required for External database. e.g. 3306
+  type: string
+  display_group: External Database (only if Database type is External)
+_apb_kieserver_external_db_name: &_apb_kieserver_external_db_name
+  name: apb_kieserver_external_db_name
+  title: Database Name
+  description: Database name. Required for External database. e.g. rhpam
+  type: string
+  display_group: External Database (only if Database type is External)
+_apb_kieserver_external_db_url: &_apb_kieserver_external_db_url
+  name: apb_kieserver_external_db_url
+  title: Database JDBC URL
+  description: Database jdbc URL. Required for External database. e.g. jdbc:mysql:127.0.0.1:3306/rhpam
+  type: string
+  display_group: External Database (only if Database type is External)
 # Controller
 _apb_controller_svc: &_apb_controller_svc
   name: apb_controller_svc
@@ -163,11 +187,10 @@ _apb_controller_port: &_apb_controller_port
   type: string
   display_group: Controller Integration
 _apb_controller_protocol: &_apb_controller_protocol
+  <<: *_apb_protocol_type
   name: apb_controller_protocol
   title: Controller Protocol
   description: Controller Host protocol (http/https)
-  required: false
-  type: string
   display_group: Controller Integration
 _apb_controller_token: &_apb_controller_token
   name: apb_controller_token
@@ -182,6 +205,7 @@ _apb_controller_user: &_apb_controller_user
   description: Username to access to the Controller
   required: false
   type: string
+  default: monitorUser
   display_group: Controller Integration
 _apb_controller_pwd: &_apb_controller_pwd
   name: apb_controller_pwd
@@ -251,6 +275,7 @@ metadata:
     on Red Hat OpenShift Container Platform to provide an infrastructure to execute processes and other business assets.
     You can use standard integration tools to manage the immutable Process Server image.
     You can create new server images to add and update processes.
+    Make sure the required ImageStreamTags exist in the openshift project. See below for the required images
   console.openshift.io/iconClass: icon-processserver
   providerDisplayName: "Red Hat, Inc."
   serviceName: rhpam
@@ -274,15 +299,10 @@ plans:
     metadata:
       displayName: Trial Environment
     parameters:
-      # Business Central
-      - name: apb_businesscentral_hostname
-        title: Public Hostname
-        description: Public hostname where Business Central will be accessed from. Generated if empty
-        required: false
-        type: string
-        display_group: Business Central
-      # KIE Execution Server
-      - *_apb_kieserver_hostname
+      - <<: *_apb_businesscentral_hostname
+        title: Business Central Public Hostname
+      - <<: *_apb_kieserver_hostname
+        title: KIE Execution Server Public Hostname
 
   - name: authoring
     description:
@@ -298,22 +318,11 @@ plans:
       - *_apb_kie_admin_pwd
 
       # Business Central
-      - <<: *_apb_controller_user
-        title: Business Central Username
-        description: Username to access to the Business Central UI
-        required: true
-        default: controllerUser
+      - <<: *_apb_volume_size
+        name: apb_businesscentral_volume_size
+        description: Specify the Persistent Volume Claim size to create for storing the Workspace. e.g. 1Gi
         display_group: Business Central
-      - <<: *_apb_controller_pwd
-        title: Business Central Password
-        description: User password to access to the Business Central UI. Generated if empty
-        display_group: Business Central
-      - name: apb_businesscentral_hostname
-        title: Public Hostname
-        description: Public hostname where Business Central will be accessed from. Generated if empty
-        required: false
-        type: string
-        display_group: Business Central
+        default: 1Gi
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_businesscentral_secret_name
@@ -327,24 +336,11 @@ plans:
       - <<: *_apb_keystore_pwd
         name: apb_businesscentral_keystore_pwd
         display_group: Business Central
-
-      - <<: *_apb_limits_memory
-        name: apb_businesscentral_limits_memory
-        description: Memory limits to set for Business Central.
-        default: 2Gi
+      # Hostname
+      - <<: *_apb_businesscentral_hostname
         display_group: Business Central
-      - <<: *_apb_volume_size
-        name: apb_businesscentral_volume_size
-        description: Specify the Persistent Volume Claim size to create for storing the Workspace. Leave empty for ephemeral storage. e.g. 10Gi
-        display_group: Business Central
-      - *_apb_businesscentral_maven_user
-      - *_apb_businesscentral_maven_pwd
 
       # KIE Execution Server
-      - *_apb_kieserver_user
-      - *_apb_kieserver_pwd
-      - *_apb_kieserver_hostname
-      - *_apb_kieserver_limits_memory
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
 
@@ -361,6 +357,19 @@ plans:
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
         display_group: KIE Execution Server
+
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - <<: *_apb_kieserver_hostname
+        display_group: KIE Execution Server
+
+      # External Database
+      - *_apb_kieserver_external_db_driver
+      - *_apb_kieserver_external_db_dialect
+      - *_apb_kieserver_external_db_host
+      - *_apb_kieserver_external_db_port
+      - *_apb_kieserver_external_db_name
+      - *_apb_kieserver_external_db_url
 
       # External Maven Repository
       - *_apb_maven_repo_url
@@ -380,7 +389,7 @@ plans:
         description: Red Hat Single Sign-On Client secret for Business Central.
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO Client - KIE Execution Server
+        title: RH-SSO KIE Execution Server - Client
         description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
@@ -390,7 +399,7 @@ plans:
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
 
-  - name: immutable-kieserver
+  - name: immutable-kie
     description:
       In this environment, when you deploy a Process Server pod, it builds an image that loads and starts
       a process or group of processes. You cannot stop any process on the pod or add any new process to the pod.
@@ -408,65 +417,13 @@ plans:
         name: apb_kieserver_replicas
         default: 2
 
-      # Router
-      - name: apb_router_svc
-        title: Router Service name
-        description: Name of the Router Service
-        required: false
-        type: string
-        display_group: Router Integration
-      - name: apb_router_host
-        title: Router Host
-        description: Router Host
-        required: false
-        type: string
-        display_group: Router Integration
-      - name: apb_router_port
-        title: Router Host port
-        description: Router Host port
-        required: false
-        type: string
-        display_group: Router Integration
-      - name: apb_router_protocol
-        title: Router Protocol
-        description: Router Host protocol (http/https)
-        required: false
-        type: string
-        display_group: Router Integration
-
-      # Controller
-      - *_apb_controller_svc
-      - *_apb_controller_host
-      - *_apb_controller_port
-      - *_apb_controller_protocol
-      - *_apb_controller_token
-      - <<: *_apb_controller_user
-        default: monitorUser
-      - *_apb_controller_pwd
-
-      # KIE Execution Server
-      - *_apb_kieserver_user
-      - *_apb_kieserver_pwd
-      - *_apb_kieserver_hostname
-      - *_apb_kieserver_limits_memory
-      - *_apb_kieserver_db_type
-      - *_apb_kieserver_db_size
-
-      # Keystore and Secret
-      - <<: *_apb_secret_name
-        name: apb_kieserver_secret_name
-        display_group: KIE Execution Server
-      - <<: *_apb_keystore_name
-        name: apb_kieserver_keystore_name
-        display_group: KIE Execution Server
-      - <<: *_apb_keystore_alias
-        name: apb_kieserver_keystore_alias
-        display_group: KIE Execution Server
-      - <<: *_apb_keystore_pwd
-        name: apb_kieserver_keystore_pwd
-        display_group: KIE Execution Server
-
       # Artifact Source
+      - name: apb_kieserver_container_deployment
+        title: KIE Server Container Deployment
+        description: 'KIE Server Container deployment configuration in format: containerId=groupId:artifactId:version|c2=g2:a2:v2'
+        required: true
+        type: string
+        display_group: Artifact source
       - name: apb_kieserver_source_url
         title: Git Repository URL
         description: Git source URI for application. E.g. https://github.com/jboss-container-images/rhpam-7-openshift-image.git
@@ -475,10 +432,9 @@ plans:
         display_group: Artifact source
       - name: apb_kieserver_source_ref
         title: Git Repository Reference
-        description: Git branch/tag reference. E.g. master
+        description: Git branch/tag reference. E.g. rhpam70 or master
         required: true
         type: string
-        default: master
         display_group: Artifact source
       - name: apb_kieserver_source_context
         title: Git Repository Context Dir
@@ -504,12 +460,6 @@ plans:
         required: false
         type: string
         display_group: Artifact source
-      - name: apb_kieserver_container_deployment
-        title: KIE Server Container Deployment
-        description: 'KIE Server Container deployment configuration in format: containerId=groupId:artifactId:version|c2=g2:a2:v2'
-        required: true
-        type: string
-        display_group: Artifact source
       - name: apb_kieserver_maven_mirror
         title: Maven mirror URL
         description: Maven mirror to use for S2I builds
@@ -522,13 +472,75 @@ plans:
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
+      # KIE Execution Server
+      - *_apb_kieserver_db_type
+      - *_apb_kieserver_db_size
+      # Keystore and Secret
+      - <<: *_apb_secret_name
+        name: apb_kieserver_secret_name
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_name
+        name: apb_kieserver_keystore_name
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_alias
+        name: apb_kieserver_keystore_alias
+        display_group: KIE Execution Server
+      - <<: *_apb_keystore_pwd
+        name: apb_kieserver_keystore_pwd
+        display_group: KIE Execution Server
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - <<: *_apb_kieserver_hostname
+        display_group: KIE Execution Server
+
+      # External Database
+      - *_apb_kieserver_external_db_driver
+      - *_apb_kieserver_external_db_dialect
+      - *_apb_kieserver_external_db_host
+      - *_apb_kieserver_external_db_port
+      - *_apb_kieserver_external_db_name
+      - *_apb_kieserver_external_db_url
+
+      # Router
+      - name: apb_router_svc
+        title: Router Service name
+        description: Name of the Router Service
+        required: false
+        type: string
+        display_group: Router Integration
+      - name: apb_router_host
+        title: Router Host
+        description: Router Host
+        required: false
+        type: string
+        display_group: Router Integration
+      - name: apb_router_port
+        title: Router Host port
+        description: Router Host port
+        required: false
+        type: string
+        display_group: Router Integration
+      - <<: *_apb_protocol_type
+        name: apb_router_protocol
+        title: Router Protocol
+        description: Router Host protocol (http/https)
+        display_group: Router Integration
+
+      # Controller
+      - *_apb_controller_svc
+      - *_apb_controller_host
+      - *_apb_controller_port
+      - *_apb_controller_protocol
+      - *_apb_controller_token
+      - *_apb_controller_user
+      - *_apb_controller_pwd
 
       # RH - SSO
       - *_apb_sso_url
       - *_apb_sso_realm
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO Client - KIE Execution Server
+        title: RH-SSO KIE Execution Server - Client
         description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
@@ -538,7 +550,7 @@ plans:
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
 
-  - name: immutable-monitor
+  - name: immutable-mon
     description:
       Use Business Central Monitoring to monitor the performance of the environment and to stop and
       restart some of the process instances, but not to deploy additional processes to any Process Server
@@ -551,28 +563,22 @@ plans:
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
 
+      # External Maven Repository
+      - <<: *_apb_maven_repo_url
+        required: true
+      - *_apb_maven_repo_user
+      - *_apb_maven_repo_pwd
+
       # Business Central Monitoring
       - <<: *_apb_replicas
         name: apb_businesscentral_replicas
         default: 1
         display_group: Business Central Monitoring
-      - <<: *_apb_controller_user
-        title: Business Central Monitoring Username
-        description: Username to access to the Business Central Monitoring UI
-        required: true
-        default: monitorUser
+      - <<: *_apb_volume_size
+        name: apb_businesscentral_monitoring_volume_size
+        description: Specify the Persistent Volume Claim size to create for storing the user data. e.g. 64Mi
+        default: 64Mi
         display_group: Business Central Monitoring
-      - <<: *_apb_controller_pwd
-        title: Business Central Monitoring Password
-        description: User password to access to the Business Central Monitoring UI. Generated if empty
-        display_group: Business Central Monitoring
-      - name: apb_businesscentral_monitoring_hostname
-        title: Public Hostname
-        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
-        required: false
-        type: string
-        display_group: Business Central Monitoring
-
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_businesscentral_monitoring_secret_name
@@ -586,17 +592,22 @@ plans:
       - <<: *_apb_keystore_pwd
         name: apb_businesscentral_monitoring_keystore_pwd
         display_group: Business Central Monitoring
+      - *_apb_businesscentral_monitoring_hostname
 
-      - <<: *_apb_limits_memory
-        name: apb_businesscentral_monitoring_limits_memory
-        description: Memory limits to set for Business Central Monitoring.
-        default: 2Gi
-        display_group: Business Central Monitoring
+      # Smart Router
+      - <<: *_apb_replicas
+        name: apb_smartrouter_replicas
+        default: 2
+        display_group: Smart Router
       - <<: *_apb_volume_size
-        name: apb_businesscentral_nonitoring_volume_size
-        description: Specify the Persistent Volume Claim size to create for storing the user data. Leave empty for ephemeral storage. e.g. 64Mi
+        name: apb_smartrouter_volume_size
+        description: Specify the Persistent Volume Claim size to create. e.g. 64Mi
         default: 64Mi
-        display_group: Business Central Monitoring
+        display_group: Smart Router
+      - <<: *_apb_hostname
+        name: apb_smartrouter_hostname
+        description: Public hostname where Smart Router will be accessed from. Generated if empty
+        display_group: Smart Router
 
       # RH - SSO
       - *_apb_sso_url
@@ -612,35 +623,6 @@ plans:
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
-
-      # Smart Router
-      - <<: *_apb_replicas
-        name: apb_smartrouter_replicas
-        default: 2
-        display_group: Smart Router
-
-      - name: apb_smartrouter_hostname
-        title: Public Hostname
-        description: Public hostname where Smart Router will be accessed from. Generated if empty
-        required: false
-        type: string
-        display_group: Smart Router
-      - <<: *_apb_limits_memory
-        name: apb_smartrouter_limits_memory
-        description: Memory limits to set for Smart Router
-        default: 512Mi
-        display_group: Smart Router
-      - <<: *_apb_volume_size
-        name: apb_smartrouter_volume_size
-        description: Specify the Persistent Volume Claim size to create. Leave empty for ephemeral storage. e.g. 64Mi
-        default: 64Mi
-        display_group: Smart Router
-
-      # External Maven Repository
-      - <<: *_apb_maven_repo_url
-        required: true
-      - *_apb_maven_repo_user
-      - *_apb_maven_repo_pwd
 
   - name: managed
     description:
@@ -657,28 +639,23 @@ plans:
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
 
+      # External Maven Repository
+      - <<: *_apb_maven_repo_url
+        required: true
+      - *_apb_maven_repo_user
+      - *_apb_maven_repo_pwd
+
       # Business Central Monitoring
       - <<: *_apb_replicas
         name: apb_businesscentral_replicas
         display_group: Business Central Monitoring
-      - <<: *_apb_controller_user
-        title: Business Central Monitoring Username
-        description: Username to access to the Business Central Monitoring UI
-        required: true
-        default: controllerUser
-        display_group: Business Central Monitoring
-      - <<: *_apb_controller_pwd
-        title: Business Central Monitoring Password
-        description: User password to access to the Business Central Monitoring UI. Generated if empty
-        display_group: Business Central Monitoring
-      - name: apb_businesscentral_monitoring_hostname
-        title: Public Hostname
-        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
-        required: false
-        type: string
+      - <<: *_apb_volume_size
+        name: apb_businesscentral_monitoring_volume_size
+        description: Specify the Persistent Volume Claim size to create for storing the user data. e.g. 64Mi
+        default: 64Mi
         display_group: Business Central Monitoring
 
-      # Keystore and Secret
+      ## Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_businesscentral_monitoring_secret_name
         display_group: Business Central Monitoring
@@ -691,61 +668,23 @@ plans:
       - <<: *_apb_keystore_pwd
         name: apb_businesscentral_monitoring_keystore_pwd
         display_group: Business Central Monitoring
-
-      - <<: *_apb_limits_memory
-        name: apb_businesscentral_monitoring_limits_memory
-        description: Memory limits to set for Business Central Monitoring.
-        default: 2Gi
-        display_group: Business Central Monitoring
-      - <<: *_apb_volume_size
-        name: apb_businesscentral_nonitoring_volume_size
-        description: Specify the Persistent Volume Claim size to create for storing the user data. Leave empty for ephemeral storage. e.g. 64Mi
-        default: 64Mi
-        display_group: Business Central Monitoring
-
-      # RH - SSO
-      - *_apb_sso_url
-      - *_apb_sso_realm
-      - <<: *_apb_sso_client
-        name: apb_sso_businesscentral_monitoring_client
-        title: RH-SSO Business Central Monitoring - Client
-        description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
-      - <<: *_apb_sso_client_secret
-        name: apb_sso_businesscentral_monitoring_client_secret
-        title: RH-SSO Business Central Monitoring - Client Secret
-        description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
-      - <<: *_apb_sso_client
-        name: apb_kieserver_sso_client
-        title: RH-SSO Client - KIE Execution Server
-        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
-      - <<: *_apb_sso_client_secret
-        name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Execution Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
-      - *_apb_sso_user
-      - *_apb_sso_pwd
-      - *_apb_sso_disable_ssl_cert_validation
+      - *_apb_businesscentral_monitoring_hostname
 
       # Smart Router
       - <<: *_apb_replicas
         name: apb_smartrouter_replicas
         default: 2
         display_group: Smart Router
+      - <<: *_apb_volume_size
+        name: apb_smartrouter_volume_size
+        description: Specify the Persistent Volume Claim size to create. e.g. 64Mi
+        default: 64Mi
+        display_group: Smart Router
       - name: apb_smartrouter_hostname
         title: Public Hostname
         description: Public hostname where Smart Router will be accessed from. Generated if empty
         required: false
         type: string
-        display_group: Smart Router
-      - <<: *_apb_limits_memory
-        name: apb_smartrouter_limits_memory
-        description: Memory limits to set for Smart Router
-        default: 512Mi
-        display_group: Smart Router
-      - <<: *_apb_volume_size
-        name: apb_smartrouter_volume_size
-        description: Specify the Persistent Volume Claim size to create. Leave empty for ephemeral storage. e.g. 64Mi
-        default: 64Mi
         display_group: Smart Router
 
       # KIE Execution Server
@@ -764,14 +703,10 @@ plans:
         type: number
         display_group: KIE Execution Server
 
-      - *_apb_kieserver_user
-      - *_apb_kieserver_pwd
-      - *_apb_kieserver_hostname
-      - *_apb_kieserver_limits_memory
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
 
-      # Keystore and Secret
+      ## Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
         display_group: KIE Execution Server
@@ -784,9 +719,38 @@ plans:
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
         display_group: KIE Execution Server
+      - *_apb_kieserver_user
+      - *_apb_kieserver_pwd
+      - <<: *_apb_kieserver_hostname
+        display_group: KIE Execution Server
 
-      # External Maven Repository
-      - <<: *_apb_maven_repo_url
-        required: true
-      - *_apb_maven_repo_user
-      - *_apb_maven_repo_pwd
+      # External Database
+      - *_apb_kieserver_external_db_driver
+      - *_apb_kieserver_external_db_dialect
+      - *_apb_kieserver_external_db_host
+      - *_apb_kieserver_external_db_port
+      - *_apb_kieserver_external_db_name
+      - *_apb_kieserver_external_db_url
+
+      # RH - SSO
+      - *_apb_sso_url
+      - *_apb_sso_realm
+      - <<: *_apb_sso_client
+        name: apb_sso_businesscentral_monitoring_client
+        title: RH-SSO Business Central Monitoring - Client
+        description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
+      - <<: *_apb_sso_client_secret
+        name: apb_sso_businesscentral_monitoring_client_secret
+        title: RH-SSO Business Central Monitoring - Client Secret
+        description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
+      - <<: *_apb_sso_client
+        name: apb_kieserver_sso_client
+        title: RH-SSO KIE Execution Server - Client
+        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+      - <<: *_apb_sso_client_secret
+        name: apb_kieserver_sso_client_secret
+        title: RH-SSO KIE Execution Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+      - *_apb_sso_user
+      - *_apb_sso_pwd
+      - *_apb_sso_disable_ssl_cert_validation

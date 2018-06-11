@@ -12,7 +12,7 @@ businesscentral_monitoring_deployment_name: "{{ application_name }}-rhpamcentrmo
 businesscentral_monitoring_service_name: "rhpam-businesscentral-monitoring"
 businesscentral_monitoring_hostname: "{{ apb_businesscentral_monitoring_hostname | default('', true) | trim }}"
 businesscentral_monitoring_volume_size: "{{ apb_businesscentral_monitoring_volume_size | default('', true) | trim }}"
-businesscentral_monitoring_limits_memory: "{{ apb_businesscentral_monitoring_limits_memory }}"
+businesscentral_monitoring_limits_memory: "2Gi"
 businesscentral_monitoring_secret_name: "{{ apb_businesscentral_monitoring_secret_name | default('', true) | trim }}"
 businesscentral_monitoring_keystore_name: "{{ apb_businesscentral_monitoring_keystore_name | default('keystore.jks', true) | trim }}"
 businesscentral_monitoring_keystore_alias: "{{ apb_businesscentral_monitoring_keystore_alias | default('jboss', true) | trim }}"

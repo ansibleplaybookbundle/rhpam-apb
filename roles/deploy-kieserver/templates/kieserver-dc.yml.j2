@@ -16,7 +16,7 @@ spec:
         containerNames:
           - kieserver
         _from:
-{% if kieserver_s2i != "" %}
+{% if kieserver_s2i %}
           kind: ImageStream
           name: {{ kieserver_deployment_name }}
 {% else %}
@@ -49,7 +49,7 @@ spec:
             command:
             - "/bin/bash"
             - "-c"
-            - "curl --fail --silent -u '${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}' http://localhost:8080/services/rest/server/healthcheck"
+            - "curl --fail --silent -u \"${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}\" http://localhost:8080/services/rest/server/healthcheck"
           initialDelaySeconds: 180
           timeoutSeconds: 2
           periodSeconds: 15
@@ -59,7 +59,7 @@ spec:
             command:
             - "/bin/bash"
             - "-c"
-            - "curl --fail --silent -u '${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}' http://localhost:8080/services/rest/server/readycheck"
+            - "curl --fail --silent -u \"${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}\" http://localhost:8080/services/rest/server/readycheck"
           initialDelaySeconds: 60
           timeoutSeconds: 2
           periodSeconds: 30
@@ -74,9 +74,11 @@ spec:
           - name: https
             containerPort: 8443
             protocol: TCP
+{% if _apb_plan_id != 'trial' %}
           - name: ping
             containerPort: 8888
             protocol: TCP
+{% endif %}
         env:
           - name: DATASOURCES
             value: "RHPAM"
@@ -105,15 +107,19 @@ spec:
             value: "12345"
 {% else %}
           - name: RHPAM_SERVICE_HOST
-            value: "{{ kieserver_db_deployment }}"
+            value: "{{ kieserver_db_host }}"
           - name: RHPAM_SERVICE_PORT
-            value: "{{ kieserver_db[kieserver_db_type].port}}"
+            value: "{{ kieserver_db[kieserver_db_type].port }}"
           - name: TIMER_SERVICE_DATA_STORE
-            value: "{{ kieserver_db_deployment }}"
+            value: "{{ kieserver_db_host }}"
           - name: TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL
             value: "30000"
           - name: RHPAM_TX_ISOLATION
             value: "TRANSACTION_READ_COMMITTED"
+{% endif %}
+{% if kieserver_db_type == 'External' %}
+          - name: RHPAM_XA_CONNECTION_PROPERTY_URL
+            value: "{{ kieserver_db[kieserver_db_type].url }}"
 {% endif %}
           - name: DROOLS_SERVER_FILTER_CLASSES
             value: "true"
@@ -214,14 +220,16 @@ spec:
           - name: SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
             value: '{{ sso_disable_ssl_cert_validation }}'
           - name: HOSTNAME_HTTPS
-            value: '{{ route_raw.result.spec.host }}'
+            value: "{{ ks_host | default('') }}"
 {% endif %}
+{% if _apb_plan_id != 'trial' %}
           - name: JGROUPS_PING_PROTOCOL
             value: "openshift.DNS_PING"
           - name: OPENSHIFT_DNS_PING_SERVICE_NAME
             value: '{{ kieserver_deployment_name }}-ping'
           - name: OPENSHIFT_DNS_PING_SERVICE_PORT
             value: "8888"
+{% endif %}
         volumeMounts:
           - name: kieserver-certs
             mountPath: "/etc/kieserver-certs"

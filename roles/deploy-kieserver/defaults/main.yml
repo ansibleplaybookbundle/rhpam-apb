@@ -10,6 +10,7 @@ has_router: false
 has_external_controller: false
 kieserver_s2i: false
 
+kieserver_sets: "{{ apb_kieserver_sets | default(1, true) }}"
 kieserver_replicas: "{{ apb_kieserver_replicas | default(3, true) | trim }}"
 
 kieserver_deployment_name: "{{ application_name }}-kieserver"
@@ -18,7 +19,7 @@ kieserver_service_name: "rhpam-kieserver"
 kieserver_businesscentral_maven_svc: "{{ controller_svc }}"
 kieserver_hostname: "{{ apb_kieserver_hostname | default('', true) | trim }}"
 kieserver_volume_size: "{{ apb_kieserver_volume_size | default('', true) | trim }}"
-kieserver_limits_memory: "{{ apb_kieserver_limits_memory | default('1Gi', true) | trim }}"
+kieserver_limits_memory: "1Gi"
 kieserver_secret_name: "{{ apb_kieserver_secret_name | default('', true) | trim }}"
 kieserver_keystore_name: "{{ apb_kieserver_keystore_name | default('keystore.jks', true) | trim }}"
 kieserver_keystore_alias: "{{ apb_kieserver_keystore_alias | default('jboss', true) | trim }}"
@@ -30,8 +31,6 @@ router_port: "{{ apb_router_port | default('', true) | trim }}"
 router_protocol: "{{ apb_router_protocol | default('', true) | trim }}"
 
 controller_svc: "{{ apb_controller_svc | default('', true) | trim }}"
-controller_user: "{{ apb_controller_user | default('', true) | trim }}"
-controller_pwd: "{{ apb_controller_pwd | default('', true) | trim }}"
 controller_host: "{{ apb_controller_host | default('', true) | trim }}"
 controller_port: "{{ apb_controller_port | default('', true) | trim }}"
 controller_protocol: "{{ apb_controller_protocol | default('', true) | trim }}"
@@ -59,6 +58,13 @@ kieserver_db:
     driver: mysql
     dialect: org.hibernate.dialect.MySQL5Dialect
     port: 3306
+  External:
+    driver: "{{ apb_kieserver_external_db_driver | default('', true) | trim }}"
+    dialect: "{{ apb_kieserver_external_db_dialect | default('', true) | trim }}"
+    host: "{{ apb_kieserver_external_db_host | default('', true) | trim }}"
+    port: "{{ apb_kieserver_external_db_port | default('', true) | trim }}"
+    name: "{{ apb_kieserver_external_db_name | default('', true) | trim }}"
+    url: "{{ apb_kieserver_external_db_url | default('', true) | trim }}"
 
 # SSO Integration
 kieserver_sso_client: "{{ apb_kieserver_sso_client | default('', true) | trim }}"

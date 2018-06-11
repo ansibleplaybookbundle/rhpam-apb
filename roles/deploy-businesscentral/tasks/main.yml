@@ -33,7 +33,7 @@
         keystore_name: '{{ businesscentral_keystore_name }}'
         keystore_alias: '{{ businesscentral_keystore_alias }}'
         keystore_pwd: '{{ businesscentral_keystore_pwd }}'
-        route_host: '{{ route_raw.result.spec.host }}'
+        route_host: '{{ bc_host }}'
 
     - name: "[BUSINESS CENTRAL] deploy business central"
       openshift_raw:
