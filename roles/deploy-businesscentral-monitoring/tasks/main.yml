@@ -33,9 +33,9 @@
         keystore_name: '{{ businesscentral_monitoring_keystore_name }}'
         keystore_alias: '{{ businesscentral_monitoring_keystore_alias }}'
         keystore_pwd: '{{ businesscentral_monitoring_keystore_pwd }}'
-        route_host: '{{ route_raw.result.spec.host }}'
+        route_host: '{{ bcm_host }}'
 
-    - name: "[BUSINESS CENTRAL MONITORING] deploy business central monitoring"
+    - name: "[BUSINESS CENTRAL MONITORING] business central monitoring deployment status to {{ state }}"
       openshift_raw:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'businesscentral-monitoring-dc.yml.j2') | from_yaml }}"

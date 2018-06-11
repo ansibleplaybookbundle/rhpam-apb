@@ -24,39 +24,39 @@
         labels:
           app: '{{ application_name }}'
           service: '{{ kieserver_service_name }}'
-        spec:
-          source:
-            type: Git
-            git:
-              uri: "{{ kieserver_source_url }}"
-              ref: "{{ kieserver_source_ref }}"
-            contextDir: "{{ kieserver_source_context }}"
-          strategy:
-            type: Source
-            sourceStrategy:
-              env:
+      spec:
+        source:
+          type: Git
+          git:
+            uri: "{{ kieserver_source_url }}"
+            ref: "{{ kieserver_source_ref }}"
+          contextDir: "{{ kieserver_source_context }}"
+        strategy:
+          type: Source
+          sourceStrategy:
+            env:
               - name: KIE_SERVER_CONTAINER_DEPLOYMENT
                 value: "{{ kieserver_container_deployment }}"
               - name: MAVEN_MIRROR_URL
                 value: "{{ kieserver_maven_mirror }}"
               - name: ARTIFACT_DIR
                 value: "{{ kieserver_artifact_dir }}"
-              forcePull: true
-              _from:
-                kind: ImageStreamTag
-                namespace: "{{ kieserver_image_namespace }}"
-                name: "{{ kieserver_image_name }}:{{ kieserver_image_tag }}"
-          output:
-            to:
+            forcePull: true
+            from:
               kind: ImageStreamTag
-              name: "{{ kieserver_deployment_name }}:latest"
-          triggers:
-          - type: GitHub
-            github:
-              secret: "{{ kieserver_github_webhook_secret }}"
-          - type: Generic
-            generic:
-              secret: "{{ kieserver_generic_webhook_secret }}"
-          - type: ImageChange
-            imageChange: {}
-          - type: ConfigChange
+              namespace: "{{ kieserver_image_namespace }}"
+              name: "{{ kieserver_image_name }}:{{ kieserver_image_tag }}"
+        output:
+          to:
+            kind: ImageStreamTag
+            name: "{{ kieserver_deployment_name }}:latest"
+        triggers:
+        - type: GitHub
+          github:
+            secret: "{{ kieserver_github_webhook_secret }}"
+        - type: Generic
+          generic:
+            secret: "{{ kieserver_generic_webhook_secret }}"
+        - type: ImageChange
+          imageChange: {}
+        - type: ConfigChange

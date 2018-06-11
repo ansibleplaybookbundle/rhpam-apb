@@ -21,3 +21,8 @@
           kind: Service
           name: '{{ businesscentral_monitoring_deployment_name }}'
   register: route_raw
+
+- name: "[BUSINESS CENTRAL MONITORING] set route host"
+  set_fact:
+    bcm_host: "{{ route_raw.result.spec.host }}"
+  when: state == 'present'

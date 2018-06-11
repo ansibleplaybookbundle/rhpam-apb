@@ -8,7 +8,7 @@
         image_name: "{{ kieserver_image_name }}"
         image_tag: "{{ kieserver_image_tag }}"
 
-    - include_tasks: check-ha-configuration.yml
+    - include_tasks: check-kie-configuration.yml
   when: state == "present"
 
 - name: "[KIE SERVER] configure application"
@@ -32,7 +32,7 @@
         keystore_name: '{{ kieserver_keystore_name }}'
         keystore_alias: '{{ kieserver_keystore_alias }}'
         keystore_pwd: '{{ kieserver_keystore_pwd }}'
-        route_host: '{{ route_raw.result.spec.host }}'
+        route_host: '{{ ks_host }}'
 
     - name: "[KIE SERVER] configure persistence"
       include_tasks: persistence.yml
@@ -46,6 +46,16 @@
         kieserver_db_deployment: '{{ kieserver_deployment_name }}-{{ kieserver_db_type | lower }}'
         # e.g. rhpam-kieserver-postgresql
         kieserver_db_service: '{{ kieserver_service_name }}-{{ kieserver_db_type | lower }}'
+        kieserver_db_host: '{{ kieserver_deployment_name }}-{{ kieserver_db_type | lower }}'
+      when:
+        - kieserver_db_type != 'External'
+        - kieserver_db_type != 'H2'
+
+    - name: "[KIE SERVER] set db facts for External DB"
+      set_fact:
+        kieserver_db_host: '{{ kieserver_db[kieserver_db_type].host }}'
+        kieserver_db_name: '{{ kieserver_db[kieserver_db_type].name }}'
+      when: kieserver_db_type == 'External'
 
     - name: "[KIE SERVER] call PostgreSQL role"
       include_role:

@@ -10,6 +10,10 @@
       set_fact:
         eap_admin_pwd: "{{ default_trial_pwd }}"
         kie_admin_pwd: "{{ default_trial_pwd }}"
+        kieserver_db_pwd: "{{ default_trial_pwd }}"
+        kie_execution_pwd: "{{ default_trial_pwd }}"
+        businesscentral_maven_repo_pwd: "{{ default_trial_pwd }}"
+        controller_user: "{{ controller_user_default }}"
         controller_pwd: "{{ default_trial_pwd }}"
         controller_svc: "{{ application_name }}-rhpamcentr"
         has_rhpamcentr: true
@@ -32,7 +36,8 @@
   block:
     - name: "[RHPAM] Set defaults"
       set_fact:
-        controller_pwd: "{{ apb_controller_pwd | default(lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8'), true) }}"
+        controller_user: "{{ controller_user_default }}"
+        controller_pwd: "{{ lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8') }}"
         controller_svc: "{{ application_name }}-rhpamcentr"
         has_rhpamcentr: true
 
@@ -52,45 +57,65 @@
 
 - name: "[RHPAM] Managed Plan"
   block:
-  - name: "[RHPAM] Set defaults"
-    set_fact:
-      controller_pwd: "{{ apb_controller_pwd | default(lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8'), true) }}"
-      controller_svc: "{{ application_name }}-rhpamcentrmon"
-      smartrouter_deployment_name: "{{ application_name }}-smartrouter"
+    - name: "[RHPAM] Set defaults"
+      set_fact:
+        controller_user: "{{ controller_user_default }}"
+        controller_pwd: "{{ lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8') }}"
+        controller_svc: "{{ application_name }}-rhpamcentrmon"
+        smartrouter_deployment_name: "{{ application_name }}-smartrouter"
 
-  - name: "[RHPAM] Deploy Business Central Monitoring"
-    include_role:
-      name: deploy-businesscentral-monitoring
-    vars:
-      businesscentral_monitoring_deployment_name: "{{ controller_svc }}"
+    - name: "[RHPAM] Deploy Business Central Monitoring"
+      include_role:
+        name: deploy-businesscentral-monitoring
+      vars:
+        businesscentral_monitoring_deployment_name: "{{ controller_svc }}"
 
-  - name: "[RHPAM] Deploy Smart Router"
-    include_role:
-      name: deploy-smartrouter
+    - name: "[RHPAM] Deploy Smart Router"
+      include_role:
+        name: deploy-smartrouter
 
-  - name: "[RHPAM] Deploy KIE Execution Server"
-    include_role:
-      name: deploy-kieserver
-    vars:
-      kieserver_mgmt_disabled: true
-      kieserver_startup_strategy: "LocalContainersStartupStrategy"
-      has_router: true
-      router_svc: "{{ smartrouter_deployment_name }}"
-      kieserver_deployment_name: "{{ application_name }}-kieserver-{{ item }}"
-    with_sequence: start=1 count={{ kie_execution_sets }}
+    - name: "[RHPAM] Deploy KIE Execution Server"
+      include_role:
+        name: deploy-kieserver
+      vars:
+        kieserver_mgmt_disabled: true
+        kieserver_startup_strategy: "LocalContainersStartupStrategy"
+        has_router: true
+        router_svc: "{{ smartrouter_deployment_name }}"
+        kieserver_deployment_name: "{{ application_name }}-kieserver-{{ item }}"
+      with_sequence: start=1 count={{ kie_execution_sets }}
   when: _apb_plan_id == "managed"
 
-- name: "[RHPAM] KIE Execution Server Plan"
+- name: "[RHPAM] Immutable Monitor Plan"
+  block:
+    - name: "[RHPAM] Set defaults"
+      set_fact:
+        controller_user: "{{ controller_user_default }}"
+        controller_pwd: "{{ lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8') }}"
+        controller_svc: "{{ application_name }}-rhpamcentrmon"
+        smartrouter_deployment_name: "{{ application_name }}-smartrouter"
+
+    - name: "[RHPAM] Deploy Business Central Monitoring"
+      include_role:
+        name: deploy-businesscentral-monitoring
+      vars:
+        businesscentral_monitoring_deployment_name: "{{ controller_svc }}"
+
+    - name: "[RHPAM] Deploy Smart Router"
+      include_role:
+        name: deploy-smartrouter
+  when: _apb_plan_id == "immutable-mon"
+
+- name: "[RHPAM] Immutable KIE Server Plan"
   include_role:
     name: deploy-kieserver
   vars:
     kieserver_mgmt_disabled: true
     kieserver_startup_strategy: "LocalContainersStartupStrategy"
-    controller_pwd: "{{ apb_controller_pwd | default('', true) | trim  }}"
     has_external_controller: true
     has_router: true
     kieserver_s2i: true
-  when: _apb_plan_id == "immutable-kieserver"
+  when: _apb_plan_id == "immutable-kie"
 
 - name: "[RHPAM] Fail if there were errors"
   fail: msg="[Bundle Failed! - Plan - '{{ _apb_plan_id }}']"

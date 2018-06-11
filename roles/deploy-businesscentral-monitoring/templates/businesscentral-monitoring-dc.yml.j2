@@ -44,7 +44,7 @@ spec:
               command:
               - "/bin/bash"
               - "-c"
-              - "curl --fail --silent -u '${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}' http://localhost:8080/kie-wb.jsp"
+              - "curl --fail --silent -u \"${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}\" http://localhost:8080/kie-wb.jsp"
             initialDelaySeconds: 180
             timeoutSeconds: 2
             periodSeconds: 15
@@ -53,7 +53,7 @@ spec:
               command:
               - "/bin/bash"
               - "-c"
-              - "curl --fail --silent -u '${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}' http://localhost:8080/kie-wb.jsp"
+              - "curl --fail --silent -u \"${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}\" http://localhost:8080/kie-wb.jsp"
             initialDelaySeconds: 60
             timeoutSeconds: 2
             periodSeconds: 30
@@ -126,7 +126,7 @@ spec:
             - name: SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
               value: '{{ sso_disable_ssl_cert_validation }}'
             - name: HOSTNAME_HTTPS
-              value: '{{ route_raw.result.spec.host }}'
+              value: "{{ bcm_host | default('') }}"
 {% endif %}
             - name: JGROUPS_PING_PROTOCOL
               value: "openshift.DNS_PING"
