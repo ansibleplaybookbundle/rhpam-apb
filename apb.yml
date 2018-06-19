@@ -310,7 +310,6 @@ plans:
     description:
       An environment for creating and modifying processes using Business Central. It consists of
       pods that provide Business Central for the authoring work and a Process Server for test execution of the processes.
-      For instructions about deploying this environment
     free: true
     metadata:
       displayName: Authoring
@@ -568,6 +567,7 @@ plans:
       # External Maven Repository
       - <<: *_apb_maven_repo_url
         required: true
+        description: External Maven Repository URL.
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
@@ -632,7 +632,7 @@ plans:
       This environment includes several groups of Process Server pods; you can deploy and undeploy
       processes on every such group and also scale the group up or down as necessary. Use Business
       Central Monitoring to deploy, run, and stop the processes and to monitor their execution.
-      For instructions about deploying this environment
+
     free: true
     metadata:
       displayName: Managed Environment
@@ -644,12 +644,14 @@ plans:
       # External Maven Repository
       - <<: *_apb_maven_repo_url
         required: true
+        description: External Maven Repository URL.
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
       # Business Central Monitoring
       - <<: *_apb_replicas
         name: apb_businesscentral_replicas
+        default: 1
         display_group: Business Central Monitoring
       - <<: *_apb_volume_size
         name: apb_businesscentral_monitoring_volume_size
