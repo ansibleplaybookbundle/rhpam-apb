@@ -275,6 +275,8 @@ metadata:
     on Red Hat OpenShift Container Platform to provide an infrastructure to execute processes and other business assets.
     You can use standard integration tools to manage the immutable Process Server image.
     You can create new server images to add and update processes.
+
+
     Make sure the required ImageStreamTags exist in the openshift project. See below for the required images
   console.openshift.io/iconClass: icon-processserver
   providerDisplayName: "Red Hat, Inc."
