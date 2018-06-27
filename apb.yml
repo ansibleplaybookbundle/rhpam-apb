@@ -2,14 +2,14 @@
 _apb_kie_admin_user: &_apb_kie_admin_user
   name: apb_kie_admin_user
   title: Admin Username
-  description: Admin username for Business Central and Execution Server
+  description: Admin username for Business Central and Process Server
   required: true
   type: string
   default: adminUser
 _apb_kie_admin_pwd: &_apb_kie_admin_pwd
   name: apb_kie_admin_pwd
   title: Admin Password
-  description: Admin user password for Business Central and Execution Server. Generated if empty
+  description: Admin user password for Business Central and Process Server. Generated if empty
   required: false
   type: string
   display_type: password
@@ -91,43 +91,43 @@ _apb_businesscentral_monitoring_hostname: &_apb_businesscentral_monitoring_hostn
   name: apb_businesscentral_monitoring_hostname
   description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
   display_group: Business Central Monitoring
-# KIE Execution Server
+# KIE Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
-  title: Execution Server Username
+  title: Process Server Username
   description: User to interact with the REST API
   required: true
   type: string
   default: executionUser
-  display_group: KIE Execution Server
+  display_group: KIE Process Server
 _apb_kieserver_pwd: &_apb_kieserver_pwd
   name: apb_kieserver_pwd
-  title: Execution Server Password
+  title: Process Server Password
   description: User password to interact with the REST API. Generated if empty
   required: false
   type: string
   display_type: password
-  display_group: KIE Execution Server
+  display_group: KIE Process Server
 _apb_kieserver_hostname: &_apb_kieserver_hostname
   <<: *_apb_hostname
   name: apb_kieserver_hostname
-  description: Public hostname where the Execution Server will be accessed from. Generated if empty
+  description: Public hostname where the Process Server will be accessed from. Generated if empty
 _apb_kieserver_db_type: &_apb_kieserver_db_type
   name: apb_kieserver_db_type
   title: Database Type
-  description: Database Type to persist the KIE Execution Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Execution Server
+  description: Database Type to persist the KIE Process Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Process Server
   required: true
   type: enum
   enum: ['H2', 'PostgreSQL', 'MySQL', 'External']
   default: PostgreSQL
-  display_group: KIE Execution Server
+  display_group: KIE Process Server
 _apb_kieserver_db_size: &_apb_kieserver_db_size
   <<: *_apb_volume_size
   name: apb_kieserver_db_size
   title: Database Storage Size
   description: Specify the Persistent Volume Claim size to create for the Database. e.g. 1Gi. Ignored if External is selected
   default: 1Gi
-  display_group: KIE Execution Server
+  display_group: KIE Process Server
 _apb_kieserver_external_db_driver: &_apb_kieserver_external_db_driver
   name: apb_kieserver_external_db_driver
   title: Driver name
@@ -304,7 +304,7 @@ plans:
       - <<: *_apb_businesscentral_hostname
         title: Business Central Public Hostname
       - <<: *_apb_kieserver_hostname
-        title: KIE Execution Server Public Hostname
+        title: KIE Process Server Public Hostname
 
   - name: authoring
     description:
@@ -341,28 +341,28 @@ plans:
       - <<: *_apb_businesscentral_hostname
         display_group: Business Central
 
-      # KIE Execution Server
+      # KIE Process Server
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
 
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
 
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -390,12 +390,12 @@ plans:
         description: Red Hat Single Sign-On Client secret for Business Central.
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Execution Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        title: RH-SSO KIE Process Server - Client
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Execution Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+        title: RH-SSO KIE Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
@@ -473,26 +473,26 @@ plans:
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
-      # KIE Execution Server
+      # KIE Process Server
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -541,12 +541,12 @@ plans:
       - *_apb_sso_realm
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Execution Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        title: RH-SSO KIE Process Server - Client
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Execution Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+        title: RH-SSO KIE Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
@@ -691,11 +691,11 @@ plans:
         type: string
         display_group: Smart Router
 
-      # KIE Execution Server
+      # KIE Process Server
       - <<: *_apb_replicas
         name: apb_kieserver_replicas
         default: 3
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - name: apb_kieserver_sets
         title: Sets of KIE Servers
         description:
@@ -705,7 +705,7 @@ plans:
         default: 2
         required: true
         type: number
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
 
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
@@ -713,20 +713,20 @@ plans:
       ## Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -749,12 +749,12 @@ plans:
         description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Execution Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        title: RH-SSO KIE Process Server - Client
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Execution Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+        title: RH-SSO KIE Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation

@@ -3,6 +3,7 @@
 ## Input variables
 
 ### Mandatory
+
 * application_name: Name of the application this deployment belongs to
 * service_name: Name of the deployment to use. e.g. rhpam-authoring-kieserver-mysql
 * namespace: Namespace where to create the objects into

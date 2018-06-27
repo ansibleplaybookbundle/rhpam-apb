@@ -26,7 +26,7 @@ In case the generated routes need to be overridden, it is possible to set custom
 Deploys the following components:
 
 * Business Central (ephemeral)
-* KIE Execution Server (ephemeral)
+* KIE Process Server (ephemeral)
 
 ### Authoring
 
@@ -35,16 +35,16 @@ An environment for creating and modifying processes using Business Central. It c
 Handles the deployment of the following components:
 
 * Business Central (Persistent)
-* KIE Execution Server (Persistent)
+* KIE Process Server (Persistent)
 
 ### Immutable KIE Server
 
 In this environment, when you deploy a Process Server pod, it builds an image that loads and starts a process or group of processes. You cannot stop any process on the pod or add any new process to the pod.
 If you want to use another version of a process or modify the configuration in any other way, you deploy a new server image and displace the old one.
 
-* **Artifact source** is mandatory and will configure the KIE Execution server instances to clone and build the source existing on a GIT repository to then deploy it and run it.
-* **Router** integration is optional and will connect the KIE Execution server instances with an existing router endpoint.
-* **Controller** integration is optional and will allow the KIE Execution server instances to be managed or monitored by an existing controller.
+* **Artifact source** is mandatory and will configure the KIE Process Server instances to clone and build the source existing on a GIT repository to then deploy it and run it.
+* **Router** integration is optional and will connect the KIE Process Server instances with an existing router endpoint.
+* **Controller** integration is optional and will allow the KIE Process Server instances to be managed or monitored by an existing controller.
 
 ### Immutable Monitor
 
@@ -64,7 +64,7 @@ Deploys the following components:
 
 * Business Central Monitoring (Persistent)
 * Smart Router (Persistent)
-* KIE Execution Server (Persistent)
+* KIE Process Server (Persistent)
 
 ## Requirements
 
@@ -79,7 +79,7 @@ The following `imageStreams` should exist in the `openshift` namespace:
 * rhpam70-kieserver-openshift:1.0
 * rhpam70-smartrouter-openshift:1.0
 
-### KIE Execution Server
+### KIE Process Server
 
 * If the number of replicas is greater than 1, H2 Database is not allowed.
 * If the `External Database` is selected, all the fields in the `External Database` group are mandatory
@@ -95,7 +95,7 @@ The following `imageStreams` should exist in the `openshift` namespace:
 
 ### RH-SSO
 
-Configures authentication of Business Central, Business Central Monitoring and KIE Execution Servers against an existing Red Hat Single Sign-On instance.
+Configures authentication of Business Central, Business Central Monitoring and KIE Process Servers against an existing Red Hat Single Sign-On instance.
 
 The user and password is only needed when during the startup it is necessary to create the client and secret on the provided realm. If it already exists, these fields can be left empty.
 
@@ -105,7 +105,7 @@ It is possible to additionally use an external Maven Repository for publishing t
 
 ### Secrets and Keystores
 
-KIE Execution servers and Business Central (and Monitoring) requires a certificate in order to start the secure port (8443). For that, the user will be prompted to introduce the name of the secret containing a keystore with the certificate to use. If this secret doesn't exist, the APB will generate one selfsigned and use it.
+KIE Process Servers and Business Central (and Monitoring) requires a certificate in order to start the secure port (8443). For that, the user will be prompted to introduce the name of the secret containing a keystore with the certificate to use. If this secret doesn't exist, the APB will generate one selfsigned and use it.
 
 ## Testing
 
