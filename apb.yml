@@ -20,12 +20,6 @@ _apb_replicas: &_apb_replicas
   default: 3
   required: true
   type: number
-_apb_protocol_type: &_apb_protocol_type
-  title: Host Protocol
-  description: Host protocol (http/https)
-  required: false
-  type: enum
-  enum: ['http', 'https']
 # External Maven Repository
 _apb_maven_repo_url: &_apb_maven_repo_url
   name: apb_maven_repo_url
@@ -159,33 +153,61 @@ _apb_kieserver_external_db_url: &_apb_kieserver_external_db_url
   description: Database jdbc URL. Required for External database. e.g. jdbc:mysql:127.0.0.1:3306/rhpam
   type: string
   display_group: External Database (only if Database type is External)
+# External Services
+_apb_svc: &_apb_svc
+  title: Service name
+  description: Name of the Service
+  required: false
+  type: string
+_apb_host: &_apb_host
+  title: Host
+  description: Host
+  required: false
+  type: string
+_apb_port: &_apb_port
+  title: Host port
+  description: Host port
+  required: false
+  type: string
+_apb_protocol_type: &_apb_protocol_type
+  title: Host Protocol
+  description: Host protocol (http/https)
+  required: false
+  type: enum
+  enum: ['http', 'https']
+# Router
+_apb_router_svc: &_apb_router_svc
+  <<: *_apb_svc
+  name: apb_router_svc
+  display_group: Router Integration
+_apb_router_host: &_apb_router_host
+  <<: *_apb_host
+  name: apb_router_host
+  display_group: Router Integration
+_apb_router_port: &_apb_router_port
+  <<: *_apb_port
+  name: apb_router_port
+  display_group: Router Integration
+_apb_router_protocol: &_apb_router_protocol
+  <<: *_apb_protocol_type
+  name: apb_router_protocol
+  display_group: Router Integration
 # Controller
 _apb_controller_svc: &_apb_controller_svc
+  <<: *_apb_svc
   name: apb_controller_svc
-  title: Controller Service name
-  description: Name of the Controller Service
-  required: false
-  type: string
   display_group: Controller Integration
 _apb_controller_host: &_apb_controller_host
+  <<: *_apb_host
   name: apb_controller_host
-  title: Controller Host
-  description: Controller Host
-  required: false
-  type: string
   display_group: Controller Integration
 _apb_controller_port: &_apb_controller_port
+  <<: *_apb_port
   name: apb_controller_port
-  title: Controller Host port
-  description: Controller Host port
-  required: false
-  type: string
   display_group: Controller Integration
 _apb_controller_protocol: &_apb_controller_protocol
   <<: *_apb_protocol_type
   name: apb_controller_protocol
-  title: Controller Protocol
-  description: Controller Host protocol (http/https)
   display_group: Controller Integration
 _apb_controller_token: &_apb_controller_token
   name: apb_controller_token
@@ -498,29 +520,10 @@ plans:
       - *_apb_kieserver_external_db_url
 
       # Router
-      - name: apb_router_svc
-        title: Router Service name
-        description: Name of the Router Service
-        required: false
-        type: string
-        display_group: Router Integration
-      - name: apb_router_host
-        title: Router Host
-        description: Router Host
-        required: false
-        type: string
-        display_group: Router Integration
-      - name: apb_router_port
-        title: Router Host port
-        description: Router Host port
-        required: false
-        type: string
-        display_group: Router Integration
-      - <<: *_apb_protocol_type
-        name: apb_router_protocol
-        title: Router Protocol
-        description: Router Host protocol (http/https)
-        display_group: Router Integration
+      - *_apb_router_svc
+      - *_apb_router_host
+      - *_apb_router_port
+      - *_apb_router_protocol
 
       # Controller
       - *_apb_controller_svc
