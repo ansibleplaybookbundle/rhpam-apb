@@ -81,6 +81,13 @@ _apb_businesscentral_hostname: &_apb_businesscentral_hostname
   name: apb_businesscentral_hostname
   description: Public hostname where the Business Central will be accessed from. Generated if empty
 # KIE Process Server
+_apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
+  name: apb_kieserver_image_stream_name
+  title: Process Server Image Stream Name
+  description: Image Stream Name to use
+  required: true
+  default: rhpam70-kieserver-openshift
+  display_group: KIE Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
   title: Process Server Username
@@ -153,7 +160,7 @@ _apb_kieserver_external_db_url: &_apb_kieserver_external_db_url
   description: Database jdbc URL. Required for External database. e.g. jdbc:mysql:127.0.0.1:3306/rhpam
   type: string
   display_group: External Database (only if Database type is External)
-# External Services
+# External Services Integration
 _apb_svc: &_apb_svc
   title: Service name
   description: Name of the Service
@@ -380,6 +387,7 @@ plans:
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
         display_group: KIE Process Server
+      - *_apb_kieserver_image_stream_name
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -490,7 +498,6 @@ plans:
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
-      # KIE Process Server
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
       # Keystore and Secret
@@ -510,6 +517,7 @@ plans:
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
         display_group: KIE Process Server
+      - *_apb_kieserver_image_stream_name
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -728,6 +736,7 @@ plans:
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
         display_group: KIE Process Server
+      - *_apb_kieserver_image_stream_name
 
       # External Database
       - *_apb_kieserver_external_db_driver

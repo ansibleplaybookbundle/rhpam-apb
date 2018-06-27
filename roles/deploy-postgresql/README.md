@@ -1,5 +1,11 @@
 # PostgreSQL Role
 
+## Objects created
+
+* Service
+* Persistent Volume Claim (if postgresql_volume_size is provided)
+* Deployment Configuration
+
 ## Input variables
 
 ### Mandatory
@@ -14,16 +20,10 @@
 
 ### Optional
 
-* postgresql_volume_size (optional): If provided a PersistentVolumeClaim will be created and used in the DeploymentConfig
+* postgresql_volume_size: If provided a PersistentVolumeClaim will be created and used in the DeploymentConfig
 
 ### Default
 
 * postgresql_image_name: Defaults to `postgresql`
 * postgresql_image_tag: Defaults to `9.6`
 * postgresql_image_namespace: Defaults to `openshift`
-
-## Objects created
-
-* Service
-* Persistent Volume Claim (if postgresql_volume_size is provided)
-* Deployment Configuration

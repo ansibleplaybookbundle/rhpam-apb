@@ -1,5 +1,11 @@
 # MySQL Role
 
+## Objects created
+
+* Service
+* Persistent Volume Claim (if mysql_volume_size is provided)
+* Deployment Configuration
+
 ## Input variables
 
 ### Mandatory
@@ -21,9 +27,3 @@
 * mysql_image_name: Defaults to `mysql`
 * mysql_image_tag: Defaults to `5.7`
 * mysql_image_namespace: Defaults to `openshift`
-
-## Objects created
-
-* Service
-* Persistent Volume Claim (if mysql_volume_size is provided)
-* Deployment Configuration
