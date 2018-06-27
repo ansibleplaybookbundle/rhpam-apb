@@ -86,11 +86,6 @@ _apb_businesscentral_hostname: &_apb_businesscentral_hostname
   <<: *_apb_hostname
   name: apb_businesscentral_hostname
   description: Public hostname where the Business Central will be accessed from. Generated if empty
-_apb_businesscentral_monitoring_hostname: &_apb_businesscentral_monitoring_hostname
-  <<: *_apb_hostname
-  name: apb_businesscentral_monitoring_hostname
-  description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
-  display_group: Business Central Monitoring
 # KIE Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
@@ -577,24 +572,26 @@ plans:
         default: 1
         display_group: Business Central Monitoring
       - <<: *_apb_volume_size
-        name: apb_businesscentral_monitoring_volume_size
+        name: apb_businesscentral_volume_size
         description: Specify the Persistent Volume Claim size to create for storing the user data. e.g. 64Mi
         default: 64Mi
         display_group: Business Central Monitoring
       # Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_businesscentral_monitoring_secret_name
+        name: apb_businesscentral_secret_name
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_name
-        name: apb_businesscentral_monitoring_keystore_name
+        name: apb_businesscentral_keystore_name
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_alias
-        name: apb_businesscentral_monitoring_keystore_alias
+        name: apb_businesscentral_keystore_alias
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_pwd
-        name: apb_businesscentral_monitoring_keystore_pwd
+        name: apb_businesscentral_keystore_pwd
         display_group: Business Central Monitoring
-      - *_apb_businesscentral_monitoring_hostname
+      - <<: *_apb_businesscentral_hostname
+        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+        display_group: Business Central Monitoring
 
       # Smart Router
       - <<: *_apb_replicas
@@ -615,11 +612,11 @@ plans:
       - *_apb_sso_url
       - *_apb_sso_realm
       - <<: *_apb_sso_client
-        name: apb_sso_businesscentral_monitoring_client
+        name: apb_sso_businesscentral_client
         title: RH-SSO Business Central Monitoring - Client
         description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
       - <<: *_apb_sso_client_secret
-        name: apb_sso_businesscentral_monitoring_client_secret
+        name: apb_sso_businesscentral_client_secret
         title: RH-SSO Business Central Monitoring - Client Secret
         description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
       - *_apb_sso_user
@@ -654,25 +651,26 @@ plans:
         default: 1
         display_group: Business Central Monitoring
       - <<: *_apb_volume_size
-        name: apb_businesscentral_monitoring_volume_size
+        name: apb_businesscentral_volume_size
         description: Specify the Persistent Volume Claim size to create for storing the user data. e.g. 64Mi
         default: 64Mi
         display_group: Business Central Monitoring
-
       ## Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_businesscentral_monitoring_secret_name
+        name: apb_businesscentral_secret_name
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_name
-        name: apb_businesscentral_monitoring_keystore_name
+        name: apb_businesscentral_keystore_name
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_alias
-        name: apb_businesscentral_monitoring_keystore_alias
+        name: apb_businesscentral_keystore_alias
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_pwd
-        name: apb_businesscentral_monitoring_keystore_pwd
+        name: apb_businesscentral_keystore_pwd
         display_group: Business Central Monitoring
-      - *_apb_businesscentral_monitoring_hostname
+      - <<: *_apb_businesscentral_hostname
+        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+        display_group: Business Central Monitoring
 
       # Smart Router
       - <<: *_apb_replicas
@@ -740,11 +738,11 @@ plans:
       - *_apb_sso_url
       - *_apb_sso_realm
       - <<: *_apb_sso_client
-        name: apb_sso_businesscentral_monitoring_client
+        name: apb_sso_businesscentral_client
         title: RH-SSO Business Central Monitoring - Client
         description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
       - <<: *_apb_sso_client_secret
-        name: apb_sso_businesscentral_monitoring_client_secret
+        name: apb_sso_businesscentral_client_secret
         title: RH-SSO Business Central Monitoring - Client Secret
         description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
       - <<: *_apb_sso_client

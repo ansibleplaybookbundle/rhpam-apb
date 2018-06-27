@@ -1,23 +1,23 @@
 ---
-businesscentral_monitoring_image_name: rhpam70-businesscentral-monitoring-openshift
-businesscentral_monitoring_image_tag: 1.0
-businesscentral_monitoring_image_namespace: openshift
+businesscentral_image_name: rhpam70-businesscentral-monitoring-openshift
+businesscentral_image_tag: 1.0
+businesscentral_image_namespace: openshift
 
-businesscentral_monitoring_default_secret_name: '{{ application_name }}-rhpamcentrmon'
-businesscentral_monitoring_image_pull_policy: IfNotPresent
-businesscentral_monitoring_replicas: "{{ apb_businesscentral_replicas | default(3, true) }}"
+businesscentral_default_secret_name: '{{ application_name }}-rhpamcentrmon'
+businesscentral_image_pull_policy: IfNotPresent
+businesscentral_replicas: "{{ apb_businesscentral_replicas | default(3, true) }}"
 
 # Business Central configurable parameters
-businesscentral_monitoring_deployment_name: "{{ application_name }}-rhpamcentrmon"
-businesscentral_monitoring_service_name: "rhpam-businesscentral-monitoring"
-businesscentral_monitoring_hostname: "{{ apb_businesscentral_monitoring_hostname | default('', true) | trim }}"
-businesscentral_monitoring_volume_size: "{{ apb_businesscentral_monitoring_volume_size | default('', true) | trim }}"
-businesscentral_monitoring_limits_memory: "2Gi"
-businesscentral_monitoring_secret_name: "{{ apb_businesscentral_monitoring_secret_name | default('', true) | trim }}"
-businesscentral_monitoring_keystore_name: "{{ apb_businesscentral_monitoring_keystore_name | default('keystore.jks', true) | trim }}"
-businesscentral_monitoring_keystore_alias: "{{ apb_businesscentral_monitoring_keystore_alias | default('jboss', true) | trim }}"
-businesscentral_monitoring_keystore_pwd: "{{ apb_businesscentral_monitoring_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
+businesscentral_deployment_name: "{{ application_name }}-rhpamcentrmon"
+businesscentral_service_name: "rhpam-businesscentral-monitoring"
+businesscentral_hostname: "{{ apb_businesscentral_hostname | default('', true) | trim }}"
+businesscentral_volume_size: "{{ apb_businesscentral_volume_size | default('', true) | trim }}"
+businesscentral_limits_memory: "2Gi"
+businesscentral_secret_name: "{{ apb_businesscentral_secret_name | default('', true) | trim }}"
+businesscentral_keystore_name: "{{ apb_businesscentral_keystore_name | default('keystore.jks', true) | trim }}"
+businesscentral_keystore_alias: "{{ apb_businesscentral_keystore_alias | default('jboss', true) | trim }}"
+businesscentral_keystore_pwd: "{{ apb_businesscentral_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
 
 # SSO Integration
-businesscentral_monitoring_sso_client: "{{ apb_sso_businesscentral_monitoring_client | default('', true) | trim }}"
-businesscentral_monitoring_sso_client_secret: "{{ apb_sso_businesscentral_monitoring_client_secret | default('', true) | trim }}"
+businesscentral_sso_client: "{{ apb_sso_businesscentral_client | default('', true) | trim }}"
+businesscentral_sso_client_secret: "{{ apb_sso_businesscentral_client_secret | default('', true) | trim }}"

@@ -68,7 +68,7 @@
       include_role:
         name: deploy-businesscentral-monitoring
       vars:
-        businesscentral_monitoring_deployment_name: "{{ controller_svc }}"
+        businesscentral_deployment_name: "{{ controller_svc }}"
 
     - name: "[RHPAM] Deploy Smart Router"
       include_role:
@@ -99,7 +99,7 @@
       include_role:
         name: deploy-businesscentral-monitoring
       vars:
-        businesscentral_monitoring_deployment_name: "{{ controller_svc }}"
+        businesscentral_deployment_name: "{{ controller_svc }}"
 
     - name: "[RHPAM] Deploy Smart Router"
       include_role:
