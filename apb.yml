@@ -2,17 +2,24 @@
 _apb_kie_admin_user: &_apb_kie_admin_user
   name: apb_kie_admin_user
   title: Admin Username
-  description: Admin username for Business Central and Execution Server
+  description: Admin username for Business Central and Process Server
   required: true
   type: string
   default: adminUser
 _apb_kie_admin_pwd: &_apb_kie_admin_pwd
   name: apb_kie_admin_pwd
   title: Admin Password
-  description: Admin user password for Business Central and Execution Server. Generated if empty
+  description: Admin user password for Business Central and Process Server. Generated if empty
   required: false
   type: string
   display_type: password
+# ImageStreams
+_apb_image_stream_tag: &_apb_image_stream_tag
+  title: Image version
+  description: Tag version of the ImageStream to use. It must exist in the openshift namespace.
+  default: 1.1
+  required: true
+  type: string
 # HA
 _apb_replicas: &_apb_replicas
   title: Number of replicas
@@ -20,12 +27,6 @@ _apb_replicas: &_apb_replicas
   default: 3
   required: true
   type: number
-_apb_protocol_type: &_apb_protocol_type
-  title: Host Protocol
-  description: Host protocol (http/https)
-  required: false
-  type: enum
-  enum: ['http', 'https']
 # External Maven Repository
 _apb_maven_repo_url: &_apb_maven_repo_url
   name: apb_maven_repo_url
@@ -86,48 +87,50 @@ _apb_businesscentral_hostname: &_apb_businesscentral_hostname
   <<: *_apb_hostname
   name: apb_businesscentral_hostname
   description: Public hostname where the Business Central will be accessed from. Generated if empty
-_apb_businesscentral_monitoring_hostname: &_apb_businesscentral_monitoring_hostname
-  <<: *_apb_hostname
-  name: apb_businesscentral_monitoring_hostname
-  description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
-  display_group: Business Central Monitoring
-# KIE Execution Server
+# KIE Process Server
+_apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
+  name: apb_kieserver_image_stream_name
+  title: Process Server Image Stream Name
+  description: Image Stream Name to use
+  required: true
+  default: rhpam70-kieserver-openshift
+  display_group: KIE Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
-  title: Execution Server Username
+  title: Process Server Username
   description: User to interact with the REST API
   required: true
   type: string
   default: executionUser
-  display_group: KIE Execution Server
+  display_group: KIE Process Server
 _apb_kieserver_pwd: &_apb_kieserver_pwd
   name: apb_kieserver_pwd
-  title: Execution Server Password
+  title: Process Server Password
   description: User password to interact with the REST API. Generated if empty
   required: false
   type: string
   display_type: password
-  display_group: KIE Execution Server
+  display_group: KIE Process Server
 _apb_kieserver_hostname: &_apb_kieserver_hostname
   <<: *_apb_hostname
   name: apb_kieserver_hostname
-  description: Public hostname where the Execution Server will be accessed from. Generated if empty
+  description: Public hostname where the Process Server will be accessed from. Generated if empty
 _apb_kieserver_db_type: &_apb_kieserver_db_type
   name: apb_kieserver_db_type
   title: Database Type
-  description: Database Type to persist the KIE Execution Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Execution Server
+  description: Database Type to persist the KIE Process Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Process Server
   required: true
   type: enum
   enum: ['H2', 'PostgreSQL', 'MySQL', 'External']
   default: PostgreSQL
-  display_group: KIE Execution Server
+  display_group: KIE Process Server
 _apb_kieserver_db_size: &_apb_kieserver_db_size
   <<: *_apb_volume_size
   name: apb_kieserver_db_size
   title: Database Storage Size
   description: Specify the Persistent Volume Claim size to create for the Database. e.g. 1Gi. Ignored if External is selected
   default: 1Gi
-  display_group: KIE Execution Server
+  display_group: KIE Process Server
 _apb_kieserver_external_db_driver: &_apb_kieserver_external_db_driver
   name: apb_kieserver_external_db_driver
   title: Driver name
@@ -164,33 +167,61 @@ _apb_kieserver_external_db_url: &_apb_kieserver_external_db_url
   description: Database jdbc URL. Required for External database. e.g. jdbc:mysql:127.0.0.1:3306/rhpam
   type: string
   display_group: External Database (only if Database type is External)
+# External Services Integration
+_apb_svc: &_apb_svc
+  title: Service name
+  description: Name of the Service
+  required: false
+  type: string
+_apb_host: &_apb_host
+  title: Host
+  description: Host
+  required: false
+  type: string
+_apb_port: &_apb_port
+  title: Host port
+  description: Host port
+  required: false
+  type: string
+_apb_protocol_type: &_apb_protocol_type
+  title: Host Protocol
+  description: Host protocol (http/https)
+  required: false
+  type: enum
+  enum: ['http', 'https']
+# Router
+_apb_router_svc: &_apb_router_svc
+  <<: *_apb_svc
+  name: apb_router_svc
+  display_group: Router Integration
+_apb_router_host: &_apb_router_host
+  <<: *_apb_host
+  name: apb_router_host
+  display_group: Router Integration
+_apb_router_port: &_apb_router_port
+  <<: *_apb_port
+  name: apb_router_port
+  display_group: Router Integration
+_apb_router_protocol: &_apb_router_protocol
+  <<: *_apb_protocol_type
+  name: apb_router_protocol
+  display_group: Router Integration
 # Controller
 _apb_controller_svc: &_apb_controller_svc
+  <<: *_apb_svc
   name: apb_controller_svc
-  title: Controller Service name
-  description: Name of the Controller Service
-  required: false
-  type: string
   display_group: Controller Integration
 _apb_controller_host: &_apb_controller_host
+  <<: *_apb_host
   name: apb_controller_host
-  title: Controller Host
-  description: Controller Host
-  required: false
-  type: string
   display_group: Controller Integration
 _apb_controller_port: &_apb_controller_port
+  <<: *_apb_port
   name: apb_controller_port
-  title: Controller Host port
-  description: Controller Host port
-  required: false
-  type: string
   display_group: Controller Integration
 _apb_controller_protocol: &_apb_controller_protocol
   <<: *_apb_protocol_type
   name: apb_controller_protocol
-  title: Controller Protocol
-  description: Controller Host protocol (http/https)
   display_group: Controller Integration
 _apb_controller_token: &_apb_controller_token
   name: apb_controller_token
@@ -304,13 +335,13 @@ plans:
       - <<: *_apb_businesscentral_hostname
         title: Business Central Public Hostname
       - <<: *_apb_kieserver_hostname
-        title: KIE Execution Server Public Hostname
+        title: KIE Process Server Public Hostname
+      - *_apb_image_stream_tag
 
   - name: authoring
     description:
       An environment for creating and modifying processes using Business Central. It consists of
       pods that provide Business Central for the authoring work and a Process Server for test execution of the processes.
-      For instructions about deploying this environment
     free: true
     metadata:
       displayName: Authoring
@@ -318,13 +349,14 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_image_stream_tag
 
       # Business Central
       - <<: *_apb_volume_size
         name: apb_businesscentral_volume_size
         description: Specify the Persistent Volume Claim size to create for storing the Workspace. e.g. 1Gi
-        display_group: Business Central
         default: 1Gi
+        display_group: Business Central
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_businesscentral_secret_name
@@ -342,28 +374,29 @@ plans:
       - <<: *_apb_businesscentral_hostname
         display_group: Business Central
 
-      # KIE Execution Server
+      # KIE Process Server
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
 
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
 
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
+      - *_apb_kieserver_image_stream_name
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -391,12 +424,12 @@ plans:
         description: Red Hat Single Sign-On Client secret for Business Central.
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Execution Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        title: RH-SSO KIE Process Server - Client
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Execution Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+        title: RH-SSO KIE Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
@@ -414,6 +447,7 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_image_stream_tag
       # HA
       - <<: *_apb_replicas
         name: apb_kieserver_replicas
@@ -474,26 +508,26 @@ plans:
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
-      # KIE Execution Server
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
+      - *_apb_kieserver_image_stream_name
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -504,29 +538,10 @@ plans:
       - *_apb_kieserver_external_db_url
 
       # Router
-      - name: apb_router_svc
-        title: Router Service name
-        description: Name of the Router Service
-        required: false
-        type: string
-        display_group: Router Integration
-      - name: apb_router_host
-        title: Router Host
-        description: Router Host
-        required: false
-        type: string
-        display_group: Router Integration
-      - name: apb_router_port
-        title: Router Host port
-        description: Router Host port
-        required: false
-        type: string
-        display_group: Router Integration
-      - <<: *_apb_protocol_type
-        name: apb_router_protocol
-        title: Router Protocol
-        description: Router Host protocol (http/https)
-        display_group: Router Integration
+      - *_apb_router_svc
+      - *_apb_router_host
+      - *_apb_router_port
+      - *_apb_router_protocol
 
       # Controller
       - *_apb_controller_svc
@@ -542,12 +557,12 @@ plans:
       - *_apb_sso_realm
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Execution Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        title: RH-SSO KIE Process Server - Client
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Execution Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+        title: RH-SSO KIE Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
@@ -564,10 +579,12 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_image_stream_tag
 
       # External Maven Repository
       - <<: *_apb_maven_repo_url
         required: true
+        description: External Maven Repository URL.
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
@@ -577,24 +594,26 @@ plans:
         default: 1
         display_group: Business Central Monitoring
       - <<: *_apb_volume_size
-        name: apb_businesscentral_monitoring_volume_size
+        name: apb_businesscentral_volume_size
         description: Specify the Persistent Volume Claim size to create for storing the user data. e.g. 64Mi
         default: 64Mi
         display_group: Business Central Monitoring
       # Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_businesscentral_monitoring_secret_name
+        name: apb_businesscentral_secret_name
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_name
-        name: apb_businesscentral_monitoring_keystore_name
+        name: apb_businesscentral_keystore_name
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_alias
-        name: apb_businesscentral_monitoring_keystore_alias
+        name: apb_businesscentral_keystore_alias
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_pwd
-        name: apb_businesscentral_monitoring_keystore_pwd
+        name: apb_businesscentral_keystore_pwd
         display_group: Business Central Monitoring
-      - *_apb_businesscentral_monitoring_hostname
+      - <<: *_apb_businesscentral_hostname
+        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+        display_group: Business Central Monitoring
 
       # Smart Router
       - <<: *_apb_replicas
@@ -615,11 +634,11 @@ plans:
       - *_apb_sso_url
       - *_apb_sso_realm
       - <<: *_apb_sso_client
-        name: apb_sso_businesscentral_monitoring_client
+        name: apb_sso_businesscentral_client
         title: RH-SSO Business Central Monitoring - Client
         description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
       - <<: *_apb_sso_client_secret
-        name: apb_sso_businesscentral_monitoring_client_secret
+        name: apb_sso_businesscentral_client_secret
         title: RH-SSO Business Central Monitoring - Client Secret
         description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
       - *_apb_sso_user
@@ -632,7 +651,7 @@ plans:
       This environment includes several groups of Process Server pods; you can deploy and undeploy
       processes on every such group and also scale the group up or down as necessary. Use Business
       Central Monitoring to deploy, run, and stop the processes and to monitor their execution.
-      For instructions about deploying this environment
+
     free: true
     metadata:
       displayName: Managed Environment
@@ -640,37 +659,41 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_image_stream_tag
 
       # External Maven Repository
       - <<: *_apb_maven_repo_url
         required: true
+        description: External Maven Repository URL.
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
       # Business Central Monitoring
       - <<: *_apb_replicas
         name: apb_businesscentral_replicas
+        default: 1
         display_group: Business Central Monitoring
       - <<: *_apb_volume_size
-        name: apb_businesscentral_monitoring_volume_size
+        name: apb_businesscentral_volume_size
         description: Specify the Persistent Volume Claim size to create for storing the user data. e.g. 64Mi
         default: 64Mi
         display_group: Business Central Monitoring
-
       ## Keystore and Secret
       - <<: *_apb_secret_name
-        name: apb_businesscentral_monitoring_secret_name
+        name: apb_businesscentral_secret_name
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_name
-        name: apb_businesscentral_monitoring_keystore_name
+        name: apb_businesscentral_keystore_name
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_alias
-        name: apb_businesscentral_monitoring_keystore_alias
+        name: apb_businesscentral_keystore_alias
         display_group: Business Central Monitoring
       - <<: *_apb_keystore_pwd
-        name: apb_businesscentral_monitoring_keystore_pwd
+        name: apb_businesscentral_keystore_pwd
         display_group: Business Central Monitoring
-      - *_apb_businesscentral_monitoring_hostname
+      - <<: *_apb_businesscentral_hostname
+        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+        display_group: Business Central Monitoring
 
       # Smart Router
       - <<: *_apb_replicas
@@ -689,11 +712,11 @@ plans:
         type: string
         display_group: Smart Router
 
-      # KIE Execution Server
+      # KIE Process Server
       - <<: *_apb_replicas
         name: apb_kieserver_replicas
         default: 3
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - name: apb_kieserver_sets
         title: Sets of KIE Servers
         description:
@@ -703,7 +726,7 @@ plans:
         default: 2
         required: true
         type: number
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
 
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
@@ -711,20 +734,21 @@ plans:
       ## Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Execution Server
+        display_group: KIE Process Server
+      - *_apb_kieserver_image_stream_name
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -738,21 +762,21 @@ plans:
       - *_apb_sso_url
       - *_apb_sso_realm
       - <<: *_apb_sso_client
-        name: apb_sso_businesscentral_monitoring_client
+        name: apb_sso_businesscentral_client
         title: RH-SSO Business Central Monitoring - Client
         description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
       - <<: *_apb_sso_client_secret
-        name: apb_sso_businesscentral_monitoring_client_secret
+        name: apb_sso_businesscentral_client_secret
         title: RH-SSO Business Central Monitoring - Client Secret
         description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Execution Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Execution Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        title: RH-SSO KIE Process Server - Client
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Execution Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Execution Server.
+        title: RH-SSO KIE Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for KIE Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation

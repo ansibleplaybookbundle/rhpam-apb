@@ -1,11 +1,11 @@
 kind: DeploymentConfig
 apiVersion: v1
 metadata:
-  name: {{ businesscentral_monitoring_deployment_name }}
+  name: {{ businesscentral_deployment_name }}
   namespace: {{ namespace }}
   labels:
     app: {{ application_name }}
-    service: {{ businesscentral_monitoring_service_name }}
+    service: {{ businesscentral_service_name }}
 spec:
   strategy:
     type: Recreate
@@ -17,34 +17,34 @@ spec:
         - businesscentral-monitoring
         _from:
           kind: ImageStreamTag
-          namespace: '{{ businesscentral_monitoring_image_namespace }}'
-          name: '{{ businesscentral_monitoring_image_name }}:{{ businesscentral_monitoring_image_tag}}'
+          namespace: '{{ businesscentral_image_namespace }}'
+          name: '{{ businesscentral_image_name }}:{{ businesscentral_image_tag}}'
     - type: ConfigChange
-  replicas: {{ businesscentral_monitoring_replicas }}
+  replicas: {{ businesscentral_replicas }}
   selector:
     app: '{{ application_name }}'
-    service: {{ businesscentral_monitoring_service_name }}
+    service: {{ businesscentral_service_name }}
   template:
     metadata:
-      name: '{{ businesscentral_monitoring_deployment_name }}'
+      name: '{{ businesscentral_deployment_name }}'
       labels:
         app: '{{ application_name }}'
-        service: {{ businesscentral_monitoring_service_name }}
+        service: {{ businesscentral_service_name }}
     spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: businesscentral-monitoring
           image: ' '
-          imagePullPolicy: '{{ businesscentral_monitoring_image_pull_policy }}'
+          imagePullPolicy: '{{ businesscentral_image_pull_policy }}'
           resources:
             limits:
-              memory: '{{ businesscentral_monitoring_limits_memory }}'
+              memory: '{{ businesscentral_limits_memory }}'
           livenessProbe:
             exec:
               command:
               - "/bin/bash"
               - "-c"
-              - "curl --fail --silent -u \"${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}\" http://localhost:8080/kie-wb.jsp"
+              - "curl --fail --silent http://localhost:8080/kie-wb.jsp"
             initialDelaySeconds: 180
             timeoutSeconds: 2
             periodSeconds: 15
@@ -53,7 +53,7 @@ spec:
               command:
               - "/bin/bash"
               - "-c"
-              - "curl --fail --silent -u \"${KIE_ADMIN_USER}:${KIE_ADMIN_PWD}\" http://localhost:8080/kie-wb.jsp"
+              - "curl --fail --silent http://localhost:8080/kie-wb.jsp"
             initialDelaySeconds: 60
             timeoutSeconds: 2
             periodSeconds: 30
@@ -95,11 +95,11 @@ spec:
             - name: HTTPS_KEYSTORE_DIR
               value: "/etc/businesscentral-certs"
             - name: HTTPS_KEYSTORE
-              value: '{{ businesscentral_monitoring_keystore_name }}'
+              value: '{{ businesscentral_keystore_name }}'
             - name: HTTPS_NAME
-              value: '{{ businesscentral_monitoring_keystore_alias }}'
+              value: '{{ businesscentral_keystore_alias }}'
             - name: HTTPS_PASSWORD
-              value: '{{ businesscentral_monitoring_keystore_pwd }}'
+              value: '{{ businesscentral_keystore_pwd }}'
             - name: ADMIN_USERNAME
               value: '{{ eap_admin_user }}'
             - name: ADMIN_PASSWORD
@@ -116,9 +116,9 @@ spec:
             - name: SSO_REALM
               value: '{{ sso_realm }}'
             - name: SSO_CLIENT
-              value: '{{ businesscentral_monitoring_sso_client }}'
+              value: '{{ businesscentral_sso_client }}'
             - name: SSO_SECRET
-              value: '{{ businesscentral_monitoring_sso_client_secret }}'
+              value: '{{ businesscentral_sso_client_secret }}'
             - name: SSO_USERNAME
               value: '{{ sso_user }}'
             - name: SSO_PASSWORD
@@ -131,7 +131,7 @@ spec:
             - name: JGROUPS_PING_PROTOCOL
               value: "openshift.DNS_PING"
             - name: OPENSHIFT_DNS_PING_SERVICE_NAME
-              value: '{{ businesscentral_monitoring_deployment_name }}-ping'
+              value: '{{ businesscentral_deployment_name }}-ping'
             - name: OPENSHIFT_DNS_PING_SERVICE_PORT
               value: "8888"
           volumeMounts:
@@ -145,9 +145,9 @@ spec:
           secret:
             secretName: {{ bcm_secret_name }}
         - name: businesscentral-data
-{% if businesscentral_monitoring_volume_size != "" %}
+{% if businesscentral_volume_size != "" %}
           persistentVolumeClaim:
-            claimName: '{{ businesscentral_monitoring_deployment_name }}-data'
+            claimName: '{{ businesscentral_deployment_name }}-data'
 {% else %}
           emptyDir: {}
 {% endif %}

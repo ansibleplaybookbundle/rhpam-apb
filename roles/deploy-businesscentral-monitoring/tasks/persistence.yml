@@ -5,14 +5,14 @@
     definition:
       apiVersion: v1
       kind: PersistentVolumeClaim
-      name: '{{ businesscentral_monitoring_deployment_name }}-data'
+      name: '{{ businesscentral_deployment_name }}-data'
       namespace: '{{ namespace }}'
       labels:
         app: '{{ application_name }}'
-        service: '{{ businesscentral_monitoring_service_name }}'
+        service: '{{ businesscentral_service_name }}'
       spec:
         accessModes:
           - ReadWriteMany
         resources:
           requests:
-            storage: '{{ businesscentral_monitoring_volume_size }}'
+            storage: '{{ businesscentral_volume_size }}'

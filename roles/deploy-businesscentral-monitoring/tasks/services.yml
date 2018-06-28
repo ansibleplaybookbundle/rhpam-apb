@@ -5,16 +5,16 @@
     definition:
       apiVersion: v1
       kind: Service
-      name: '{{ businesscentral_monitoring_deployment_name }}'
+      name: '{{ businesscentral_deployment_name }}'
       namespace: '{{ namespace }}'
       labels:
         app: '{{ application_name }}'
-        service: '{{ businesscentral_monitoring_service_name }}'
+        service: '{{ businesscentral_service_name }}'
       spec:
         selector:
           app: '{{ application_name }}'
-          service: '{{ businesscentral_monitoring_service_name }}'
-          deploymentconfig: '{{ businesscentral_monitoring_deployment_name }}'
+          service: '{{ businesscentral_service_name }}'
+          deploymentconfig: '{{ businesscentral_deployment_name }}'
         ports:
           - name: http
             port: 8080
@@ -29,19 +29,19 @@
     definition:
       apiVersion: v1
       kind: Service
-      name: '{{ businesscentral_monitoring_deployment_name }}-ping'
+      name: '{{ businesscentral_deployment_name }}-ping'
       namespace: '{{ namespace }}'
       labels:
         app: '{{ application_name }}'
-        service: '{{ businesscentral_monitoring_service_name }}'
+        service: '{{ businesscentral_service_name }}'
       annotations:
         service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
         description: "The JGroups ping port for clustering."
       spec:
         selector:
           app: '{{ application_name }}'
-          service: '{{ businesscentral_monitoring_service_name }}'
-          deploymentconfig: '{{ businesscentral_monitoring_deployment_name }}'
+          service: '{{ businesscentral_service_name }}'
+          deploymentconfig: '{{ businesscentral_deployment_name }}'
         ports:
           - name: ping
             port: 8888

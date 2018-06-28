@@ -5,13 +5,13 @@
     definition:
       apiVersion: v1
       kind: Route
-      name: '{{ businesscentral_monitoring_deployment_name }}'
+      name: '{{ businesscentral_deployment_name }}'
       namespace: '{{ namespace }}'
       labels:
         app: '{{ application_name }}'
-        service: '{{ businesscentral_monitoring_service_name }}'
+        service: '{{ businesscentral_service_name }}'
       spec:
-        host: '{{ businesscentral_monitoring_hostname }}'
+        host: '{{ businesscentral_hostname }}'
         port:
           targetPort: https
         tls:
@@ -19,7 +19,7 @@
           insecureEdgeTerminationPolicy: Redirect
         to:
           kind: Service
-          name: '{{ businesscentral_monitoring_deployment_name }}'
+          name: '{{ businesscentral_deployment_name }}'
   register: route_raw
 
 - name: "[BUSINESS CENTRAL MONITORING] set route host"

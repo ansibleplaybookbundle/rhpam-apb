@@ -3,9 +3,9 @@
   include_role:
     name: check-image-requirements
   vars:
-    image_namespace: "{{ businesscentral_monitoring_image_namespace }}"
-    image_name: "{{ businesscentral_monitoring_image_name }}"
-    image_tag: "{{ businesscentral_monitoring_image_tag }}"
+    image_namespace: "{{ businesscentral_image_namespace }}"
+    image_name: "{{ businesscentral_image_name }}"
+    image_tag: "{{ businesscentral_image_tag }}"
   when: state == "present"
 
 - name: "[BUSINESS CENTRAL MONITORING] configure application"
@@ -18,21 +18,21 @@
 
     - name: "[BUSINESS CENTRAL MONITORING] configure persistence"
       include_tasks: persistence.yml
-      when: businesscentral_monitoring_volume_size != ""
+      when: businesscentral_volume_size != ""
 
     - name: "[BUSINESS CENTRAL MONITORING] Set default secret name if none provided"
       set_fact:
-        bcm_secret_name: "{{ businesscentral_monitoring_secret_name | default(businesscentral_monitoring_default_secret_name, true) }}"
+        bcm_secret_name: "{{ businesscentral_secret_name | default(businesscentral_default_secret_name, true) }}"
 
     - name: "[BUSINESS CENTRAL MONITORINGs] generate secret if not present"
       include_role:
         name: generate-secret
       vars:
         secret_name: '{{ bcm_secret_name }}'
-        service_name: '{{ businesscentral_monitoring_service_name }}'
-        keystore_name: '{{ businesscentral_monitoring_keystore_name }}'
-        keystore_alias: '{{ businesscentral_monitoring_keystore_alias }}'
-        keystore_pwd: '{{ businesscentral_monitoring_keystore_pwd }}'
+        service_name: '{{ businesscentral_service_name }}'
+        keystore_name: '{{ businesscentral_keystore_name }}'
+        keystore_alias: '{{ businesscentral_keystore_alias }}'
+        keystore_pwd: '{{ businesscentral_keystore_pwd }}'
         route_host: '{{ bcm_host }}'
 
     - name: "[BUSINESS CENTRAL MONITORING] business central monitoring deployment status to {{ state }}"
