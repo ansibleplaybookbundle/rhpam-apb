@@ -14,7 +14,6 @@
         selector:
           app: '{{ application_name }}'
           service: '{{ smartrouter_service_name }}'
-          deploymentconfig: '{{ smartrouter_deployment_name }}'
         ports:
           - port: 9000
             targetPort: 9000
