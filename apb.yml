@@ -13,6 +13,13 @@ _apb_kie_admin_pwd: &_apb_kie_admin_pwd
   required: false
   type: string
   display_type: password
+# ImageStreams
+_apb_image_stream_tag: &_apb_image_stream_tag
+  title: Image version
+  description: Tag version of the ImageStream to use. It must exist in the openshift namespace.
+  default: 1.1
+  required: true
+  type: string
 # HA
 _apb_replicas: &_apb_replicas
   title: Number of replicas
@@ -329,6 +336,7 @@ plans:
         title: Business Central Public Hostname
       - <<: *_apb_kieserver_hostname
         title: KIE Process Server Public Hostname
+      - *_apb_image_stream_tag
 
   - name: authoring
     description:
@@ -341,13 +349,14 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_image_stream_tag
 
       # Business Central
       - <<: *_apb_volume_size
         name: apb_businesscentral_volume_size
         description: Specify the Persistent Volume Claim size to create for storing the Workspace. e.g. 1Gi
-        display_group: Business Central
         default: 1Gi
+        display_group: Business Central
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_businesscentral_secret_name
@@ -438,6 +447,7 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_image_stream_tag
       # HA
       - <<: *_apb_replicas
         name: apb_kieserver_replicas
@@ -569,6 +579,7 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_image_stream_tag
 
       # External Maven Repository
       - <<: *_apb_maven_repo_url
@@ -648,6 +659,7 @@ plans:
       # Common Credentials
       - *_apb_kie_admin_user
       - *_apb_kie_admin_pwd
+      - *_apb_image_stream_tag
 
       # External Maven Repository
       - <<: *_apb_maven_repo_url

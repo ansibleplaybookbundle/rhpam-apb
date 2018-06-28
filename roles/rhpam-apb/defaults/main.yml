@@ -18,6 +18,9 @@ external_maven_repo_url: "{{ apb_maven_repo_url | default('', true) | trim }}"
 external_maven_repo_user: "{{ apb_maven_repo_user | default('', true) | trim }}"
 external_maven_repo_pwd: "{{ apb_maven_repo_pwd | default('', true) | trim }}"
 
+# ImageStreams
+image_stream_namespace: openshift
+image_stream_tag: "{{ apb_image_stream_tag | trim }}"
 
 # SSO Integration
 sso_url: "{{ apb_sso_url | default('', true) | trim }}"
