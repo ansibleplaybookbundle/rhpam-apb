@@ -14,7 +14,6 @@
         selector:
           app: '{{ application_name }}'
           service: '{{ businesscentral_service_name }}'
-          deploymentconfig: '{{ businesscentral_deployment_name }}'
         ports:
           - name: http
             port: 8080

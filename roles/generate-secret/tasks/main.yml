@@ -1,12 +1,9 @@
 ---
-- name: Set secret state to {{ state }}
-  k8s_raw:
-    api_version: v1
-    kind: Secret
-    name: '{{ secret_name }}'
-    namespace: '{{ namespace }}'
-    state: '{{ state }}'
-  register: cert_secret
+- name: Check secret exists
+  shell: >
+    oc get secret -n {{ namespace }} {{ secret_name }} --no-headers -o jsonpath='{.metadata.annotations.rhpam-apb/generated}'
+  ignore_errors: yes
+  register: secret_cmd
 
 - name: Generate secret if it does not exist
   block:
@@ -23,6 +20,8 @@
         state: '{{ state }}'
         definition:
           apiVersion: v1
+          annotations:
+            rhpam-apb/generated: "true"
           kind: Secret
           name: '{{ secret_name }}'
           namespace: '{{ namespace }}'
@@ -31,5 +30,17 @@
             service: '{{ service_name }}'
           data: "{{ lookup('template', 'secret.yml.j2') | from_yaml }}"
   when:
-    - cert_secret.changed
+    - secret_cmd.rc != 0
     - state == 'present'
+
+- name: Remove secret
+  k8s_raw:
+    api_version: v1
+    kind: Secret
+    name: '{{ secret_name }}'
+    namespace: '{{ namespace }}'
+    state: '{{ state }}'
+  when:
+    - secret_cmd.rc == 0
+    - secret_cmd.stdout == "true"
+    - state == 'absent'

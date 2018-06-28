@@ -5,7 +5,6 @@ namespace: '{{ namespace }}'
 labels:
   app: '{{ application_name }}'
   service: '{{ service_name }}'
-replicas: 1
 spec:
   selector:
     app: '{{ application_name }}'
@@ -21,6 +20,7 @@ spec:
           kind: ImageStreamTag
           name: '{{ mysql_image_name }}:{{ mysql_image_tag }}'
           namespace: '{{ mysql_image_namespace }}'
+  replicas: 1
   template:
     metadata:
       labels:

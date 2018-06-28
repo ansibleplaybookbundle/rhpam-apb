@@ -15,6 +15,7 @@ _apb_kie_admin_pwd: &_apb_kie_admin_pwd
   display_type: password
 # ImageStreams
 _apb_image_stream_tag: &_apb_image_stream_tag
+  name: apb_image_stream_tag
   title: Image version
   description: Tag version of the ImageStream to use. It must exist in the openshift namespace.
   default: 1.1
@@ -93,6 +94,7 @@ _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   title: Process Server Image Stream Name
   description: Image Stream Name to use
   required: true
+  type: string
   default: rhpam70-kieserver-openshift
   display_group: KIE Process Server
 _apb_kieserver_user: &_apb_kieserver_user
@@ -293,7 +295,7 @@ _apb_sso_disable_ssl_cert_validation: &_apb_sso_disable_ssl_cert_validation
   type: boolean
   display_group: Red Hat - Single Sign-On (Optional)
 
-version: 1.1
+version: 1.0
 name: rhpam-apb
 description:  Red Hat Process Automation Manager 7.0 (APB)
 bindable: false
