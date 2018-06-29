@@ -92,14 +92,14 @@ _apb_businesscentral_hostname: &_apb_businesscentral_hostname
 _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   name: apb_kieserver_image_stream_name
   title: Process Server Image Stream Name
-  description: Image Stream Name to use for Process Server. If you have generated a custom image (for example, to provide )a database server driver), you can change this parameter to use it.
+  description: Image Stream Name to use for Process Server. If you have generated a custom image (for example, to provide a database server driver), you can change this parameter to use it.
   required: true
   type: string
   default: rhpam70-kieserver-openshift
   display_group: KIE Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
-  title: Process Server Username 
+  title: Process Server Username
   description: User to interact with the Process Server using the REST API
   required: true
   type: string
@@ -307,7 +307,7 @@ metadata:
     As a system engineer, you can deploy a Red Hat Process Automation Manager immutable server environment
     on Red Hat OpenShift Container Platform to provide an infrastructure to execute processes and other business assets.
     You can use standard integration tools to manage the immutable Process Server image.
-    
+
     Make sure the required ImageStreamTags exist in the openshift project. See below for the required images
   console.openshift.io/iconClass: icon-processserver
   providerDisplayName: "Red Hat, Inc."
