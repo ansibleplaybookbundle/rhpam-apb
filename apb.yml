@@ -2,7 +2,7 @@
 _apb_kie_admin_user: &_apb_kie_admin_user
   name: apb_kie_admin_user
   title: Admin Username
-  description: Admin username for Business Central and Process Server
+  description: Admin user name for Business Central and Process Server
   required: true
   type: string
   default: adminUser
@@ -54,18 +54,18 @@ _apb_maven_repo_pwd: &_apb_maven_repo_pwd
 # Generic Keystore parameters
 _apb_secret_name: &_apb_secret_name
   title: Secret Name
-  description: Name of the secret containing the keystore to be used by the server. Generated if empty
+  description: Name of the secret containing the keystore to be used by the server to accept HTTPS connections. Generated if empty
   required: false
   type: string
 _apb_keystore_name: &_apb_keystore_name
-  title: Keystore Name
-  description: Name of the keystore file containing the certificate to be used by the server.
+  title: Keystore File Name
+  description: Name of the keystore file containing the certificate to be used by the server to accept HTTPS connections. If a secret name is not provided, the server generates a secret with this keystore file name.
   required: true
   type: string
   default: keystore.jks
 _apb_keystore_alias: &_apb_keystore_alias
   title: Keystore certificate alias
-  description: Name of the certificate alias included in the keystore to be used by the server.
+  description: Name of the certificate alias included in the keystore to be used by the server to accept HTTPS connections. If a secret name is not provided, the server generates a seret with this alias.
   required: true
   type: string
   default: jboss
@@ -87,20 +87,20 @@ _apb_hostname: &_apb_hostname
 _apb_businesscentral_hostname: &_apb_businesscentral_hostname
   <<: *_apb_hostname
   name: apb_businesscentral_hostname
-  description: Public hostname where the Business Central will be accessed from. Generated if empty
+  description: Public hostname for Business Central. Generated if empty
 # KIE Process Server
 _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   name: apb_kieserver_image_stream_name
   title: Process Server Image Stream Name
-  description: Image Stream Name to use
+  description: Image Stream Name to use for Process Server. If you have generated a custom image (for example, to provide )a database server driver), you can change this parameter to use it.
   required: true
   type: string
   default: rhpam70-kieserver-openshift
   display_group: KIE Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
-  title: Process Server Username
-  description: User to interact with the REST API
+  title: Process Server Username 
+  description: User to interact with the Process Server using the REST API
   required: true
   type: string
   default: executionUser
@@ -108,7 +108,7 @@ _apb_kieserver_user: &_apb_kieserver_user
 _apb_kieserver_pwd: &_apb_kieserver_pwd
   name: apb_kieserver_pwd
   title: Process Server Password
-  description: User password to interact with the REST API. Generated if empty
+  description: User password to interact with the Process Server using the REST API. Generated if empty
   required: false
   type: string
   display_type: password
@@ -116,11 +116,11 @@ _apb_kieserver_pwd: &_apb_kieserver_pwd
 _apb_kieserver_hostname: &_apb_kieserver_hostname
   <<: *_apb_hostname
   name: apb_kieserver_hostname
-  description: Public hostname where the Process Server will be accessed from. Generated if empty
+  description: Public hostname for Process Server. Generated if empty
 _apb_kieserver_db_type: &_apb_kieserver_db_type
   name: apb_kieserver_db_type
   title: Database Type
-  description: Database Type to persist the KIE Process Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Process Server
+  description: Database Type to persist the KIE Process Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Process Server. For H2, PostgreSQL, and MySQL the database server will be deployed in a pod. To use a database server that is deployed elsewhere, select External.
   required: true
   type: enum
   enum: ['H2', 'PostgreSQL', 'MySQL', 'External']
@@ -130,43 +130,43 @@ _apb_kieserver_db_size: &_apb_kieserver_db_size
   <<: *_apb_volume_size
   name: apb_kieserver_db_size
   title: Database Storage Size
-  description: Specify the Persistent Volume Claim size to create for the Database. e.g. 1Gi. Ignored if External is selected
+  description: Persistent Volume Claim size to create for the Database. For example, 1Gi. Ignored if External is selected
   default: 1Gi
   display_group: KIE Process Server
 _apb_kieserver_external_db_driver: &_apb_kieserver_external_db_driver
   name: apb_kieserver_external_db_driver
   title: Driver name
-  description: Database driver type. Required for External database. e.g. mysql or postgresql
+  description: Database driver type. Required for External database. For example, mysql or postgresql
   type: string
   display_group: External Database (only if Database type is External)
 _apb_kieserver_external_db_dialect: &_apb_kieserver_external_db_dialect
   name: apb_kieserver_external_db_dialect
   title: Dialect class
-  description: Hibernate dialect class to use. Required for External database. e.g. org.hibernate.dialect.MySQL5Dialect
+  description: Hibernate dialect class to use. Required for External database. For example, org.hibernate.dialect.MySQL5Dialect
   type: string
   display_group: External Database (only if Database type is External)
 _apb_kieserver_external_db_host: &_apb_kieserver_external_db_host
   name: apb_kieserver_external_db_host
   title: Host
-  description: Host. Required for External database. e.g. 127.0.0.1
+  description: External database server host. Required for External database. For example, 127.0.0.1
   type: string
   display_group: External Database (only if Database type is External)
 _apb_kieserver_external_db_port: &_apb_kieserver_external_db_port
   name: apb_kieserver_external_db_port
   title: Port
-  description: Port. Required for External database. e.g. 3306
+  description: External database server port. Required for External database. For example, 3306
   type: string
   display_group: External Database (only if Database type is External)
 _apb_kieserver_external_db_name: &_apb_kieserver_external_db_name
   name: apb_kieserver_external_db_name
   title: Database Name
-  description: Database name. Required for External database. e.g. rhpam
+  description: Database name. Required for External database. For example, rhpam
   type: string
-  display_group: External Database (only if Database type is External)
+  display_group: Database name for the external database server (only if Database type is External)
 _apb_kieserver_external_db_url: &_apb_kieserver_external_db_url
   name: apb_kieserver_external_db_url
   title: Database JDBC URL
-  description: Database jdbc URL. Required for External database. e.g. jdbc:mysql:127.0.0.1:3306/rhpam
+  description: External database server JDBC URL. Required for External database. For example, jdbc:mysql:127.0.0.1:3306/rhpam
   type: string
   display_group: External Database (only if Database type is External)
 # External Services Integration
@@ -235,7 +235,7 @@ _apb_controller_token: &_apb_controller_token
 _apb_controller_user: &_apb_controller_user
   name: apb_controller_user
   title: Controller Username
-  description: Username to access to the Controller
+  description: Username to access the Controller
   required: false
   type: string
   default: monitorUser
@@ -243,7 +243,7 @@ _apb_controller_user: &_apb_controller_user
 _apb_controller_pwd: &_apb_controller_pwd
   name: apb_controller_pwd
   title: Controller Password
-  description: User password to access to the Controller.
+  description: User password to access the Controller.
   required: false
   type: string
   display_type: password
@@ -252,14 +252,14 @@ _apb_controller_pwd: &_apb_controller_pwd
 _apb_sso_url: &_apb_sso_url
   name: apb_sso_url
   title: RH-SSO URL
-  description: Red Hat Single Sign-On URL. Leave empty to avoid using SSO. E.g. https://rhsso.example.com/auth
+  description: Red Hat Single Sign-On (SSO) URL. Leave empty to avoid using SSO. For example, https://rhsso.example.com/auth
   required: false
   type: string
   display_group: Red Hat - Single Sign-On (Optional)
 _apb_sso_realm: &_apb_sso_realm
   name: apb_sso_realm
   title: RH-SSO Realm
-  description: Red Hat Single Sign-On Realm name. E.g. rhpam
+  description: Red Hat Single Sign-On Realm name. For example, rhpam
   required: false
   type: string
   display_group: Red Hat - Single Sign-On (Optional)
@@ -307,9 +307,7 @@ metadata:
     As a system engineer, you can deploy a Red Hat Process Automation Manager immutable server environment
     on Red Hat OpenShift Container Platform to provide an infrastructure to execute processes and other business assets.
     You can use standard integration tools to manage the immutable Process Server image.
-    You can create new server images to add and update processes.
-
-
+    
     Make sure the required ImageStreamTags exist in the openshift project. See below for the required images
   console.openshift.io/iconClass: icon-processserver
   providerDisplayName: "Red Hat, Inc."
@@ -328,7 +326,7 @@ tags:
 plans:
   - name: trial
     description:
-      Deploy an ephemeral environment for testing Business Central and KIE Server. A default `adminUser` user will be created with the `RedHat` password.
+      Deploy an ephemeral environment for testing Business Central and Process Server. A default `adminUser` user will be created with the `RedHat` password.
       In case the generated routes need to be overridden, it is possible to set custom routes for both applications.
     free: true
     metadata:
@@ -356,7 +354,7 @@ plans:
       # Business Central
       - <<: *_apb_volume_size
         name: apb_businesscentral_volume_size
-        description: Specify the Persistent Volume Claim size to create for storing the Workspace. e.g. 1Gi
+        description: Specify the Persistent Volume Claim size to create for storing the Workspace. For example, 1Gi
         default: 1Gi
         display_group: Business Central
       # Keystore and Secret
@@ -419,7 +417,7 @@ plans:
       - <<: *_apb_sso_client
         name: apb_sso_businesscentral_client
         title: RH-SSO Business Central - Client
-        description: Red Hat Single Sign-On Client name for Business Central. If the secret, user and password are provided it will be created. E.g. businesscentral
+        description: Red Hat Single Sign-On Client name for Business Central. If the secret, user and password are provided it will be created. For example, businesscentral
       - <<: *_apb_sso_client_secret
         name: apb_sso_businesscentral_client_secret
         title: RH-SSO Business Central - Client Secret
@@ -427,7 +425,7 @@ plans:
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
         title: RH-SSO KIE Process Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. For example, kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Process Server - Client Secret
@@ -453,7 +451,9 @@ plans:
       # HA
       - <<: *_apb_replicas
         name: apb_kieserver_replicas
+        description: Number of Replicas of the Process Server that will be initially deployed
         default: 2
+
 
       # Artifact Source
       - name: apb_kieserver_container_deployment
@@ -464,19 +464,19 @@ plans:
         display_group: Artifact source
       - name: apb_kieserver_source_url
         title: Git Repository URL
-        description: Git source URI for application. E.g. https://github.com/jboss-container-images/rhpam-7-openshift-image.git
+        description: Git source URI for application. For example, https://github.com/jboss-container-images/rhpam-7-openshift-image.git
         required: true
         type: string
         display_group: Artifact source
       - name: apb_kieserver_source_ref
         title: Git Repository Reference
-        description: Git branch/tag reference. E.g. rhpam70 or master
+        description: Git branch/tag reference. For example, rhpam70 or master
         required: true
         type: string
         display_group: Artifact source
       - name: apb_kieserver_source_context
         title: Git Repository Context Dir
-        description: Path within Git project to build; empty for root project directory. E.g. quickstarts/library-process/library
+        description: Path within Git project to build; empty for root project directory. For example, quickstarts/library-process/library
         required: false
         type: string
         display_group: Artifact source
@@ -560,7 +560,7 @@ plans:
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
         title: RH-SSO KIE Process Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. For example, kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Process Server - Client Secret
@@ -572,8 +572,7 @@ plans:
   - name: immutable-mon
     description:
       Use Business Central Monitoring to monitor the performance of the environment and to stop and
-      restart some of the process instances, but not to deploy additional processes to any Process Server
-      or undeploy any existing ones (you can not add or remove containers)
+      restart some of the process instances in an immutable environment, but not to deploy additional processes to any Process Server or undeploy any existing ones (you can not add or remove containers)
     free: true
     metadata:
       displayName: Immutable Server - Monitor
@@ -593,11 +592,12 @@ plans:
       # Business Central Monitoring
       - <<: *_apb_replicas
         name: apb_businesscentral_replicas
+        description: Number of Replicas of Business Central Monitoring that will be initially deployed
         default: 1
         display_group: Business Central Monitoring
       - <<: *_apb_volume_size
         name: apb_businesscentral_volume_size
-        description: Specify the Persistent Volume Claim size to create for storing the user data. e.g. 64Mi
+        description: Specify the Persistent Volume Claim size to create for storing the user data. For example, 64Mi
         default: 64Mi
         display_group: Business Central Monitoring
       # Keystore and Secret
@@ -614,22 +614,23 @@ plans:
         name: apb_businesscentral_keystore_pwd
         display_group: Business Central Monitoring
       - <<: *_apb_businesscentral_hostname
-        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+        description: Public hostname for Business Central Monitoring. Generated if empty
         display_group: Business Central Monitoring
 
       # Smart Router
       - <<: *_apb_replicas
         name: apb_smartrouter_replicas
+        description: Number of Replicas of Smart Router that will be initially deployed
         default: 2
         display_group: Smart Router
       - <<: *_apb_volume_size
         name: apb_smartrouter_volume_size
-        description: Specify the Persistent Volume Claim size to create. e.g. 64Mi
+        description: Specify the Persistent Volume Claim size to create. For example, 64Mi
         default: 64Mi
         display_group: Smart Router
       - <<: *_apb_hostname
         name: apb_smartrouter_hostname
-        description: Public hostname where Smart Router will be accessed from. Generated if empty
+        description: Public hostname for Smart Router. Generated if empty
         display_group: Smart Router
 
       # RH - SSO
@@ -638,7 +639,7 @@ plans:
       - <<: *_apb_sso_client
         name: apb_sso_businesscentral_client
         title: RH-SSO Business Central Monitoring - Client
-        description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
+        description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. For example, businesscentral
       - <<: *_apb_sso_client_secret
         name: apb_sso_businesscentral_client_secret
         title: RH-SSO Business Central Monitoring - Client Secret
@@ -677,7 +678,7 @@ plans:
         display_group: Business Central Monitoring
       - <<: *_apb_volume_size
         name: apb_businesscentral_volume_size
-        description: Specify the Persistent Volume Claim size to create for storing the user data. e.g. 64Mi
+        description: Specify the Persistent Volume Claim size to create for storing the user data. For example, 64Mi
         default: 64Mi
         display_group: Business Central Monitoring
       ## Keystore and Secret
@@ -694,7 +695,7 @@ plans:
         name: apb_businesscentral_keystore_pwd
         display_group: Business Central Monitoring
       - <<: *_apb_businesscentral_hostname
-        description: Public hostname where Business Central Monitoring will be accessed from. Generated if empty
+        description: Public hostname for Business Central Monitoring. Generated if empty
         display_group: Business Central Monitoring
 
       # Smart Router
@@ -704,12 +705,12 @@ plans:
         display_group: Smart Router
       - <<: *_apb_volume_size
         name: apb_smartrouter_volume_size
-        description: Specify the Persistent Volume Claim size to create. e.g. 64Mi
+        description: Specify the Persistent Volume Claim size to create. For example, 64Mi
         default: 64Mi
         display_group: Smart Router
       - name: apb_smartrouter_hostname
         title: Public Hostname
-        description: Public hostname where Smart Router will be accessed from. Generated if empty
+        description: Public hostname for Smart Router. Generated if empty
         required: false
         type: string
         display_group: Smart Router
@@ -766,7 +767,7 @@ plans:
       - <<: *_apb_sso_client
         name: apb_sso_businesscentral_client
         title: RH-SSO Business Central Monitoring - Client
-        description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. E.g. businesscentral
+        description: Red Hat Single Sign-On Client name for Business Central Monitoring. If the secret, user and password are provided it will be created. For example, businesscentral
       - <<: *_apb_sso_client_secret
         name: apb_sso_businesscentral_client_secret
         title: RH-SSO Business Central Monitoring - Client Secret
@@ -774,7 +775,7 @@ plans:
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
         title: RH-SSO KIE Process Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. E.g. kieserver
+        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. For example, kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
         title: RH-SSO KIE Process Server - Client Secret
