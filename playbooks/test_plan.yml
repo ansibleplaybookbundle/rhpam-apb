@@ -1,0 +1,43 @@
+---
+- name: "[TESTS][{{ plan_id | upper }}] Load default variables for testing"
+  include_vars: '{{ item }}'
+  with_items:
+    - test_defaults.yml
+    - test_{{ plan_id }}_defaults.yml
+
+- name: "[TESTS][{{ plan_id | upper }}] Create project for namespace"
+  openshift_v1_project:
+    name: '{{ namespace }}'
+
+- name: "[TESTS][{{ plan_id | upper }}] Run the provision role."
+  include_role:
+    name: rhpam-apb
+
+- name: "[TESTS][{{ plan_id | upper }}] Run the test role."
+  include_role:
+    name: test
+  vars:
+    action: provision
+
+- name: "[TESTS][{{ plan_id | upper }}] Run the deprovision role."
+  include_role:
+    name: rhpam-apb
+  vars:
+    state: absent
+
+- name: "[TESTS][{{ plan_id | upper }}] Run the test role."
+  include_role:
+    name: test
+  vars:
+    action: deprovision
+
+- name: "[TESTS][{{ plan_id | upper }}] Remove binding secret."
+  k8s_v1_secret:
+    name: "{{ lookup('env', 'POD_NAME') }}"
+    namespace: '{{ namespace }}'
+    state: absent
+
+- name: "[TESTS][{{ plan_id | upper }}] Cleanup tmp folder."
+  file:
+    path: "{{ tmp_folder }}"
+    state: absent

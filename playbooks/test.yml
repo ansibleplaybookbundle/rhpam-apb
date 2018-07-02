@@ -1,0 +1,31 @@
+---
+- name: Test keycloak-apb
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars_files:
+    - vars/common.yml
+  roles:
+    - role: ansible.kubernetes-modules
+      install_python_requirements: no
+      playbook_debug: true
+    - role: ansibleplaybookbundle.asb-modules
+
+  post_tasks:
+    - name: "[TEST] Start tests"
+      include_tasks: test_plan.yml
+      with_items:
+        - trial
+        - authoring_h2
+        - authoring_postgres
+        - authoring_mysql
+        # - immutable-kie
+        # - immutable-mon
+        # - managed
+      loop_control:
+        loop_var: plan_id
+
+    - name: "[TEST][ALL] Success"
+      asb_save_test_result:
+        msg: 'All tests passed!'
+      when: travis is undefined

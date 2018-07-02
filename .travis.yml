@@ -43,7 +43,7 @@ jobs:
 
 # Test Stage
 script:
-  - export APB_NAME=rhba-apb
+  - export APB_NAME=rhpam-apb
   - apb build
   - export B64_SPEC=`base64 apb.yml | tr -d '\n'`
   - export APB_LABEL=`docker inspect --format='{{json .Config.Labels}}' $(docker images -q | head -n 1) | jq -r '."com.redhat.apb.spec"'`
@@ -51,5 +51,6 @@ script:
   - sudo docker cp $(docker create docker.io/openshift/origin:$OPENSHIFT_VERSION):/bin/oc /usr/local/bin/oc
   - oc cluster up --version=$OPENSHIFT_VERSION
   - oc login -u system:admin
+  - oc create -n openshift -f https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/rhpam70-dev/rhpam70-image-streams.yaml
   - oc new-project $APB_NAME
   - docker run --rm --net=host -e "POD_NAME=$APB_NAME-pod" -e "POD_NAMESPACE=$APB_NAME" -v $HOME/.kube:/opt/apb/.kube:z -u $UID $APB_NAME test --extra-vars "travis=true namespace=$APB_NAME"
