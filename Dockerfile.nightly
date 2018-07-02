@@ -1,4 +1,4 @@
-FROM ansibleplaybookbundle/apb-base
+FROM ansibleplaybookbundle/apb-base:nightly
 
 LABEL "com.redhat.apb.spec"=\
 "LS0tCiMgQ29tbW9uIENyZWRlbnRpYWxzCl9hcGJfa2llX2FkbWluX3VzZXI6ICZfYXBiX2tpZV9h\
@@ -545,12 +545,6 @@ aWVudCBzZWNyZXQgZm9yIEtJRSBQcm9jZXNzIFNlcnZlci4KICAgICAgLSAqX2FwYl9zc29fdXNl\
 cgogICAgICAtICpfYXBiX3Nzb19wd2QKICAgICAgLSAqX2FwYl9zc29fZGlzYWJsZV9zc2xfY2Vy\
 dF92YWxpZGF0aW9uCg=="
 
+RUN yum install -y java-1.8.0-openjdk rhpam-apb-role && yum clean all
 
-
-
-RUN yum install -y java-1.8.0-openjdk
-
-COPY playbooks /opt/apb/actions
-COPY roles /opt/ansible/roles
-RUN chmod -R g=u /opt/{ansible,apb}
 USER apb
