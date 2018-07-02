@@ -49,7 +49,7 @@ script:
   - export APB_LABEL=`docker inspect --format='{{json .Config.Labels}}' $(docker images -q | head -n 1) | jq -r '."com.redhat.apb.spec"'`
   - if [ "$B64_SPEC" != "$APB_LABEL" ]; then { echo "APB Spec Label doesn't match"; exit -1; }; fi;
   - sudo docker cp $(docker create docker.io/openshift/origin:$OPENSHIFT_VERSION):/bin/oc /usr/local/bin/oc
-  - oc cluster up --version=$OPENSHIFT_VERSION
+  - oc cluster up
   - oc login -u system:admin
   - oc create -n openshift -f https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/rhpam70-dev/rhpam70-image-streams.yaml
   - oc new-project $APB_NAME
