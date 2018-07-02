@@ -1,0 +1,20 @@
+---
+- name: "[TEST][{{ plan_id }}] Secret objects"
+  include_tasks: secret.yml
+  vars:
+    name: "{{ item }}"
+  loop: "{{ secrets }}"
+
+- name: "[TEST][{{ plan_id }}] PersitentVolumeClaim objects"
+  include_tasks: persistence.yml
+  vars:
+    name: "{{ item.name }}"
+    size: "{{ item.size }}"
+  loop: "{{ persistent_volume_claims }}"
+
+- name: "[TEST][{{ plan_id }}] DeploymentConfig objects"
+  include_tasks: deployment.yml
+  vars:
+    name: "{{ item.name }}"
+    replicas: "{{ item.replicas }}"
+  loop: "{{ deployment_configs }}"

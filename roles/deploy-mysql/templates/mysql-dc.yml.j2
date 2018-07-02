@@ -38,6 +38,21 @@ spec:
               value: '{{ mysql_pwd }}'
           image: ' '
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 3306
+            timeoutSeconds: 1
+          readinessProbe:
+            initialDelaySeconds: 5
+            exec:
+              command:
+                - "/bin/sh"
+                - "-i"
+                - "-c"
+                - "MYSQL_PWD=\"$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'"
+              port: 3306
+            timeoutSeconds: 1
           ports:
             - containerPort: 3306
               protocol: TCP

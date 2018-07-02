@@ -1,3 +1,4 @@
+---
 # Common Credentials
 _apb_kie_admin_user: &_apb_kie_admin_user
   name: apb_kie_admin_user
@@ -123,7 +124,7 @@ _apb_kieserver_db_type: &_apb_kieserver_db_type
   description: Database Type to persist the KIE Process Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Process Server. For H2, PostgreSQL, and MySQL the database server will be deployed in a pod. To use a database server that is deployed elsewhere, select External.
   required: true
   type: enum
-  enum: ['H2', 'PostgreSQL', 'MySQL', 'External']
+  enum: [ 'H2', 'PostgreSQL', 'MySQL', 'External' ]
   default: PostgreSQL
   display_group: KIE Process Server
 _apb_kieserver_db_size: &_apb_kieserver_db_size
@@ -190,7 +191,7 @@ _apb_protocol_type: &_apb_protocol_type
   description: Host protocol (http/https)
   required: false
   type: enum
-  enum: ['http', 'https']
+  enum: [ 'http', 'https' ]
 # Router
 _apb_router_svc: &_apb_router_svc
   <<: *_apb_svc
@@ -297,7 +298,7 @@ _apb_sso_disable_ssl_cert_validation: &_apb_sso_disable_ssl_cert_validation
 
 version: 1.0
 name: rhpam-apb
-description:  Red Hat Process Automation Manager 7.0 (APB)
+description: Red Hat Process Automation Manager 7.0 (APB)
 bindable: false
 async: unsupported
 metadata:

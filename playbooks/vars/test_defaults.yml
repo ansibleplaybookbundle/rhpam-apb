@@ -1,0 +1,3 @@
+apb_image_stream_tag: 1.1
+provision_failed: false
+image_stream_namespace: openshift
