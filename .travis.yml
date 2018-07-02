@@ -12,7 +12,7 @@ stages:
   - test
 
 env:
-  - ANSIBLE_ROLES_PATH=$ANSIBLE_ROLES_PATH:$PWD/roles OPENSHIFT_VERSION=latest
+#  - ANSIBLE_ROLES_PATH=$ANSIBLE_ROLES_PATH:$PWD/roles OPENSHIFT_VERSION=latest
   - ANSIBLE_ROLES_PATH=$ANSIBLE_ROLES_PATH:$PWD/roles OPENSHIFT_VERSION=v3.9.0
 
 before_install:
@@ -44,7 +44,7 @@ jobs:
 # Test Stage
 script:
   - export APB_NAME=rhpam-apb
-  - apb build
+  - apb build -f Dockerfile.canary
   - export B64_SPEC=`base64 apb.yml | tr -d '\n'`
   - export APB_LABEL=`docker inspect --format='{{json .Config.Labels}}' $(docker images -q | head -n 1) | jq -r '."com.redhat.apb.spec"'`
   - if [ "$B64_SPEC" != "$APB_LABEL" ]; then { echo "APB Spec Label doesn't match"; exit -1; }; fi;
