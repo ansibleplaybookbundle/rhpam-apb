@@ -5,7 +5,7 @@
 %endif
 
 Name: 		rhpam-apb-role
-Version:	1.0.0
+Version:	1.0.1
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Ansible Playbook Bundle for Red Hat Process Automation Manager
 
@@ -31,4 +31,7 @@ mv roles %{buildroot}/opt/ansible
 /opt/ansible/roles
 
 %changelog
+* Mon Jul 02 2018 Ruben Romero Montes <rromerom@redhat.com> 1.0.1-1
+- new package built with tito
+
 
