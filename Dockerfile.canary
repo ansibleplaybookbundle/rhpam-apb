@@ -1,4 +1,4 @@
-FROM ansibleplaybookbundle/apb-base:canary
+FROM ansibleplaybookbundle/apb-base:latest
 
 LABEL \
     author="Ansible Playbook Bundle Community"\
