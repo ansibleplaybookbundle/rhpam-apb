@@ -161,9 +161,9 @@ _apb_kieserver_external_db_port: &_apb_kieserver_external_db_port
 _apb_kieserver_external_db_name: &_apb_kieserver_external_db_name
   name: apb_kieserver_external_db_name
   title: Database Name
-  description: Database name. Required for External database. For example, rhpam
+  description: External Database name. Required for External database. For example, rhpam
   type: string
-  display_group: Database name for the external database server (only if Database type is External)
+  display_group: External Database (only if Database type is External)
 _apb_kieserver_external_db_url: &_apb_kieserver_external_db_url
   name: apb_kieserver_external_db_url
   title: Database JDBC URL
