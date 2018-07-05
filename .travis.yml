@@ -12,8 +12,12 @@ stages:
   - test
 
 env:
-  - ANSIBLE_ROLES_PATH=$ANSIBLE_ROLES_PATH:$PWD/roles OPENSHIFT_VERSION=latest
-  - ANSIBLE_ROLES_PATH=$ANSIBLE_ROLES_PATH:$PWD/roles OPENSHIFT_VERSION=v3.9.0
+  global:
+    - APB_NAME=rhpam-apb
+    - ANSIBLE_ROLES_PATH=$ANSIBLE_ROLES_PATH:$PWD/roles
+  matrix:
+    - OPENSHIFT_VERSION=v3.9.0
+    # - OPENSHIFT_VERSION=latest
 
 before_install:
   - sudo apt-get update -qq
@@ -41,16 +45,16 @@ jobs:
       # Verify apb.yml file is valid YAML
       - yamllint apb.yml
 
-# Test Stage
-script:
-  - export APB_NAME=rhpam-apb
-  - apb build -f Dockerfile.canary
-  - export B64_SPEC=`base64 apb.yml | tr -d '\n'`
-  - export APB_LABEL=`docker inspect --format='{{json .Config.Labels}}' $(docker images -q | head -n 1) | jq -r '."com.redhat.apb.spec"'`
-  - if [ "$B64_SPEC" != "$APB_LABEL" ]; then { echo "APB Spec Label doesn't match"; exit -1; }; fi;
-  - sudo docker cp $(docker create docker.io/openshift/origin:$OPENSHIFT_VERSION):/bin/oc /usr/local/bin/oc
-  - oc cluster up
-  - oc login -u system:admin
-  - oc create -n openshift -f https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/rhpam70-dev/rhpam70-image-streams.yaml
-  - oc new-project $APB_NAME
-  - docker run --rm --net=host -e "POD_NAME=$APB_NAME-pod" -e "POD_NAMESPACE=$APB_NAME" -v $HOME/.kube:/opt/apb/.kube:z -u $UID $APB_NAME test --extra-vars "travis=true namespace=$APB_NAME"
+    # Test Stage
+  - stage: test
+    script:
+      - apb build -f Dockerfile.canary
+      - export B64_SPEC=`base64 apb.yml | tr -d '\n'`
+      - export APB_LABEL=`docker inspect --format='{{json .Config.Labels}}' $(docker images -q | head -n 1) | jq -r '."com.redhat.apb.spec"'`
+      - if [ "$B64_SPEC" != "$APB_LABEL" ]; then { echo "APB Spec Label doesn't match"; exit -1; }; fi;
+      - sudo docker cp $(docker create docker.io/openshift/origin:$OPENSHIFT_VERSION):/bin/oc /usr/local/bin/oc
+      - oc cluster up
+      - oc login -u system:admin
+      - oc create -n openshift -f https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/rhpam70-dev/rhpam70-image-streams.yaml
+      - oc new-project $APB_NAME
+      - docker run --rm --net=host -e "POD_NAME=$APB_NAME-pod" -e "POD_NAMESPACE=$APB_NAME" -v $HOME/.kube:/opt/apb/.kube:z -u $UID $APB_NAME test --extra-vars "travis=true namespace=$APB_NAME"
