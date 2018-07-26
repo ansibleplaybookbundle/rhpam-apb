@@ -48,7 +48,7 @@ jobs:
     # Test Stage
   - stage: test
     script:
-      - apb build -f Dockerfile.canary
+      - apb build -f Dockerfile-canary
       - export B64_SPEC=`base64 apb.yml | tr -d '\n'`
       - export APB_LABEL=`docker inspect --format='{{json .Config.Labels}}' $(docker images -q | head -n 1) | jq -r '."com.redhat.apb.spec"'`
       - if [ "$B64_SPEC" != "$APB_LABEL" ]; then { echo "APB Spec Label doesn't match"; exit -1; }; fi;
