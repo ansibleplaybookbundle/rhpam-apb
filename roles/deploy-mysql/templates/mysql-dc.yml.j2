@@ -16,7 +16,7 @@ spec:
         automatic: true
         containerNames:
           - mysql
-        _from:
+        from:
           kind: ImageStreamTag
           name: '{{ mysql_image_name }}:{{ mysql_image_tag }}'
           namespace: '{{ mysql_image_namespace }}'
@@ -63,7 +63,7 @@ spec:
       volumes:
       - name: mysql-data
 {% if mysql_volume_size == "" %}
-        emptyDir: []
+        emptyDir: {}
 {% else %}
         persistentVolumeClaim:
           claimName: '{{ deployment_name }}'

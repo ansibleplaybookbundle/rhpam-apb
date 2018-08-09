@@ -117,6 +117,13 @@
     kieserver_s2i: true
   when: _apb_plan_id == "immutable-kie"
 
+- debug:
+    msg: "[WARNING] REMOVE NEXT TASK WHEN https://github.com/ansible/ansible/issues/42302 IS SOLVED"
+
+- name: "[RHPAM] remove ReplicationControllers"
+  shell: "oc delete rc -l app={{ application_name }} -n {{ namespace }}"
+  when: state == "absent"
+
 - name: "[RHPAM] Fail if there were errors"
   fail: msg="[Bundle Failed! - Plan - '{{ _apb_plan_id }}']"
   when: provision_failed

@@ -1,29 +1,30 @@
 ---
 - name: "[TEST][{{ plan_id }}] Get Deployment Config {{ name }}"
-  openshift_raw:
+  k8s:
     state: present
     definition:
       apiVersion: v1
       kind: DeploymentConfig
-      name: '{{ name }}'
-      namespace: '{{ namespace }}'
+      metadata:
+        name: '{{ name }}'
+        namespace: '{{ namespace }}'
   register: dc
   retries: 30
   delay: 10
   ignore_errors: true
-  until: dc.result.status.available_replicas == dc.result.status.replicas
+  until: dc.result.status.availableReplicas == dc.result.status.replicas
 
 - name: "[TEST][{{ plan_id }}] Check Deployment Config has {{ replicas }} replicas"
   asb_save_test_result:
     fail: true
-    msg: "DeploymentConfig {{ name }} doesn't seem to be ready: Expected {{ replicas }} / {{ replicas }} - Got {{ dc.result.status.available_replicas }} / {{ dc.result.status.replicas }}"
+    msg: "DeploymentConfig {{ name }} doesn't seem to be ready: Expected {{ replicas }} / {{ replicas }} - Got {{ dc.result.status.availableReplicas }} / {{ dc.result.status.replicas }}"
   when:
     - dc.failed or dc.result.status.replicas != replicas | int
-    - travis is undefined
+    - in_cluster
 
 - name: "[TEST][{{ plan_id }}] Check Deployment Config has {{ replicas }} replicas"
   fail:
-    msg: "DeploymentConfig {{ name }} doesn't seem to be ready: Expected {{ replicas }} / {{ replicas }} - Got {{ dc.result.status.available_replicas }} / {{ dc.result.status.replicas }}"
+    msg: "DeploymentConfig {{ name }} doesn't seem to be ready: Expected {{ replicas }} / {{ replicas }} - Got {{ dc.result.status.availableReplicas }} / {{ dc.result.status.replicas }}"
   when:
     - dc.failed or dc.result.status.replicas != replicas | int
-    - travis is defined
+    - not in_cluster

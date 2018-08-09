@@ -15,7 +15,7 @@ spec:
       automatic: true
       containerNames:
       - smartrouter
-      _from:
+      from:
         kind: ImageStreamTag
         namespace: '{{ smartrouter_image_namespace }}'
         name: '{{ smartrouter_image_name }}:{{ smartrouter_image_tag }}'

@@ -15,7 +15,7 @@ spec:
         automatic: true
         containerNames:
           - kieserver
-        _from:
+        from:
 {% if kieserver_s2i %}
           kind: ImageStream
           name: {{ kieserver_deployment_name }}

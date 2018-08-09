@@ -16,7 +16,7 @@ spec:
         automatic: true
         containerNames:
           - postgresql
-        _from:
+        from:
           kind: ImageStreamTag
           name: '{{ postgresql_image_name }}:{{ postgresql_image_tag }}'
           namespace: '{{ postgresql_image_namespace }}'
@@ -63,7 +63,7 @@ spec:
       volumes:
       - name: postgresql-data
 {% if postgresql_volume_size == "" %}
-        emptyDir: []
+        emptyDir: {}
 {% else %}
         persistentVolumeClaim:
           claimName: '{{ deployment_name }}'

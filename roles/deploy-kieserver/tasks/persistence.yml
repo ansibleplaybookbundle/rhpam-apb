@@ -1,15 +1,16 @@
 ---
 - name: "[KIE SERVER] set persistent volume claim state to {{ state }}"
-  k8s_raw:
+  k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1
       kind: PersistentVolumeClaim
-      name: '{{ kieserver_deployment_name }}-h2-data'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ kieserver_service_name }}'
+      metadata:
+        name: '{{ kieserver_deployment_name }}-h2-data'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ application_name }}'
+          service: '{{ kieserver_service_name }}'
       spec:
         accessModes:
           - ReadWriteOnce

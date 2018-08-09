@@ -1,15 +1,16 @@
 ---
 - name: "[KIE SERVER] set service state to {{ state }}"
-  k8s_raw:
+  k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1
       kind: Service
-      name: '{{ kieserver_deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ kieserver_service_name }}'
+      metadata:
+        name: '{{ kieserver_deployment_name }}'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ application_name }}'
+          service: '{{ kieserver_service_name }}'
       spec:
         selector:
           app: '{{ application_name }}'
@@ -24,19 +25,20 @@
 
 - name: "[KIE SERVER] set PING service state to {{ state }}"
   when: _apb_plan_id != 'trial'
-  k8s_raw:
+  k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1
       kind: Service
-      name: '{{ kieserver_deployment_name }}-ping'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ kieserver_service_name }}'
-      annotations:
-        service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-        description: "The JGroups ping port for clustering."
+      metadata:
+        name: '{{ kieserver_deployment_name }}-ping'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ application_name }}'
+          service: '{{ kieserver_service_name }}'
+        annotations:
+          service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+          description: "The JGroups ping port for clustering."
       spec:
         selector:
           app: '{{ application_name }}'

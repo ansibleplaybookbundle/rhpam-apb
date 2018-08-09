@@ -36,7 +36,7 @@
         route_host: '{{ bcm_host }}'
 
     - name: "[BUSINESS CENTRAL MONITORING] business central monitoring deployment status to {{ state }}"
-      openshift_raw:
+      k8s:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'businesscentral-monitoring-dc.yml.j2') | from_yaml }}"
   when: not provision_failed

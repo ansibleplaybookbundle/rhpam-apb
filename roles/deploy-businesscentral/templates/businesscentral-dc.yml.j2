@@ -15,7 +15,7 @@ spec:
         automatic: true
         containerNames:
           - businesscentral
-        _from:
+        from:
           kind: ImageStreamTag
           namespace: '{{ businesscentral_image_namespace }}'
           name: '{{ businesscentral_image_name }}:{{ businesscentral_image_tag}}'

@@ -86,7 +86,7 @@
       when: kieserver_s2i
 
     - name: "[KIE SERVER] set kieserver state to {{ state }}"
-      openshift_raw:
+      k8s:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'kieserver-dc.yml.j2') | from_yaml }}"
   when: not provision_failed

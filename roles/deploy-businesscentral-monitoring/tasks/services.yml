@@ -1,15 +1,16 @@
 ---
 - name: "[BUSINESS CENTRAL MONITORING] set service state to {{ state }}"
-  k8s_raw:
+  k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1
       kind: Service
-      name: '{{ businesscentral_deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ businesscentral_service_name }}'
+      metadata:
+        name: '{{ businesscentral_deployment_name }}'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ application_name }}'
+          service: '{{ businesscentral_service_name }}'
       spec:
         selector:
           app: '{{ application_name }}'
@@ -23,19 +24,20 @@
             targetPort: 8443
 
 - name: "[BUSINESS CENTRAL MONITORING] set PING service state to {{ state }}"
-  k8s_raw:
+  k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1
       kind: Service
-      name: '{{ businesscentral_deployment_name }}-ping'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ businesscentral_service_name }}'
-      annotations:
-        service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-        description: "The JGroups ping port for clustering."
+      metadata:
+        name: '{{ businesscentral_deployment_name }}-ping'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ application_name }}'
+          service: '{{ businesscentral_service_name }}'
+        annotations:
+          service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+          description: "The JGroups ping port for clustering."
       spec:
         selector:
           app: '{{ application_name }}'

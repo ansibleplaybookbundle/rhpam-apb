@@ -16,25 +16,26 @@
         cat '{{ keystore_path }}' | base64 -w 0 > '{{ keystore_path }}.txt'
 
     - name: Create secret from keystore
-      k8s_raw:
+      k8s:
         state: '{{ state }}'
         definition:
           apiVersion: v1
-          annotations:
-            rhpam-apb/generated: "true"
           kind: Secret
-          name: '{{ secret_name }}'
-          namespace: '{{ namespace }}'
-          labels:
-            app: '{{ application_name }}'
-            service: '{{ service_name }}'
+          metadata:
+            name: '{{ secret_name }}'
+            namespace: '{{ namespace }}'
+            annotations:
+              rhpam-apb/generated: "true"
+            labels:
+              app: '{{ application_name }}'
+              service: '{{ service_name }}'
           data: "{{ lookup('template', 'secret.yml.j2') | from_yaml }}"
   when:
     - secret_cmd.rc != 0
     - state == 'present'
 
 - name: Remove secret
-  k8s_raw:
+  k8s:
     api_version: v1
     kind: Secret
     name: '{{ secret_name }}'
