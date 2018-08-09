@@ -1,3 +1,18 @@
 ---
-- name: "[RHPAM] Test {{ action }}"
-  include_tasks: "test_{{ action }}.yml"
+- name: "[TEST] Start tests"
+  include_tasks: test_plan.yml
+  with_items:
+    - trial
+    - authoring_h2
+    - authoring_postgres
+    - authoring_mysql
+    # - immutable-kie
+    # - immutable-mon
+    # - managed
+  loop_control:
+    loop_var: plan_id
+
+- name: "[TEST][ALL] Success"
+  asb_save_test_result:
+    msg: 'All tests passed!'
+  when: in_cluster

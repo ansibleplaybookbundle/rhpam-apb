@@ -18,7 +18,7 @@
       when: mysql_volume_size != ""
 
     - name: "[MYSQL] set deployment config state to {{ state }}"
-      openshift_raw:
+      k8s:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'mysql-dc.yml.j2') | from_yaml }}"
   when: not provision_failed

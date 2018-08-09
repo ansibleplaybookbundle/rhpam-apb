@@ -6,7 +6,9 @@
     - test_{{ plan_id }}_defaults.yml
 
 - name: "[TESTS][{{ plan_id | upper }}] Create project for namespace"
-  openshift_v1_project:
+  k8s:
+    api_version: v1
+    kind: project
     name: '{{ namespace }}'
 
 - name: "[TESTS][{{ plan_id | upper }}] Run the provision role."
@@ -14,10 +16,7 @@
     name: rhpam-apb
 
 - name: "[TESTS][{{ plan_id | upper }}] Run the test role."
-  include_role:
-    name: test
-  vars:
-    action: provision
+  include_tasks: test_provision.yml
 
 - name: "[TESTS][{{ plan_id | upper }}] Run the deprovision role."
   include_role:
@@ -26,16 +25,15 @@
     state: absent
 
 - name: "[TESTS][{{ plan_id | upper }}] Run the test role."
-  include_role:
-    name: test
-  vars:
-    action: deprovision
+  include_tasks: test_deprovision.yml
 
 - name: "[TESTS][{{ plan_id | upper }}] Remove binding secret."
-  k8s_v1_secret:
+  k8s:
+    api_version: v1
     name: "{{ lookup('env', 'POD_NAME') }}"
     namespace: '{{ namespace }}'
     state: absent
+    kind: Secret
 
 - name: "[TESTS][{{ plan_id | upper }}] Cleanup tmp folder."
   file:

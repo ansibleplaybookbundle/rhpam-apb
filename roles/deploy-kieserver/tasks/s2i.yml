@@ -1,6 +1,6 @@
 ---
 - name: "[KIE SERVER] set imagestream state to {{ state }}"
-  openshift_raw:
+  k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1
@@ -13,7 +13,7 @@
           service: '{{ kieserver_service_name }}'
 
 - name: "[KIE SERVER] set buildconfig state to {{ state }}"
-  openshift_raw:
+  k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1

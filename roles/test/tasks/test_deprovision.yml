@@ -12,4 +12,4 @@
     msg: "There seem to be some resources that have not been deleted."
   when:
     - '"No resources found." not in result.stdout'
-    - travis is undefined
+    - in_cluster

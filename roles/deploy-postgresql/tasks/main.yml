@@ -18,7 +18,7 @@
       when: postgresql_volume_size != ""
 
     - name: "[POSTGRESQL] set deployment config state to {{ state }}"
-      openshift_raw:
+      k8s:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'postgresql-dc.yml.j2') | from_yaml }}"
   when: not provision_failed

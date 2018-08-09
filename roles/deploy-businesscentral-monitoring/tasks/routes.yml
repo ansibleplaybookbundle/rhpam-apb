@@ -1,15 +1,16 @@
 ---
 - name: "[BUSINESS CENTRAL MONITORING] set https route state to {{ state }}"
-  openshift_raw:
+  k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1
       kind: Route
-      name: '{{ businesscentral_deployment_name }}'
-      namespace: '{{ namespace }}'
-      labels:
-        app: '{{ application_name }}'
-        service: '{{ businesscentral_service_name }}'
+      metadata:
+        name: '{{ businesscentral_deployment_name }}'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ application_name }}'
+          service: '{{ businesscentral_service_name }}'
       spec:
         host: '{{ businesscentral_hostname }}'
         port:

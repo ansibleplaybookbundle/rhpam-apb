@@ -1,18 +1,18 @@
 ---
-- name: "[TEST][{{ plan_id }}] Secret objects"
+- name: "[TEST][{{ plan_id | upper }}] Secret objects"
   include_tasks: secret.yml
   vars:
     name: "{{ item }}"
   loop: "{{ secrets }}"
 
-- name: "[TEST][{{ plan_id }}] PersitentVolumeClaim objects"
+- name: "[TEST][{{ plan_id | upper }}] PersitentVolumeClaim objects"
   include_tasks: persistence.yml
   vars:
     name: "{{ item.name }}"
     size: "{{ item.size }}"
   loop: "{{ persistent_volume_claims }}"
 
-- name: "[TEST][{{ plan_id }}] DeploymentConfig objects"
+- name: "[TEST][{{ plan_id | upper }}] DeploymentConfig objects"
   include_tasks: deployment.yml
   vars:
     name: "{{ item.name }}"

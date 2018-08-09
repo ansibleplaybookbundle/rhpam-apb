@@ -1,12 +1,13 @@
 ---
 - name: "[TEST][{{ plan_id }}] Get PersistentVolumeClaim {{ name }}"
-  k8s_raw:
+  k8s:
     state: present
     definition:
       apiVersion: v1
       kind: PersistentVolumeClaim
-      name: '{{ name }}'
-      namespace: '{{ namespace }}'
+      metadata:
+        name: '{{ name }}'
+        namespace: '{{ namespace }}'
   register: pvc
   ignore_errors: true
 
@@ -16,14 +17,14 @@
     msg: "PersistentVolumeClaim {{ name }} does not exist"
   when:
     - pvc.failed or pvc.changed
-    - travis is undefined
+    - in_cluster
 
 - name: "[TEST][{{ plan_id }}] Check PersistentVolumeClaim exists"
   fail:
     msg: "PersistentVolumeClaim {{ name }} does not exist"
   when:
     - pvc.failed or pvc.changed
-    - travis is defined
+    - not in_cluster
 
 - name: "[TEST][{{ plan_id }}] Check PersistentVolumeClaim has {{ size }}"
   asb_save_test_result:
@@ -31,11 +32,11 @@
     msg: "PersistentVolumeClaim {{ name }}: Expected {{ size }} - Got {{ pvc.result.spec.resources.requests.storage }}"
   when:
     - pvc.result.spec.resources.requests.storage != size
-    - travis is undefined
+    - in_cluster
 
 - name: "[TEST][{{ plan_id }}] Check PersistentVolumeClaim has {{ size }}"
   fail:
     msg: "PersistentVolumeClaim {{ name }}: Expected {{ size }} - Got {{ pvc.result.spec.resources.requests.storage }}"
   when:
     - pvc.result.spec.resources.requests.storage != size
-    - travis is defined
+    - not in_cluster

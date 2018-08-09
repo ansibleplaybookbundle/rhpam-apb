@@ -21,7 +21,7 @@
       when: smartrouter_volume_size != ""
 
     - name: "[SMART ROUTER] deploy smart router"
-      openshift_raw:
+      k8s:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'smartrouter-dc.yml.j2') | from_yaml }}"
   when: not provision_failed

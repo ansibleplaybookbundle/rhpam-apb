@@ -36,7 +36,8 @@
         route_host: '{{ bc_host }}'
 
     - name: "[BUSINESS CENTRAL] deploy business central"
-      openshift_raw:
+      k8s:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'businesscentral-dc.yml.j2') | from_yaml }}"
+
   when: not provision_failed
