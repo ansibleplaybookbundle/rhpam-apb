@@ -10,12 +10,13 @@ python:
 env:
   - OPENSHIFT_VERSION=v3.9
     #- OPENSHIFT_VERSION=v3.10
-  - KUBERNETES_VERSION=v1.9.0
-    #- KUBERNETES_VERSION=v1.10.0
+    #- KUBERNETES_VERSION=v1.9.0 --> ImageStreams don't work on K8S
+    #- KUBERNETES_VERSION=v1.10.0 --> ImageStreams don't work on K8S
 # Allow failures on oc latest
 # TODO: re-enable latest when it isn't busted
 matrix:
   allow_failures:
+    - env: KUBERNETES_VERSION=v1.9.0
     - env: OPENSHIFT_VERSION=v3.10
     - env: KUBERNETES_VERSION=v1.10.0
 
@@ -27,7 +28,7 @@ script:
   - export resources_namespace='openshift'
 
   # Download test shim.
-  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ruromero/apb-test-shim/resources/apb-test.sh
+  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ansibleplaybookbundle/apb-test-shim/master/apb-test.sh
   - chmod +x ${PWD}/apb-test.sh
 
   # Run tests.

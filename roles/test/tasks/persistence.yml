@@ -12,31 +12,13 @@
   ignore_errors: true
 
 - name: "[TEST][{{ plan_id }}] Check PersistentVolumeClaim exists"
-  asb_save_test_result:
-    fail: true
-    msg: "PersistentVolumeClaim {{ name }} does not exist"
-  when:
-    - pvc.failed or pvc.changed
-    - in_cluster
-
-- name: "[TEST][{{ plan_id }}] Check PersistentVolumeClaim exists"
   fail:
     msg: "PersistentVolumeClaim {{ name }} does not exist"
   when:
     - pvc.failed or pvc.changed
-    - not in_cluster
-
-- name: "[TEST][{{ plan_id }}] Check PersistentVolumeClaim has {{ size }}"
-  asb_save_test_result:
-    fail: true
-    msg: "PersistentVolumeClaim {{ name }}: Expected {{ size }} - Got {{ pvc.result.spec.resources.requests.storage }}"
-  when:
-    - pvc.result.spec.resources.requests.storage != size
-    - in_cluster
 
 - name: "[TEST][{{ plan_id }}] Check PersistentVolumeClaim has {{ size }}"
   fail:
     msg: "PersistentVolumeClaim {{ name }}: Expected {{ size }} - Got {{ pvc.result.spec.resources.requests.storage }}"
   when:
     - pvc.result.spec.resources.requests.storage != size
-    - not in_cluster
