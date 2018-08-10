@@ -15,16 +15,7 @@
   until: dc.result.status.availableReplicas == dc.result.status.replicas
 
 - name: "[TEST][{{ plan_id }}] Check Deployment Config has {{ replicas }} replicas"
-  asb_save_test_result:
-    fail: true
-    msg: "DeploymentConfig {{ name }} doesn't seem to be ready: Expected {{ replicas }} / {{ replicas }} - Got {{ dc.result.status.availableReplicas }} / {{ dc.result.status.replicas }}"
-  when:
-    - dc.failed or dc.result.status.replicas != replicas | int
-    - in_cluster
-
-- name: "[TEST][{{ plan_id }}] Check Deployment Config has {{ replicas }} replicas"
   fail:
     msg: "DeploymentConfig {{ name }} doesn't seem to be ready: Expected {{ replicas }} / {{ replicas }} - Got {{ dc.result.status.availableReplicas }} / {{ dc.result.status.replicas }}"
   when:
     - dc.failed or dc.result.status.replicas != replicas | int
-    - not in_cluster

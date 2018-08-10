@@ -1,0 +1,45 @@
+provision_failed: false
+apb_image_stream_tag: 1.1
+image_stream_namespace: '{{ namespace }}'
+image_registry: registry.access.redhat.com
+image_streams:
+  - {
+      name: "rhpam70-businesscentral-openshift",
+      version: "{{ apb_image_stream_tag }}",
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam70-businesscentral-openshift:{{ apb_image_stream_tag }}"
+    }
+  - {
+      name: "rhpam70-businesscentral-monitoring-openshift",
+      version: "{{ apb_image_stream_tag }}",
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam70-businesscentral-monitoring-openshift:{{ apb_image_stream_tag }}"
+    }
+  - {
+      name: "rhpam70-controller-openshift",
+      version: "{{ apb_image_stream_tag }}",
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam70-controller-openshift:{{ apb_image_stream_tag }}"
+    }
+  - {
+      name: "rhpam70-kieserver-openshift",
+      version: "{{ apb_image_stream_tag }}",
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam70-kieserver-openshift:{{ apb_image_stream_tag }}"
+    }
+  - {
+      name: "rhpam70-smartrouter-openshift",
+      version: "{{ apb_image_stream_tag }}",
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam70-smartrouter-openshift:{{ apb_image_stream_tag }}"
+    }
+#  - {
+#       name: "rhpam70-businesscentral-indexing-openshift",
+#       version: "{{ apb_image_stream_tag }}",
+#       image_ref: "{{ image_registry }}/rhpam-7/rhpam70-businesscentral-indexing-openshift:{{ apb_image_stream_tag }}"
+#     }
+  - {
+      name: "postgresql",
+      version: "9.6",
+      image_ref: "{{ image_registry }}/rhscl/postgresql-96-rhel7:latest"
+    }
+  - {
+      name: "mysql",
+      version: "5.7",
+      image_ref: "{{ image_registry }}/rhscl/mysql-57-rhel7:latest"
+    }
