@@ -89,7 +89,7 @@ _apb_businesscentral_hostname: &_apb_businesscentral_hostname
   <<: *_apb_hostname
   name: apb_businesscentral_hostname
   description: Public hostname for Business Central. Generated if empty
-# KIE Process Server
+# Process Server
 _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   name: apb_kieserver_image_stream_name
   title: Process Server Image Stream Name
@@ -97,7 +97,7 @@ _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   required: true
   type: string
   default: rhpam70-kieserver-openshift
-  display_group: KIE Process Server
+  display_group: Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
   title: Process Server Username
@@ -105,7 +105,7 @@ _apb_kieserver_user: &_apb_kieserver_user
   required: true
   type: string
   default: executionUser
-  display_group: KIE Process Server
+  display_group: Process Server
 _apb_kieserver_pwd: &_apb_kieserver_pwd
   name: apb_kieserver_pwd
   title: Process Server Password
@@ -113,7 +113,7 @@ _apb_kieserver_pwd: &_apb_kieserver_pwd
   required: false
   type: string
   display_type: password
-  display_group: KIE Process Server
+  display_group: Process Server
 _apb_kieserver_hostname: &_apb_kieserver_hostname
   <<: *_apb_hostname
   name: apb_kieserver_hostname
@@ -121,19 +121,19 @@ _apb_kieserver_hostname: &_apb_kieserver_hostname
 _apb_kieserver_db_type: &_apb_kieserver_db_type
   name: apb_kieserver_db_type
   title: Database Type
-  description: Database Type to persist the KIE Process Server runtime information. DO NOT USE H2 for deploying more than 1 instance of KIE Process Server. For H2, PostgreSQL, and MySQL the database server will be deployed in a pod. To use a database server that is deployed elsewhere, select External.
+  description: Database Type to persist the Process Server runtime information. DO NOT USE H2 for deploying more than 1 instance of Process Server. For H2, PostgreSQL, and MySQL the database server will be deployed in a pod. To use a database server that is deployed elsewhere, select External.
   required: true
   type: enum
   enum: [ 'H2', 'PostgreSQL', 'MySQL', 'External' ]
   default: PostgreSQL
-  display_group: KIE Process Server
+  display_group: Process Server
 _apb_kieserver_db_size: &_apb_kieserver_db_size
   <<: *_apb_volume_size
   name: apb_kieserver_db_size
   title: Database Storage Size
   description: Persistent Volume Claim size to create for the Database. For example, 1Gi. Ignored if External is selected
   default: 1Gi
-  display_group: KIE Process Server
+  display_group: Process Server
 _apb_kieserver_external_db_driver: &_apb_kieserver_external_db_driver
   name: apb_kieserver_external_db_driver
   title: Driver name
@@ -305,9 +305,9 @@ metadata:
   displayName: Red Hat Process Automation Manager 7.0 (APB)
   documentationUrl: https://developers.redhat.com/products/bpmsuite/docs-and-apis/
   longDescription:
-    As a system engineer, you can deploy a Red Hat Process Automation Manager immutable server environment
-    on Red Hat OpenShift Container Platform to provide an infrastructure to execute processes and other business assets.
-    You can use standard integration tools to manage the immutable Process Server image.
+    As a system engineer, you can deploy a Red Hat Process Automation Manager
+    environment on Red Hat OpenShift Container Platform to provide an infrastructure
+    to develop or execute processes and other business assets.
 
     Make sure the required ImageStreamTags exist in the openshift project. See below for the required images
   console.openshift.io/iconClass: icon-processserver
@@ -331,12 +331,12 @@ plans:
       In case the generated routes need to be overridden, it is possible to set custom routes for both applications.
     free: true
     metadata:
-      displayName: Trial Environment
+      displayName: Evaluation Environment
     parameters:
       - <<: *_apb_businesscentral_hostname
         title: Business Central Public Hostname
       - <<: *_apb_kieserver_hostname
-        title: KIE Process Server Public Hostname
+        title: Process Server Public Hostname
       - *_apb_image_stream_tag
 
   - name: authoring
@@ -375,28 +375,28 @@ plans:
       - <<: *_apb_businesscentral_hostname
         display_group: Business Central
 
-      # KIE Process Server
+      # Process Server
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
 
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Process Server
+        display_group: Process Server
 
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Process Server
+        display_group: Process Server
       - *_apb_kieserver_image_stream_name
 
       # External Database
@@ -425,12 +425,12 @@ plans:
         description: Red Hat Single Sign-On Client secret for Business Central.
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Process Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. For example, kieserver
+        title: RH-SSO Process Server - Client
+        description: Red Hat Single Sign-On Client name for Process Server. If the secret, user and password are provided it will be created. For example, kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Process Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Process Server.
+        title: RH-SSO Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
@@ -443,7 +443,7 @@ plans:
       server image and displace the old one.
     free: true
     metadata:
-      displayName: Immutable Server - KIE Server
+      displayName: Immutable Server - Process Server
     parameters:
       # Common Credentials
       - *_apb_kie_admin_user
@@ -458,8 +458,8 @@ plans:
 
       # Artifact Source
       - name: apb_kieserver_container_deployment
-        title: KIE Server Container Deployment
-        description: 'KIE Server Container deployment configuration in format: containerId=groupId:artifactId:version|c2=g2:a2:v2'
+        title: Process Server Container Deployment
+        description: 'Process Server Container deployment configuration in format: containerId=groupId:artifactId:version|c2=g2:a2:v2'
         required: true
         type: string
         display_group: Artifact source
@@ -516,20 +516,20 @@ plans:
       # Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Process Server
+        display_group: Process Server
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Process Server
+        display_group: Process Server
       - *_apb_kieserver_image_stream_name
 
       # External Database
@@ -560,12 +560,12 @@ plans:
       - *_apb_sso_realm
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Process Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. For example, kieserver
+        title: RH-SSO Process Server - Client
+        description: Red Hat Single Sign-On Client name for Process Server. If the secret, user and password are provided it will be created. For example, kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Process Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Process Server.
+        title: RH-SSO Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
@@ -716,21 +716,20 @@ plans:
         type: string
         display_group: Smart Router
 
-      # KIE Process Server
+      # Process Server
       - <<: *_apb_replicas
         name: apb_kieserver_replicas
         default: 3
-        display_group: KIE Process Server
+        display_group: Process Server
       - name: apb_kieserver_sets
-        title: Sets of KIE Servers
+        title: Sets of Process Servers
         description:
-          Number of KIE Server cluster + DB that will be deployed.
-          For example, when using HA it will deploy a 2 x ( 3 x KIE Server + 1 x Database ).
-          All managed by the Smart Router
+          Number of sets of Kie Process Server cluster + database that will be deployed.
+          Each set can run separate services and other assets. All sets connect to the same Smart Router
         default: 2
         required: true
         type: number
-        display_group: KIE Process Server
+        display_group: Process Server
 
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
@@ -738,20 +737,20 @@ plans:
       ## Keystore and Secret
       - <<: *_apb_secret_name
         name: apb_kieserver_secret_name
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_name
         name: apb_kieserver_keystore_name
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_alias
         name: apb_kieserver_keystore_alias
-        display_group: KIE Process Server
+        display_group: Process Server
       - <<: *_apb_keystore_pwd
         name: apb_kieserver_keystore_pwd
-        display_group: KIE Process Server
+        display_group: Process Server
       - *_apb_kieserver_user
       - *_apb_kieserver_pwd
       - <<: *_apb_kieserver_hostname
-        display_group: KIE Process Server
+        display_group: Process Server
       - *_apb_kieserver_image_stream_name
 
       # External Database
@@ -775,12 +774,12 @@ plans:
         description: Red Hat Single Sign-On Client secret for Business Central Monitoring.
       - <<: *_apb_sso_client
         name: apb_kieserver_sso_client
-        title: RH-SSO KIE Process Server - Client
-        description: Red Hat Single Sign-On Client name for KIE Process Server. If the secret, user and password are provided it will be created. For example, kieserver
+        title: RH-SSO Process Server - Client
+        description: Red Hat Single Sign-On Client name for Process Server. If the secret, user and password are provided it will be created. For example, kieserver
       - <<: *_apb_sso_client_secret
         name: apb_kieserver_sso_client_secret
-        title: RH-SSO KIE Process Server - Client Secret
-        description: Red Hat Single Sign-On Client secret for KIE Process Server.
+        title: RH-SSO Process Server - Client Secret
+        description: Red Hat Single Sign-On Client secret for Process Server.
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
