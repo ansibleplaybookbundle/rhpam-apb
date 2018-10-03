@@ -1,0 +1,10 @@
+#!/bin/sh
+# Launch script and related configuration
+set -e
+
+SCRIPT_DIR=$(dirname $0)
+
+mkdir -p /opt/apb/{ansible,apb}
+cp -r ${SCRIPT_DIR}/playbooks /opt/apb/project
+cp -r ${SCRIPT_DIR}/roles /opt/ansible/roles
+chmod -R g=u /opt/{ansible,apb}

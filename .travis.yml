@@ -28,7 +28,7 @@ script:
   - export resources_namespace='openshift'
 
   # Download test shim.
-  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ansibleplaybookbundle/apb-test-shim/master/apb-test.sh
+  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ruromero/apb-test-shim/cekit-apb/apb-test.sh
   - chmod +x ${PWD}/apb-test.sh
 
   # Run tests.

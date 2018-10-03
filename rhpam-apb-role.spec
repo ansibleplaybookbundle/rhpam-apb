@@ -22,12 +22,12 @@ BuildArch:  noarch
 
 %install
 mkdir -p %{buildroot}/opt/apb/ %{buildroot}/opt/ansible/
-mv playbooks %{buildroot}/opt/apb/actions
+mv playbooks %{buildroot}/opt/apb/project
 mv roles %{buildroot}/opt/ansible
 
 %files
 %doc
-/opt/apb/actions
+/opt/apb/project
 /opt/ansible/roles
 
 %changelog
