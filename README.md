@@ -95,9 +95,13 @@ The following `imageStreams` should exist in the `openshift` namespace:
 
 ### RH-SSO
 
-Configures authentication of Business Central, Business Central Monitoring and KIE Process Servers against an existing Red Hat Single Sign-On instance.
+Configures authentication of Business Central, Business Central Monitoring and KIE Process Server against an existing Red Hat Single Sign-On instance.
 
 The user and password is only needed when during the startup it is necessary to create the client and secret on the provided realm. If it already exists, these fields can be left empty.
+
+## LDAP
+
+Configures authentication of Business Central, Business Central Monitoring and KIE Process Server against an existing LDAP server.
 
 ### External Maven Repository
 
@@ -106,6 +110,44 @@ It is possible to additionally use an external Maven Repository for publishing t
 ### Secrets and Keystores
 
 KIE Process Servers and Business Central (and Monitoring) requires a certificate in order to start the secure port (8443). For that, the user will be prompted to introduce the name of the secret containing a keystore with the certificate to use. If this secret doesn't exist, the APB will generate one selfsigned and use it.
+
+## Development
+
+When the `apb.yml` file is modified the base64 encoded version of the file must be generated and set to the Dockefiles and image.yml file. There's a convenience script that will do that for you.
+
+```{bash}
+$ ./prepare.sh
+Prepare Dockerfile-canary
+Done
+Prepare Dockerfile-latest
+Done
+Prepare Dockerfile-nightly
+Done
+Update image.yaml file with b64 encoded spec
+Finished prepare
+```
+
+## Build
+
+### Cekit
+
+This APB can be built using [cekit](https://cekit.readthedocs.io/en/latest/index.html)
+
+```{bash}
+$ cekit build
+2018-10-03 11:56:06,752 cekit        INFO     Generating files for docker engine.
+2018-10-03 11:56:06,812 cekit        INFO     Initializing image descriptor...
+...
+2018-10-03 11:57:31,545 cekit        INFO     Image built and available under following tags: rhpam-7/rhpam71-apb:1.0, rhpam-7/rhpam71-apb:latest
+2018-10-03 11:57:31,545 cekit        INFO     Finished!
+```
+
+### APB cli
+
+```{bash}
+Create buildconfig: 'oc new-build --binary=true --name <bundle-name>'
+Start build:        'oc start-build --follow --from-dir . <bundle-name>'
+```
 
 ## Testing
 
