@@ -27,6 +27,7 @@
       include_role:
         name: generate-secret
       vars:
+        app_name: '{{ kieserver_deployment_name }}'
         secret_name: '{{ ks_secret_name }}'
         service_name: '{{ kieserver_service_name }}'
         keystore_name: '{{ kieserver_keystore_name }}'

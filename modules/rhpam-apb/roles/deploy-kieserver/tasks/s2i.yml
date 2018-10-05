@@ -9,7 +9,8 @@
         name: '{{ kieserver_deployment_name }}'
         namespace: '{{ namespace }}'
         labels:
-          app: '{{ application_name }}'
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
           service: '{{ kieserver_service_name }}'
 
 - name: "[KIE SERVER] set buildconfig state to {{ state }}"
@@ -22,7 +23,8 @@
         name: '{{ kieserver_deployment_name }}'
         namespace: '{{ namespace }}'
         labels:
-          app: '{{ application_name }}'
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
           service: '{{ kieserver_service_name }}'
       spec:
         source:

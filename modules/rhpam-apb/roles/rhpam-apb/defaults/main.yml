@@ -1,3 +1,4 @@
+
 ---
 # Pre-provisioned users
 default_trial_pwd: RedHat
@@ -27,7 +28,35 @@ sso_url: "{{ apb_sso_url | default('', true) | trim }}"
 sso_realm: "{{ apb_sso_realm | default('', true) | trim }}"
 sso_user: "{{ apb_sso_user | default('', true) | trim }}"
 sso_pwd: "{{ apb_sso_pwd | default('', true) | trim }}"
-sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation | default(false, true) | lower }}"
+sso_disable_ssl_cert_validation: "{{ apb_sso_disable_ssl_cert_validation | default('', true) | lower }}"
+sso_principal_attribute: "{{ apb_sso_principal_attribute | default('', true) | trim }}"
+
+# LDAP
+auth_ldap_url: "{{ apb_auth_ldap_url | default('', true) | trim }}"
+auth_ldap_bind_dn: "{{ apb_auth_ldap_bind_dn | default('', true) | trim }}"
+auth_ldap_bind_credential: "{{ apb_auth_ldap_bind_credential | default('', true) | trim }}"
+auth_ldap_jaas_security_domain: "{{ apb_auth_ldap_jaas_security_domain | default('', true) | trim }}"
+auth_ldap_base_ctx_dn: "{{ apb_auth_ldap_base_ctx_dn | default('', true) | trim }}"
+auth_ldap_base_filter: "{{ apb_auth_ldap_base_filter | default('', true) | trim }}"
+auth_ldap_search_scope: "{{ apb_auth_ldap_search_scope | default('', true) | trim }}"
+auth_ldap_search_time_limit: "{{ apb_auth_ldap_search_time_limit | default('', true) }}"
+auth_ldap_distinguished_name_attribute: "{{ apb_auth_ldap_distinguished_name_attribute | default('', true) | trim }}"
+auth_ldap_parse_username: "{{ apb_auth_ldap_parse_username | default('', true) | lower }}"
+auth_ldap_username_begin_string: "{{ apb_auth_ldap_username_begin_string | default('', true) | trim }}"
+auth_ldap_username_end_string: "{{ apb_auth_ldap_username_end_string | default('', true) | trim }}"
+auth_ldap_role_attribute_id: "{{ apb_auth_ldap_role_attribute_id | default('', true) | trim }}"
+auth_ldap_roles_ctx_dn: "{{ apb_auth_ldap_roles_ctx_dn | default('', true) | trim }}"
+auth_ldap_role_filter: "{{ apb_auth_ldap_role_filter | default('', true) | trim }}"
+auth_ldap_role_recursion: "{{ apb_auth_ldap_role_recursion | default('', true) }}"
+auth_ldap_default_role: "{{ apb_auth_ldap_default_role | default('', true) | trim }}"
+auth_ldap_role_name_attribute_id: "{{ apb_auth_ldap_role_name_attribute_id | default('', true) | trim }}"
+auth_ldap_parse_role_name_from_dn: "{{ apb_auth_ldap_parse_role_name_from_dn | default('', true) | lower }}"
+auth_ldap_role_attribute_is_dn: "{{ apb_auth_ldap_role_attribute_is_dn | default('', true) | lower }}"
+auth_ldap_referral_user_attribute_id_to_check: "{{ apb_auth_ldap_referral_user_attribute_id_to_check | default('', true) | trim }}"
+
+# RoleMapping
+auth_role_mapper_roles_properties: "{{ apb_auth_role_mapper_roles_properties | default('', true) | trim }}"
+auth_role_mapper_replace_role: "{{ apb_auth_role_mapper_replace_role | default('', true) | lower }}"
 
 # HA
 kie_execution_sets: "{{ apb_kieserver_sets | default(2) }}"

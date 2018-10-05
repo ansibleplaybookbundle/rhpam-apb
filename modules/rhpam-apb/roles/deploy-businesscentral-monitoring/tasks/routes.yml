@@ -9,7 +9,8 @@
         name: '{{ businesscentral_deployment_name }}'
         namespace: '{{ namespace }}'
         labels:
-          app: '{{ application_name }}'
+          app: '{{ businesscentral_deployment_name }}'
+          application: '{{ application_name }}'
           service: '{{ businesscentral_service_name }}'
       spec:
         host: '{{ businesscentral_hostname }}'

@@ -9,7 +9,8 @@
         name: '{{ deployment_name }}'
         namespace: '{{ namespace }}'
         labels:
-          app: '{{ application_name }}'
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
           service: '{{ service_name }}'
       spec:
         accessModes:

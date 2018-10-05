@@ -4,7 +4,8 @@ metadata:
   name: {{ smartrouter_deployment_name }}
   namespace: {{ namespace }}
   labels:
-    app: {{ application_name }}
+    app: {{ smartrouter_deployment_name }}
+    application: {{ application_name }}
     service: {{ smartrouter_service_name }}
 spec:
   strategy:
@@ -22,14 +23,15 @@ spec:
   - type: ConfigChange
   replicas: {{ smartrouter_replicas }}
   selector:
-    app: {{ application_name }}
-    service: {{ smartrouter_service_name }}
+    deploymentConfig: '{{ smartrouter_deployment_name }}'
   template:
     metadata:
       name: {{ smartrouter_deployment_name }}
       labels:
-        app: {{ application_name }}
+        app: {{ smartrouter_deployment_name }}
+        application: {{ application_name }}
         service: {{ smartrouter_service_name }}
+        deploymentConfig: '{{ smartrouter_deployment_name }}'
     spec:
       terminationGracePeriodSeconds: 60
       containers:

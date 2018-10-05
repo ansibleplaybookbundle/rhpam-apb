@@ -27,7 +27,8 @@
             annotations:
               rhpam-apb/generated: "true"
             labels:
-              app: '{{ application_name }}'
+              app: '{{ app_name }}'
+              application: '{{ application_name }}'
               service: '{{ service_name }}'
           data: "{{ lookup('template', 'secret.yml.j2') | from_yaml }}"
   when:

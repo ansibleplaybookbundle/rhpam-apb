@@ -24,7 +24,7 @@ script:
   # Configure test values
   - export apb_name='rhpam-apb'
   - export dockerfile='Dockerfile-canary'
-  - export resources='https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/rhpam70-dev/rhpam70-image-streams.yaml'
+  - export resources='https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/rhpam71-dev/rhpam71-image-streams.yaml'
   - export resources_namespace='openshift'
 
   # Download test shim.
