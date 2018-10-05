@@ -1,5 +1,5 @@
 ---
-businesscentral_image_name: rhpam70-businesscentral-openshift
+businesscentral_image_name: rhpam71-businesscentral-openshift
 businesscentral_image_tag: "{{ image_stream_tag }}"
 businesscentral_image_namespace: "{{ image_stream_namespace }}"
 
@@ -20,3 +20,6 @@ businesscentral_keystore_pwd: "{{ apb_businesscentral_keystore_pwd | default(loo
 # SSO Integration
 businesscentral_sso_client: "{{ apb_sso_businesscentral_client | default('', true) | trim }}"
 businesscentral_sso_client_secret: "{{ apb_sso_businesscentral_client_secret | default('', true) | trim }}"
+
+# Git Hooks dir
+git_hooks_dir: "{{ apb_git_hooks_dir | default('', true) | trim }}"

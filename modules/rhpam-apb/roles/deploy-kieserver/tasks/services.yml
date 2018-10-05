@@ -9,12 +9,14 @@
         name: '{{ kieserver_deployment_name }}'
         namespace: '{{ namespace }}'
         labels:
-          app: '{{ application_name }}'
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
           service: '{{ kieserver_service_name }}'
+        annotations:
+          description: All the KIE server web server's ports.
       spec:
         selector:
-          app: '{{ application_name }}'
-          service: '{{ kieserver_service_name }}'
+          deploymentConfig: '{{ kieserver_deployment_name }}'
         ports:
           - name: http
             port: 8080
@@ -34,15 +36,15 @@
         name: '{{ kieserver_deployment_name }}-ping'
         namespace: '{{ namespace }}'
         labels:
-          app: '{{ application_name }}'
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
           service: '{{ kieserver_service_name }}'
         annotations:
           service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
           description: "The JGroups ping port for clustering."
       spec:
         selector:
-          app: '{{ application_name }}'
-          service: '{{ kieserver_service_name }}'
+          deploymentConfig: '{{ kieserver_deployment_name }}'
         ports:
           - name: ping
             port: 8888

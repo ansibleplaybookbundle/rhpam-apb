@@ -28,6 +28,7 @@
       include_role:
         name: generate-secret
       vars:
+        app_name: '{{ businesscentral_deployment_name }}'
         secret_name: '{{ bcm_secret_name }}'
         service_name: '{{ businesscentral_service_name }}'
         keystore_name: '{{ businesscentral_keystore_name }}'

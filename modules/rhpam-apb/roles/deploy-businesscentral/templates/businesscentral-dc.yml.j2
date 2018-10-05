@@ -4,7 +4,8 @@ metadata:
   name: {{ businesscentral_deployment_name }}
   namespace: {{ namespace }}
   labels:
-    app: {{ application_name }}
+    app: {{ businesscentral_deployment_name }}
+    application: {{ application_name }}
     service: {{ businesscentral_service_name }}
 spec:
   strategy:
@@ -22,14 +23,15 @@ spec:
     - type: ConfigChange
   replicas: 1
   selector:
-    app: '{{ application_name }}'
-    service: {{ businesscentral_service_name }}
+    deploymentConfig: '{{ businesscentral_deployment_name }}'
   template:
     metadata:
       name: '{{ businesscentral_deployment_name }}'
       labels:
-        app: '{{ application_name }}'
-        service: {{ businesscentral_service_name }}
+        app: {{ businesscentral_deployment_name }}
+        application: {{ application_name }}
+        service: '{{ businesscentral_service_name }}'
+        deploymentConfig: '{{ businesscentral_deployment_name }}'
     spec:
       terminationGracePeriodSeconds: 60
       containers:
@@ -94,6 +96,10 @@ spec:
             - name: MAVEN_REPO_PASSWORD
               value: '{{ external_maven_repo_pwd }}'
 {% endif %}
+{% if git_hooks_dir != "" %}
+            - name: GIT_HOOKS_DIR
+              value: '{{ git_hooks_dir }}'
+{% endif %}
             - name: KIE_MAVEN_USER
               value: '{{ businesscentral_maven_repo_user }}'
             - name: KIE_MAVEN_PWD
@@ -131,8 +137,60 @@ spec:
               value: '{{ sso_pwd }}'
             - name: SSO_DISABLE_SSL_CERTIFICATE_VALIDATION
               value: '{{ sso_disable_ssl_cert_validation }}'
+            - name: SSO_PRINCIPAL_ATTRIBUTE
+              value: '{{ sso_principal_attribute }}'
             - name: HOSTNAME_HTTPS
               value: "{{ bc_host | default('') }}"
+{% endif %}
+{% if auth_ldap_url != "" %}
+            - name: AUTH_LDAP_URL
+              value: '{{ auth_ldap_url }}'
+            - name: AUTH_LDAP_BIND_DN
+              value: '{{ auth_ldap_bind_dn }}'
+            - name: AUTH_LDAP_BIND_CREDENTIAL
+              value: '{{ auth_ldap_bind_credential }}'
+            - name: AUTH_LDAP_JAAS_SECURITY_DOMAIN
+              value: '{{ auth_ldap_jaas_security_domain }}'
+            - name: AUTH_LDAP_BASE_CTX_DN
+              value: '{{ auth_ldap_base_ctx_dn }}'
+            - name: AUTH_LDAP_BASE_FILTER
+              value: '{{ auth_ldap_base_filter }}'
+            - name: AUTH_LDAP_SEARCH_SCOPE
+              value: '{{ auth_ldap_search_scope }}'
+            - name: AUTH_LDAP_SEARCH_TIME_LIMIT
+              value: '{{ auth_ldap_search_time_limit }}'
+            - name: AUTH_LDAP_DISTINGUISHED_NAME_ATTRIBUTE
+              value: '{{ auth_ldap_distinguished_name_attribute }}'
+            - name: AUTH_LDAP_PARSE_USERNAME
+              value: '{{ auth_ldap_parse_username }}'
+            - name: AUTH_LDAP_USERNAME_BEGIN_STRING
+              value: '{{ auth_ldap_username_begin_string }}'
+            - name: AUTH_LDAP_USERNAME_END_STRING
+              value: '{{ auth_ldap_username_end_string }}'
+            - name: AUTH_LDAP_ROLE_ATTRIBUTE_ID
+              value: '{{ auth_ldap_role_attribute_id }}'
+            - name: AUTH_LDAP_ROLES_CTX_DN
+              value: '{{ auth_ldap_roles_ctx_dn }}'
+            - name: AUTH_LDAP_ROLE_FILTER
+              value: '{{ auth_ldap_role_filter }}'
+            - name: AUTH_LDAP_ROLE_RECURSION
+              value: '{{ auth_ldap_role_recursion }}'
+            - name: AUTH_LDAP_DEFAULT_ROLE
+              value: '{{ auth_ldap_default_role }}'
+            - name: AUTH_LDAP_ROLE_NAME_ATTRIBUTE_ID
+              value: '{{ auth_ldap_role_name_attribute_id }}'
+            - name: AUTH_LDAP_PARSE_ROLE_NAME_FROM_DN
+              value: '{{ auth_ldap_parse_role_name_from_dn }}'
+            - name: AUTH_LDAP_ROLE_ATTRIBUTE_IS_DN
+              value: '{{ auth_ldap_role_attribute_is_dn }}'
+            - name: AUTH_LDAP_REFERRAL_USER_ATTRIBUTE_ID_TO_CHECK
+              value: '{{ auth_ldap_referral_user_attribute_id_to_check }}'
+{% endif %}
+{% if auth_role_mapper_roles_properties != "" %}
+            - name: AUTH_ROLE_MAPPER_ROLES_PROPERTIES
+              value: '{{ auth_role_mapper_roles_properties }}'
+            - name: AUTH_ROLE_MAPPER_REPLACE_ROLE
+              value: '{{ auth_role_mapper_replace_role }}'
 {% endif %}
           volumeMounts:
             - name: businesscentral-certs

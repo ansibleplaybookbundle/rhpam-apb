@@ -4,12 +4,12 @@ metadata:
   name: '{{ deployment_name }}'
   namespace: '{{ namespace }}'
   labels:
-    app: '{{ application_name }}'
+    app: '{{ kieserver_deployment_name }}'
+    application: '{{ application_name }}'
     service: '{{ service_name }}'
 spec:
   selector:
-    app: '{{ application_name }}'
-    service: '{{ service_name }}'
+    deploymentConfig: '{{ deployment_name }}'
   triggers:
     - type: ConfigChange
     - type: ImageChange
@@ -25,8 +25,10 @@ spec:
   template:
     metadata:
       labels:
-        app: '{{ application_name }}'
+        app: '{{ kieserver_deployment_name }}'
+        application: '{{ application_name }}'
         service: '{{ service_name }}'
+        deploymentConfig: '{{ deployment_name }}'
     spec:
       containers:
         - name: postgresql
