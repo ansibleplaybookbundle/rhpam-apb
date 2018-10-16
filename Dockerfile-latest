@@ -1,6 +1,8 @@
 FROM ansibleplaybookbundle/apb-base:latest
 
-LABEL "com.redhat.apb.spec"=\
+LABEL \
+    author="Ansible Playbook Bundle Community"\
+    com.redhat.apb.spec=\
 "LS0tCiMgQ29tbW9uIENyZWRlbnRpYWxzCl9hcGJfa2llX2FkbWluX3VzZXI6ICZfYXBiX2tpZV9h\
 ZG1pbl91c2VyCiAgbmFtZTogYXBiX2tpZV9hZG1pbl91c2VyCiAgdGl0bGU6IEFkbWluIFVzZXJu\
 YW1lCiAgZGVzY3JpcHRpb246IEFkbWluIHVzZXIgbmFtZSBmb3IgQnVzaW5lc3MgQ2VudHJhbCBh\
