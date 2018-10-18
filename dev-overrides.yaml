@@ -1,0 +1,3 @@
+schema_version: 1
+
+from: "ansibleplaybookbundle/apb-base:latest"
