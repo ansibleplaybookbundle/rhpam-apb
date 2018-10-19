@@ -664,7 +664,6 @@ plans:
         description: Number of Replicas of the Process Server that will be initially deployed
         default: 2
 
-
       # Artifact Source
       - name: apb_kieserver_container_deployment
         title: Process Server Container Deployment
@@ -980,10 +979,6 @@ plans:
         display_group: Smart Router
 
       # Process Server
-      - <<: *_apb_replicas
-        name: apb_kieserver_replicas
-        default: 3
-        display_group: Process Server
       - name: apb_kieserver_sets
         title: Sets of Process Servers
         description:
@@ -993,7 +988,10 @@ plans:
         required: true
         type: number
         display_group: Process Server
-
+      - <<: *_apb_replicas
+        name: apb_kieserver_replicas
+        default: 3
+        display_group: Process Server
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
 
