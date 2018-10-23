@@ -19,16 +19,16 @@ _apb_image_stream_tag: &_apb_image_stream_tag
   name: apb_image_stream_tag
   title: Image version
   description: Tag version of the ImageStream to use. It must exist in the openshift namespace.
-  default: '1.0'
   required: true
   type: string
+  default: '1.0'
 # HA
 _apb_replicas: &_apb_replicas
   title: Number of replicas
   description: Number of Replicas that will be initially deployed
-  default: 3
   required: true
   type: number
+  default: 3
 # External Maven Repository
 _apb_maven_repo_url: &_apb_maven_repo_url
   name: apb_maven_repo_url
@@ -97,6 +97,22 @@ _apb_git_hooks_dir: &_apb_git_hooks_dir
   description: The directory to use for git hooks, if required. e.g. /opt/eap/standalone/data/kie/git/hooks
   required: false
   type: string
+  display_group: Business Central
+_apb_businesscentral_maven_repo_user: &_apb_businesscentral_maven_repo_user
+  name: apb_businesscentral_maven_repo_user
+  title: Maven Repository Username
+  description: Username to use to interact with the Business Central Maven repository.
+  required: false
+  type: string
+  default: mavenUser
+  display_group: Business Central
+_apb_businesscentral_maven_repo_pwd: &_apb_businesscentral_maven_repo_pwd
+  name: apb_businesscentral_maven_repo_pwd
+  title: Maven Repository Password
+  description: Password to use to interact with the Business Central Maven repository. Generated if empty
+  required: false
+  type: string
+  display_type: password
   display_group: Business Central
 # Process Server
 _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
@@ -249,15 +265,13 @@ _apb_controller_user: &_apb_controller_user
   required: false
   type: string
   default: monitorUser
-  display_group: Controller Integration
 _apb_controller_pwd: &_apb_controller_pwd
   name: apb_controller_pwd
   title: Controller Password
-  description: User password to access the Controller.
+  description: User password to access the Controller. Generated if empty.
   required: false
   type: string
   display_type: password
-  display_group: Controller Integration
 # RH-SSO
 _apb_sso_url: &_apb_sso_url
   name: apb_sso_url
@@ -556,6 +570,13 @@ plans:
         display_group: Business Central
       # Git hooks
       - *_apb_git_hooks_dir
+      # Other users
+      - <<: *_apb_controller_user
+        display_group: Business Central
+      - <<: *_apb_controller_pwd
+        display_group: Business Central
+      - *_apb_businesscentral_maven_repo_user
+      - *_apb_businesscentral_maven_repo_pwd
 
       # Process Server
       - *_apb_kieserver_db_type
@@ -760,8 +781,10 @@ plans:
       - *_apb_controller_port
       - *_apb_controller_protocol
       - *_apb_controller_token
-      - *_apb_controller_user
-      - *_apb_controller_pwd
+      - <<: *_apb_controller_user
+        display_group: Controller Integration
+      - <<: *_apb_controller_pwd
+        display_group: Controller Integration
 
       # RH - SSO
       - *_apb_sso_url
@@ -851,6 +874,11 @@ plans:
         display_group: Business Central Monitoring
       - <<: *_apb_businesscentral_hostname
         description: Public hostname for Business Central Monitoring. Generated if empty
+        display_group: Business Central Monitoring
+      # Other users
+      - <<: *_apb_controller_user
+        display_group: Business Central Monitoring
+      - <<: *_apb_controller_pwd
         display_group: Business Central Monitoring
 
       # Smart Router
@@ -959,6 +987,11 @@ plans:
         display_group: Business Central Monitoring
       - <<: *_apb_businesscentral_hostname
         description: Public hostname for Business Central Monitoring. Generated if empty
+        display_group: Business Central Monitoring
+      # Other users
+      - <<: *_apb_controller_user
+        display_group: Business Central Monitoring
+      - <<: *_apb_controller_pwd
         display_group: Business Central Monitoring
 
       # Smart Router
