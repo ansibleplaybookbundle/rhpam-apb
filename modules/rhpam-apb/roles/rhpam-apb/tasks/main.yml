@@ -36,8 +36,6 @@
   block:
     - name: "[RHPAM] Set defaults"
       set_fact:
-        controller_user: "{{ controller_user_default }}"
-        controller_pwd: "{{ lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8') }}"
         controller_svc: "{{ application_name }}-rhpamcentr"
         has_rhpamcentr: true
 
@@ -59,8 +57,6 @@
   block:
     - name: "[RHPAM] Set defaults"
       set_fact:
-        controller_user: "{{ controller_user_default }}"
-        controller_pwd: "{{ lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8') }}"
         controller_svc: "{{ application_name }}-rhpamcentrmon"
         smartrouter_deployment_name: "{{ application_name }}-smartrouter"
 
@@ -90,8 +86,6 @@
   block:
     - name: "[RHPAM] Set defaults"
       set_fact:
-        controller_user: "{{ controller_user_default }}"
-        controller_pwd: "{{ lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8') }}"
         controller_svc: "{{ application_name }}-rhpamcentrmon"
         smartrouter_deployment_name: "{{ application_name }}-smartrouter"
 
