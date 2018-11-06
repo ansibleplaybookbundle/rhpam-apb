@@ -1,0 +1,4 @@
+ppc64le:
+- rhel-7-for-power-le-rpms
+x86_64:
+- rhel-7-server-rpms
