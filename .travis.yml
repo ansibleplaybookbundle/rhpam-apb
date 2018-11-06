@@ -9,26 +9,32 @@ python:
 
 env:
   - OPENSHIFT_VERSION=v3.9
-    #- OPENSHIFT_VERSION=v3.10
+  - OPENSHIFT_VERSION=v3.10
+  - OPENSHIFT_VERSION=v3.11
     #- KUBERNETES_VERSION=v1.9.0 --> ImageStreams don't work on K8S
     #- KUBERNETES_VERSION=v1.10.0 --> ImageStreams don't work on K8S
 # Allow failures on oc latest
 # TODO: re-enable latest when it isn't busted
 matrix:
   allow_failures:
-    - env: KUBERNETES_VERSION=v1.9.0
     - env: OPENSHIFT_VERSION=v3.10
-    - env: KUBERNETES_VERSION=v1.10.0
+    - env: OPENSHIFT_VERSION=v3.11
 
 script:
   # Configure test values
   - export apb_name='rhpam-apb'
-  - export dockerfile='Dockerfile-canary'
+  - export dockerfile='target/image/Dockerfile'
   - export resources='https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/rhpam71-dev/rhpam71-image-streams.yaml'
   - export resources_namespace='openshift'
 
+  # Install and run cekit
+  - virtualenv ~/cekit
+  - source ~/cekit/bin/activate
+  - pip install -q -U cekit
+  - cekit build --overrides-file dev-overrides.yaml
+
   # Download test shim.
-  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ruromero/apb-test-shim/cekit-apb/apb-test.sh
+  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ansibleplaybookbundle/apb-test-shim/master/apb-test.sh
   - chmod +x ${PWD}/apb-test.sh
 
   # Run tests.

@@ -115,7 +115,7 @@
     msg: "[WARNING] REMOVE NEXT TASK WHEN https://github.com/ansible/ansible/issues/42302 IS SOLVED"
 
 - name: "[RHPAM] remove ReplicationControllers"
-  shell: "oc delete rc -l app={{ application_name }} -n {{ namespace }}"
+  shell: "oc delete rc -l application={{ application_name }} -n {{ namespace }}"
   when: state == "absent"
 
 - name: "[RHPAM] Fail if there were errors"
