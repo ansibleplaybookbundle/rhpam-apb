@@ -148,6 +148,9 @@ spec:
             value: '{{ controller_protocol }}'
           - name: KIE_SERVER_CONTROLLER_TOKEN
             value: '{{ controller_token }}'
+{% else %}
+          - name: KIE_SERVER_CONTROLLER_PROTOCOL
+            value: "ws"
 {% endif %}
 {% if has_router %}
           - name: KIE_SERVER_ROUTER_SERVICE
@@ -160,9 +163,13 @@ spec:
             value: '{{ router_protocol }}'
 {% endif %}
           - name: KIE_SERVER_ID
-            value: ""
+            value: '{{ kieserver_service_name }}'
           - name: KIE_SERVER_HOST
-            value: "{{ ks_host | default('') }}"
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: KIE_SERVER_PORT
+            value: "8080"
           - name: KIE_SERVER_USER
             value: '{{ kie_execution_user }}'
           - name: KIE_SERVER_PWD
