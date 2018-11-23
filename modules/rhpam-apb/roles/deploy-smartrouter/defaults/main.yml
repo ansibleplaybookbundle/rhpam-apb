@@ -14,6 +14,6 @@ smartrouter_hostname: "{{ apb_smartrouter_hostname | default('', true) | trim }}
 smartrouter_volume_size: "{{ apb_smartrouter_volume_size | default('', true) | trim }}"
 smartrouter_limits_memory: "512Mi"
 
-smartrouter_protocol: https
+smartrouter_protocol: "http"
 smartrouter_name: "KIE Server Router"
 smartrouter_id: "kie-server-router"

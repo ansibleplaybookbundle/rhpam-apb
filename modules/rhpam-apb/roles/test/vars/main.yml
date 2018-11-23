@@ -1,5 +1,5 @@
 provision_failed: false
-apb_image_stream_tag: 1.0
+apb_image_stream_tag: 1.1
 image_stream_namespace: '{{ namespace }}'
 image_registry: registry.access.redhat.com
 image_streams:

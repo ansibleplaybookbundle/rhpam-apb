@@ -50,18 +50,24 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: KIE_SERVER_ROUTER_PORT
+          value: "9000"
         - name: KIE_SERVER_ROUTER_URL_EXTERNAL
           value: "{{ smartrouter_hostname }}"
         - name: KIE_SERVER_ROUTER_ID
           value: "{{ smartrouter_id }}"
         - name: KIE_SERVER_ROUTER_NAME
           value: "{{ smartrouter_name }}"
+        - name: KIE_SERVER_ROUTER_PROTOCOL
+          value: "{{ smartrouter_protocol }}"
         - name: KIE_SERVER_CONTROLLER_USER
           value: "{{ controller_user }}"
         - name: KIE_SERVER_CONTROLLER_PWD
           value: "{{ controller_pwd }}"
         - name: KIE_SERVER_CONTROLLER_SERVICE
           value: "{{ controller_svc }}"
+        - name: KIE_SERVER_CONTROLLER_PROTOCOL
+          value: "ws"
         - name: KIE_SERVER_ROUTER_REPO
           value: "/opt/rhpam-smartrouter/data"
         - name: KIE_SERVER_ROUTER_CONFIG_WATCHER_ENABLED
