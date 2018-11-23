@@ -1,5 +1,5 @@
 ---
-kieserver_image_name: "{{ apb_kieserver_image_stream_name | default('rhpam71-kieserver-openshift') }}"
+kieserver_image_name: "{{ apb_kieserver_image_stream_name | default('rhpam72-kieserver-openshift') }}"
 kieserver_image_tag: "{{ image_stream_tag }}"
 kieserver_image_namespace: "{{ image_stream_namespace }}"
 

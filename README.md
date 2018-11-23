@@ -72,12 +72,12 @@ Deploys the following components:
 
 The following `imageStreams` should exist in the `openshift` namespace:
 
-* rhpam71-businesscentral-monitoring-openshift:1.1
-* rhpam71-businesscentral-openshift:1.1
-* rhpam71-controller-openshift:1.1
-* rhpam71-elasticsearch-openshift:1.1
-* rhpam71-kieserver-openshift:1.1
-* rhpam71-smartrouter-openshift:1.1
+* rhpam72-businesscentral-monitoring-openshift:1.0
+* rhpam72-businesscentral-openshift:1.0
+* rhpam72-controller-openshift:1.0
+* rhpam72-elasticsearch-openshift:1.0
+* rhpam72-kieserver-openshift:1.0
+* rhpam72-smartrouter-openshift:1.0
 
 ### KIE Process Server
 
@@ -138,7 +138,7 @@ $ cekit build
 2018-10-03 11:56:06,752 cekit        INFO     Generating files for docker engine.
 2018-10-03 11:56:06,812 cekit        INFO     Initializing image descriptor...
 ...
-2018-10-03 11:57:31,545 cekit        INFO     Image built and available under following tags: rhpam-7/rhpam71-apb:1.0, rhpam-7/rhpam71-apb:latest
+2018-10-03 11:57:31,545 cekit        INFO     Image built and available under following tags: rhpam-7/rhpam72-apb:1.0, rhpam-7/rhpam72-apb:latest
 2018-10-03 11:57:31,545 cekit        INFO     Finished!
 ```
 
