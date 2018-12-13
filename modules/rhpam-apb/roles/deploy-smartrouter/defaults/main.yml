@@ -1,5 +1,5 @@
 ---
-smartrouter_image_name: rhpam71-smartrouter-openshift
+smartrouter_image_name: rhpam72-smartrouter-openshift
 smartrouter_image_tag: "{{ image_stream_tag }}"
 smartrouter_image_namespace: "{{ image_stream_namespace }}"
 

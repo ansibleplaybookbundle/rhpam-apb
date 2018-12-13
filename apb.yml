@@ -21,7 +21,7 @@ _apb_image_stream_tag: &_apb_image_stream_tag
   description: Tag version of the ImageStream to use. It must exist in the openshift namespace.
   required: true
   type: string
-  default: '1.1'
+  default: '1.0'
 # HA
 _apb_replicas: &_apb_replicas
   title: Number of replicas
@@ -121,7 +121,7 @@ _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   description: Image Stream Name to use for Process Server. If you have generated a custom image (for example, to provide a database server driver), you can change this parameter to use it.
   required: true
   type: string
-  default: rhpam71-kieserver-openshift
+  default: rhpam72-kieserver-openshift
   display_group: Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
@@ -508,12 +508,12 @@ metadata:
   providerDisplayName: "Red Hat, Inc."
   serviceName: rhpam
   dependencies:
-    - 'registry.access.redhat.com/rhpam-7/rhpam71-kieserver-openshift'
-    - 'registry.access.redhat.com/rhpam-7/rhpam71-businesscentral-openshift'
-    - 'registry.access.redhat.com/rhpam-7/rhpam71-controller-openshift'
-    - 'registry.access.redhat.com/rhpam-7/rhpam71-smartrouter-openshift'
-    - 'registry.access.redhat.com/rhpam-7/rhpam71-businesscentral-monitoring-openshift'
-    - 'registry.access.redhat.com/rhscl/postgresql-96-rhel7'
+    - 'registry.access.redhat.com/rhpam-7/rhpam72-kieserver-openshift'
+    - 'registry.access.redhat.com/rhpam-7/rhpam72-businesscentral-openshift'
+    - 'registry.access.redhat.com/rhpam-7/rhpam72-controller-openshift'
+    - 'registry.access.redhat.com/rhpam-7/rhpam72-smartrouter-openshift'
+    - 'registry.access.redhat.com/rhpam-7/rhpam72-businesscentral-monitoring-openshift'
+    - 'registry.access.redhat.com/rhscl/postgresql-10-rhel7'
     - 'registry.access.redhat.com/rhscl/mysql-57-rhel7'
 tags:
   - jbpm
@@ -703,7 +703,7 @@ plans:
         display_group: Artifact source
       - name: apb_kieserver_source_ref
         title: Git Repository Reference
-        description: Git branch/tag reference. For example, rhpam71 or master
+        description: Git branch/tag reference. For example, rhpam72 or master
         required: true
         type: string
         display_group: Artifact source

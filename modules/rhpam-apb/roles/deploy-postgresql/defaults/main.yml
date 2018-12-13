@@ -1,4 +1,4 @@
 ---
 postgresql_image_name: postgresql
-postgresql_image_tag: "9.6"
+postgresql_image_tag: "10"
 postgresql_image_namespace: "{{ image_stream_namespace }}"

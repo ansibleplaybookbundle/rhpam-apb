@@ -25,5 +25,5 @@
 ### Default
 
 * postgresql_image_name: Defaults to `postgresql`
-* postgresql_image_tag: Defaults to `9.6`
+* postgresql_image_tag: Defaults to `10`
 * postgresql_image_namespace: Defaults to `openshift`
