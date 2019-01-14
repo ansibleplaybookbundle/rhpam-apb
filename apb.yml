@@ -388,7 +388,7 @@ _apb_auth_ldap_distinguished_name_attribute: &_apb_auth_ldap_distinguished_name_
   name: apb_auth_ldap_distinguished_name_attribute
   title: LDAP DN attribute
   description: The name of the attribute in the user entry that contains the DN of the user. This may be necessary if the DN of the user itself contains special characters, backslash for example, that prevent correct user mapping. If the attribute does not exist, the entry’s DN is used.
-  required: falsbie
+  required: false
   type: string
   display_group: LDAP (Optional)
 _apb_auth_ldap_parse_username: &_apb_auth_ldap_parse_username
@@ -640,6 +640,7 @@ plans:
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
+      - *_apb_sso_principal_attribute
 
       # LDAP
       - *_apb_auth_ldap_url
@@ -803,6 +804,7 @@ plans:
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
+      - *_apb_sso_principal_attribute
 
       # LDAP
       - *_apb_auth_ldap_url
@@ -845,9 +847,7 @@ plans:
       - *_apb_image_stream_tag
 
       # External Maven Repository
-      - <<: *_apb_maven_repo_url
-        required: true
-        description: External Maven Repository URL.
+      - *_apb_maven_repo_url
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
@@ -914,6 +914,7 @@ plans:
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
+      - *_apb_sso_principal_attribute
 
       # LDAP
       - *_apb_auth_ldap_url
@@ -1007,11 +1008,9 @@ plans:
         description: Specify the Persistent Volume Claim size to create. For example, 64Mi
         default: 64Mi
         display_group: Smart Router
-      - name: apb_smartrouter_hostname
-        title: Public Hostname
+      - <<: *_apb_hostname
+        name: apb_smartrouter_hostname
         description: Public hostname for Smart Router. Generated if empty
-        required: false
-        type: string
         display_group: Smart Router
 
       # Process Server
@@ -1080,6 +1079,7 @@ plans:
       - *_apb_sso_user
       - *_apb_sso_pwd
       - *_apb_sso_disable_ssl_cert_validation
+      - *_apb_sso_principal_attribute
 
       # LDAP
       - *_apb_auth_ldap_url

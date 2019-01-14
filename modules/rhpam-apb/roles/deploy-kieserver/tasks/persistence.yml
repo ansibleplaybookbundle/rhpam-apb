@@ -1,5 +1,5 @@
 ---
-- name: "[KIE SERVER] set persistent volume claim state to {{ state }}"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] set persistent volume claim state to {{ state }}"
   k8s:
     state: '{{ state }}'
     definition:

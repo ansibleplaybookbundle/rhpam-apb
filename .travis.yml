@@ -24,7 +24,7 @@ script:
   # Configure test values
   - export apb_name='rhpam-apb'
   - export dockerfile='target/image/Dockerfile'
-  - export resources='https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/rhpam72-dev/rhpam72-image-streams.yaml'
+  - export resources='https://github.com/jboss-container-images/rhpam-7-openshift-image/raw/7.2.x/rhpam72-image-streams.yaml'
   - export resources_namespace='openshift'
 
   # Install and run cekit

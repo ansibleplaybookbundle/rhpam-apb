@@ -74,12 +74,10 @@
       include_role:
         name: deploy-kieserver
       vars:
-        kieserver_mgmt_disabled: true
-        kieserver_startup_strategy: "LocalContainersStartupStrategy"
         has_router: true
         router_svc: "{{ smartrouter_deployment_name }}"
-        kieserver_deployment_name: "{{ application_name }}-kieserver-{{ item }}"
-      with_sequence: start=1 count={{ kie_execution_sets }}
+        kieserver_deployment_index: "{{ item }}"
+      with_sequence: start=0 count={{ kie_execution_sets }}
   when: _apb_plan_id == "managed"
 
 - name: "[RHPAM] Immutable Monitor Plan"

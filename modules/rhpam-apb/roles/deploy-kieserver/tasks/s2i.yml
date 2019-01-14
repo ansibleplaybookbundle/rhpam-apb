@@ -1,5 +1,5 @@
 ---
-- name: "[KIE SERVER] set imagestream state to {{ state }}"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] set imagestream state to {{ state }}"
   k8s:
     state: '{{ state }}'
     definition:
@@ -13,7 +13,7 @@
           application: '{{ application_name }}'
           service: '{{ kieserver_service_name }}'
 
-- name: "[KIE SERVER] set buildconfig state to {{ state }}"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] set buildconfig state to {{ state }}"
   k8s:
     state: '{{ state }}'
     definition:

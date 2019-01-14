@@ -1,5 +1,5 @@
 ---
-- name: "[KIE SERVER] check requirements"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] check requirements"
   block:
     - include_role:
         name: check-image-requirements
@@ -11,19 +11,19 @@
     - include_tasks: check-kie-configuration.yml
   when: state == "present"
 
-- name: "[KIE SERVER] configure application"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] configure application"
   block:
-    - name: "[KIE SERVER] configure services"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] configure services"
       include_tasks: services.yml
 
-    - name: "[KIE SERVER] configure routes"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] configure routes"
       include_tasks: routes.yml
 
-    - name: "[KIE SERVER] set default secret name if none provided"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] set default secret name if none provided"
       set_fact:
         ks_secret_name: "{{ kieserver_secret_name | default(kieserver_default_secret_name, true) }}"
 
-    - name: "[KIE SERVER] generate secret if not present"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] generate secret if not present"
       include_role:
         name: generate-secret
       vars:
@@ -35,30 +35,30 @@
         keystore_pwd: '{{ kieserver_keystore_pwd }}'
         route_host: '{{ ks_host }}'
 
-    - name: "[KIE SERVER] configure persistence"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] configure persistence"
       include_tasks: persistence.yml
       when:
         - kieserver_db_size != ""
         - kieserver_db_type == "H2"
 
-    - name: "[KIE SERVER] set db facts for any DB"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] set db facts for any DB"
       set_fact:
-        # e.g. authoring-kieserver-postgresql
-        kieserver_db_deployment: '{{ kieserver_deployment_name }}-{{ kieserver_db_type | lower }}'
-        # e.g. rhpam-kieserver-postgresql
+        # e.g. authoring-postgresql-0
+        kieserver_db_deployment: '{{ application_name }}-{{ kieserver_db_type | lower }}-{{ kieserver_deployment_index }}'
+        # e.g. rhpam-postgresql
         kieserver_db_service: '{{ kieserver_service_name }}-{{ kieserver_db_type | lower }}'
-        kieserver_db_host: '{{ kieserver_deployment_name }}-{{ kieserver_db_type | lower }}'
+        kieserver_db_host: '{{ application_name }}-{{ kieserver_db_type | lower }}-{{ kieserver_deployment_index }}'
       when:
         - kieserver_db_type != 'External'
         - kieserver_db_type != 'H2'
 
-    - name: "[KIE SERVER] set db facts for External DB"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] set db facts for External DB"
       set_fact:
         kieserver_db_host: '{{ kieserver_db[kieserver_db_type].host }}'
         kieserver_db_name: '{{ kieserver_db[kieserver_db_type].name }}'
       when: kieserver_db_type == 'External'
 
-    - name: "[KIE SERVER] call PostgreSQL role"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] call PostgreSQL role"
       include_role:
         name: deploy-postgresql
       vars:
@@ -70,7 +70,7 @@
         postgresql_pwd: '{{ kieserver_db_pwd }}'
       when: kieserver_db_type == "PostgreSQL"
 
-    - name: "[KIE SERVER] call MySQL role"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] call MySQL role"
       include_role:
         name: deploy-mysql
       vars:
@@ -82,11 +82,11 @@
         mysql_pwd: '{{ kieserver_db_pwd }}'
       when: kieserver_db_type == "MySQL"
 
-    - name: "[KIE SERVER] configure S2I"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] configure S2I"
       include_tasks: s2i.yml
       when: kieserver_s2i
 
-    - name: "[KIE SERVER] set kieserver state to {{ state }}"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] set kieserver state to {{ state }}"
       k8s:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'kieserver-dc.yml.j2') | from_yaml }}"

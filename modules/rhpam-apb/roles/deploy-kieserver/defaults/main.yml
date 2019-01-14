@@ -12,8 +12,8 @@ kieserver_s2i: false
 
 kieserver_sets: "{{ apb_kieserver_sets | default(1, true) }}"
 kieserver_replicas: "{{ apb_kieserver_replicas | default(3, true) | trim }}"
-
-kieserver_deployment_name: "{{ application_name }}-kieserver"
+kieserver_deployment_index: "0"
+kieserver_deployment_name: "{{ application_name }}-kieserver-{{ kieserver_deployment_index }}"
 kieserver_default_secret_name: "{{ kieserver_deployment_name }}"
 kieserver_service_name: "rhpam-kieserver"
 kieserver_businesscentral_maven_svc: "{{ controller_svc }}"

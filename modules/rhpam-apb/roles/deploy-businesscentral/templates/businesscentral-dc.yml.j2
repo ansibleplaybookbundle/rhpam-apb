@@ -112,14 +112,6 @@ spec:
               value: '{{ businesscentral_keystore_alias }}'
             - name: HTTPS_PASSWORD
               value: '{{ businesscentral_keystore_pwd }}'
-            - name: ADMIN_USERNAME
-              value: '{{ eap_admin_user }}'
-            - name: ADMIN_PASSWORD
-              value: '{{ eap_admin_pwd }}'
-            - name: PROBE_IMPL
-              value: probe.eap.jolokia.EapProbe
-            - name: PROBE_DISABLE_BOOT_ERRORS_CHECK
-              value: 'true'
 {% if sso_url != "" %}
             - name: SSO_URL
               value: '{{ sso_url }}'
@@ -197,7 +189,7 @@ spec:
               mountPath: "/etc/businesscentral-certs"
               readOnly: true
             - name: businesscentral-data
-              mountPath: "/opt/eap/standalone/data/bpmsuite"
+              mountPath: "/opt/eap/standalone/data/kie"
       volumes:
         - name: businesscentral-certs
           secret:

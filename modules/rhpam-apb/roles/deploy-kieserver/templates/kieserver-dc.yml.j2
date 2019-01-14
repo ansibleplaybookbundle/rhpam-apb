@@ -163,13 +163,13 @@ spec:
             value: '{{ router_protocol }}'
 {% endif %}
           - name: KIE_SERVER_ID
-            value: '{{ kieserver_service_name }}'
+            value: '{{ kieserver_deployment_name }}'
           - name: KIE_SERVER_HOST
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
+            value: "{{ ks_host | default('') }}"
+          - name: KIE_SERVER_PROTOCOL
+            value: "https"
           - name: KIE_SERVER_PORT
-            value: "8080"
+            value: "443"
           - name: KIE_SERVER_USER
             value: '{{ kie_execution_user }}'
           - name: KIE_SERVER_PWD
@@ -209,6 +209,8 @@ spec:
             value: '{{ kieserver_keystore_alias }}'
           - name: HTTPS_PASSWORD
             value: '{{ kieserver_keystore_pwd }}'
+          - name: KIE_SERVER_CONTAINER_DEPLOYMENT
+            value: '{{ kieserver_container_deployment }}'
 {% if sso_url != "" %}
           - name: SSO_URL
             value: '{{ sso_url }}'
