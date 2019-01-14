@@ -2,8 +2,6 @@
 ---
 # Pre-provisioned users
 default_trial_pwd: RedHat
-eap_admin_user: eapadmin
-eap_admin_pwd: "{{ lookup('password', tmp_folder + '/eapadmin_pwd chars=ascii_letters,digits length=8') }}"
 kie_admin_user: "{{ apb_kie_admin_user | default('adminUser', true | trim )}}"
 kie_admin_pwd: "{{ apb_kie_admin_pwd | default(lookup('password', tmp_folder + '/kieadmin_pwd chars=ascii_letters,digits length=8'), true)}}"
 kie_execution_user: "{{ apb_kieserver_user | default('executionUser', true) | trim }}"
@@ -13,8 +11,8 @@ controller_user: "{{ apb_controller_user | default('', true) | trim }}"
 controller_pwd: "{{ apb_controller_pwd | default(lookup('password', tmp_folder + '/controller_pwd chars=ascii_letters,digits length=8'), true)}}"
 
 # Maven repositories
-businesscentral_maven_repo_user: "{{ _apb_businesscentral_maven_repo_user | default('mavenUser', true) | trim }}"
-businesscentral_maven_repo_pwd: "{{ _apb_businesscentral_maven_repo_pwd | default(lookup('password', tmp_folder + '/bc_mvn_pwd chars=ascii_letters,digits length=8'), true) }}"
+businesscentral_maven_repo_user: "{{ apb_businesscentral_maven_repo_user | default('mavenUser', true) | trim }}"
+businesscentral_maven_repo_pwd: "{{ apb_businesscentral_maven_repo_pwd | default(lookup('password', tmp_folder + '/bc_mvn_pwd chars=ascii_letters,digits length=8'), true) }}"
 external_maven_repo_url: "{{ apb_maven_repo_url | default('', true) | trim }}"
 external_maven_repo_user: "{{ apb_maven_repo_user | default('', true) | trim }}"
 external_maven_repo_pwd: "{{ apb_maven_repo_pwd | default('', true) | trim }}"

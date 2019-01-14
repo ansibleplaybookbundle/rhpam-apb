@@ -1,6 +1,6 @@
 ---
 - block:
-    - name: "[KIE SERVER] Check H2 configuration is valid"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] Check H2 configuration is valid"
       shell: >
         echo "[Invalid H2 Configuration] - H2 database cannot be used with a clustered KIE Server. Choose a different option." > /dev/termination-log
 
@@ -11,7 +11,7 @@
     - kieserver_replicas > 1
 
 - block:
-    - name: "[KIE SERVER] Check External DB - HA configuration is valid"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] Check External DB - HA configuration is valid"
       shell: >
         echo "[Invalid HA Configuration] - External database cannot be used with more than one Set of Process Servers. Choose a different option." > /dev/termination-log
 
@@ -22,7 +22,7 @@
     - kieserver_sets > 1
 
 - block:
-    - name: "[KIE SERVER] Check External DB configuration is valid"
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] Check External DB configuration is valid"
       shell: >
         echo "[Invalid DB Configuration] - Missing required parameters for external DB. Required: DRIVER, HOST, PORT, DIALECT, URL, DB_NAME" > /dev/termination-log
 

@@ -1,5 +1,5 @@
 ---
-- name: "[KIE SERVER] set https route state to {{ state }}"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] set https route state to {{ state }}"
   k8s:
     state: '{{ state }}'
     definition:
@@ -24,7 +24,7 @@
           name: '{{ kieserver_deployment_name }}'
   register: route_raw
 
-- name: "[KIE SERVER] set route host"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] set route host"
   set_fact:
     ks_host: "{{ route_raw.result.spec.host }}"
   when: state == 'present'

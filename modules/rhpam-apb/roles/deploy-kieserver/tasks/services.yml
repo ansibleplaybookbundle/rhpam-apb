@@ -1,5 +1,5 @@
 ---
-- name: "[KIE SERVER] set service state to {{ state }}"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] set service state to {{ state }}"
   k8s:
     state: '{{ state }}'
     definition:
@@ -25,7 +25,7 @@
             port: 8443
             target_port: 8443
 
-- name: "[KIE SERVER] set PING service state to {{ state }}"
+- name: "[KIE SERVER {{ kieserver_deployment_index }}] set PING service state to {{ state }}"
   when: _apb_plan_id != 'trial'
   k8s:
     state: '{{ state }}'
