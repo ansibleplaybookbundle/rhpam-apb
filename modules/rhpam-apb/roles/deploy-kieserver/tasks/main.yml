@@ -90,4 +90,5 @@
       k8s:
         state: '{{ state }}'
         definition: "{{ lookup('template', 'kieserver-dc.yml.j2') | from_yaml }}"
+
   when: not provision_failed

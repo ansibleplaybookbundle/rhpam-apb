@@ -75,6 +75,7 @@ _apb_keystore_pwd: &_apb_keystore_pwd
   description: Password protecting both the Keystore and the Certificate. Generated if empty
   required: false
   type: string
+  min_length: 6
   display_type: password
 _apb_volume_size: &_apb_volume_size
   title: Workspace Storage Size
@@ -508,13 +509,13 @@ metadata:
   providerDisplayName: "Red Hat, Inc."
   serviceName: rhpam
   dependencies:
-    - 'registry.access.redhat.com/rhpam-7/rhpam72-kieserver-openshift'
-    - 'registry.access.redhat.com/rhpam-7/rhpam72-businesscentral-openshift'
-    - 'registry.access.redhat.com/rhpam-7/rhpam72-controller-openshift'
-    - 'registry.access.redhat.com/rhpam-7/rhpam72-smartrouter-openshift'
-    - 'registry.access.redhat.com/rhpam-7/rhpam72-businesscentral-monitoring-openshift'
-    - 'registry.access.redhat.com/rhscl/postgresql-10-rhel7'
-    - 'registry.access.redhat.com/rhscl/mysql-57-rhel7'
+    - 'registry.redhat.io/rhpam-7/rhpam72-kieserver-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam72-businesscentral-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam72-controller-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam72-smartrouter-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam72-businesscentral-monitoring-openshift'
+    - 'registry.redhat.io/rhscl/postgresql-10-rhel7'
+    - 'registry.redhat.io/rhscl/mysql-57-rhel7'
 tags:
   - jbpm
   - rhpam
