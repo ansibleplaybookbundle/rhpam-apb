@@ -8,4 +8,4 @@
   roles:
     - role: ansibleplaybookbundle.asb-modules
     - role: test
-      in_cluster: False
+      in_cluster: false
