@@ -4,4 +4,3 @@ x86_64:
 - rhel-7-server-ansible-2.7-rpms
 - rhel-7-server-ansible-runner-1.1-rpms
 - rhel-7-server-extras-rpms
-- rh-gluster-3-for-rhel-7-server-rpms
