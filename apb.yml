@@ -21,7 +21,7 @@ _apb_image_stream_tag: &_apb_image_stream_tag
   description: Tag version of the ImageStream to use. It must exist in the openshift namespace.
   required: true
   type: string
-  default: '1.0'
+  default: '1.1'
 # HA
 _apb_replicas: &_apb_replicas
   title: Number of replicas
@@ -900,6 +900,18 @@ plans:
         name: apb_smartrouter_hostname
         description: Public hostname for Smart Router. Generated if empty
         display_group: Smart Router
+      - <<: *_apb_secret_name
+        name: apb_smartrouter_secret_name
+        display_group: Smart Router
+      - <<: *_apb_keystore_name
+        name: apb_smartrouter_keystore_name
+        display_group: Smart Router
+      - <<: *_apb_keystore_alias
+        name: apb_smartrouter_keystore_alias
+        display_group: Smart Router
+      - <<: *_apb_keystore_pwd
+        name: apb_smartrouter_keystore_pwd
+        display_group: Smart Router
 
       # RH - SSO
       - *_apb_sso_url
@@ -1012,6 +1024,18 @@ plans:
       - <<: *_apb_hostname
         name: apb_smartrouter_hostname
         description: Public hostname for Smart Router. Generated if empty
+        display_group: Smart Router
+      - <<: *_apb_secret_name
+        name: apb_smartrouter_secret_name
+        display_group: Smart Router
+      - <<: *_apb_keystore_name
+        name: apb_smartrouter_keystore_name
+        display_group: Smart Router
+      - <<: *_apb_keystore_alias
+        name: apb_smartrouter_keystore_alias
+        display_group: Smart Router
+      - <<: *_apb_keystore_pwd
+        name: apb_smartrouter_keystore_pwd
         display_group: Smart Router
 
       # Process Server

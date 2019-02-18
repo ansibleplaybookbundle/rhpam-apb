@@ -52,6 +52,8 @@ spec:
               fieldPath: status.podIP
         - name: KIE_SERVER_ROUTER_PORT
           value: "9000"
+        - name: KIE_SERVER_ROUTER_PORT_TLS
+          value: "9443"
         - name: KIE_SERVER_ROUTER_URL_EXTERNAL
           value: "{{ smartrouter_hostname }}"
         - name: KIE_SERVER_ROUTER_ID
@@ -60,6 +62,12 @@ spec:
           value: "{{ smartrouter_name }}"
         - name: KIE_SERVER_ROUTER_PROTOCOL
           value: "{{ smartrouter_protocol }}"
+        - name: KIE_SERVER_ROUTER_TLS_KEYSTORE_KEYALIAS
+          value: "{{ smartrouter_keystore_alias }}"
+        - name: KIE_SERVER_ROUTER_TLS_KEYSTORE_PASSWORD
+          value: "{{ smartrouter_keystore_pwd }}"
+        - name: KIE_SERVER_ROUTER_TLS_KEYSTORE
+          value: "/etc/smartrouter-certs/{{ smartrouter_keystore_name }}"
         - name: KIE_SERVER_CONTROLLER_USER
           value: "{{ controller_user }}"
         - name: KIE_SERVER_CONTROLLER_PWD
@@ -75,7 +83,12 @@ spec:
         volumeMounts:
         - name: "smartrouter-data"
           mountPath: "/opt/rhpam-smartrouter/data"
+        - name: "smartrouter-certs"
+          mountPath: "/etc/smartrouter-certs"
       volumes:
+      - name: "smartrouter-certs"
+        secret:
+          secretName: {{ sr_secret_name }}
       - name: "smartrouter-data"
 {% if smartrouter_volume_size != "" %}
         persistentVolumeClaim:

@@ -72,12 +72,12 @@ Deploys the following components:
 
 The following `imageStreams` should exist in the `openshift` namespace:
 
-* rhpam72-businesscentral-monitoring-openshift:1.0
-* rhpam72-businesscentral-openshift:1.0
-* rhpam72-controller-openshift:1.0
-* rhpam72-elasticsearch-openshift:1.0
-* rhpam72-kieserver-openshift:1.0
-* rhpam72-smartrouter-openshift:1.0
+* rhpam72-businesscentral-monitoring-openshift:1.1
+* rhpam72-businesscentral-openshift:1.1
+* rhpam72-controller-openshift:1.1
+* rhpam72-elasticsearch-openshift:1.1
+* rhpam72-kieserver-openshift:1.1
+* rhpam72-smartrouter-openshift:1.1
 
 ### KIE Process Server
 

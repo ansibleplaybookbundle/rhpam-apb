@@ -5,7 +5,7 @@ Deploys Red Hat Process Automation Manager - Business Central
 ## Requirements
 
 * Image Requirements
-  * `{{businesscentral_image_namespace}}/{{businesscentral_image_name}}:{{businesscentral_image_tag}}` e.g. openshift/rhpam72-businesscentral-openshift:1.0
+  * `{{businesscentral_image_namespace}}/{{businesscentral_image_name}}:{{businesscentral_image_tag}}` e.g. openshift/rhpam72-businesscentral-openshift:1.1
 
 ## Objects created
 

@@ -11,6 +11,11 @@ smartrouter_service_name: "rhpam-smartrouter"
 
 # Smart Router configurable parameters
 smartrouter_hostname: "{{ apb_smartrouter_hostname | default('', true) | trim }}"
+smartrouter_default_secret_name: "{{ smartrouter_deployment_name }}"
+smartrouter_secret_name: "{{ apb_smartrouter_secret_name | default('', true) | trim }}"
+smartrouter_keystore_name: "{{ apb_smartrouter_keystore_name | default('keystore.jks', true) | trim }}"
+smartrouter_keystore_alias: "{{ apb_smartrouter_keystore_alias | default('jboss', true) | trim }}"
+smartrouter_keystore_pwd: "{{ apb_smartrouter_keystore_pwd | default(lookup('password', tmp_folder + '/keystore_pwd chars=ascii_letters,digits length=8'), true) }}"
 smartrouter_volume_size: "{{ apb_smartrouter_volume_size | default('', true) | trim }}"
 smartrouter_limits_memory: "512Mi"
 

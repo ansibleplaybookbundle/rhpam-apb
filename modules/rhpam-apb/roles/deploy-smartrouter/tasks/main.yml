@@ -10,11 +10,28 @@
 
 - name: "[SMART ROUTER] configure application"
   block:
+
     - name: "[SMART ROUTER] configure services"
       include_tasks: services.yml
 
     - name: "[SMART ROUTER] configure routes"
       include_tasks: routes.yml
+
+    - name: "[SMART ROUTER] set default secret name if none provided"
+      set_fact:
+        sr_secret_name: "{{ smartrouter_secret_name | default(smartrouter_default_secret_name, true) }}"
+
+    - name: "[SMART ROUTER] generate secret if not present"
+      include_role:
+        name: generate-secret
+      vars:
+        app_name: '{{ smartrouter_deployment_name }}'
+        secret_name: '{{ sr_secret_name }}'
+        service_name: '{{ smartrouter_service_name }}'
+        keystore_name: '{{ smartrouter_keystore_name }}'
+        keystore_alias: '{{ smartrouter_keystore_alias }}'
+        keystore_pwd: '{{ smartrouter_keystore_pwd }}'
+        route_host: '{{ sr_host }}'
 
     - name: "[SMART ROUTER] configure persistence"
       include_tasks: persistence.yml
