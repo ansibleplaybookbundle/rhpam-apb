@@ -14,7 +14,17 @@
           service: '{{ smartrouter_service_name }}'
       spec:
         host: '{{ smartrouter_hostname }}'
+        port:
+          targetPort: https
+        tls:
+          termination: passthrough
+          insecureEdgeTerminationPolicy: Redirect
         to:
           kind: Service
           name: '{{ smartrouter_deployment_name }}'
   register: route_raw
+
+- name: "[SMART ROUTER] set route host"
+  set_fact:
+    sr_host: "{{ route_raw.result.spec.host }}"
+  when: state == 'present'
