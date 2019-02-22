@@ -1,5 +1,5 @@
 ---
-businesscentral_image_name: rhpam72-businesscentral-monitoring-openshift
+businesscentral_image_name: rhpam73-businesscentral-monitoring-openshift
 businesscentral_image_tag: "{{ image_stream_tag }}"
 businesscentral_image_namespace: "{{ image_stream_namespace }}"
 

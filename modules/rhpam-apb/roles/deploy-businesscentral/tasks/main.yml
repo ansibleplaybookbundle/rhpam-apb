@@ -10,6 +10,7 @@
 
 - name: "[BUSINESS CENTRAL] configure application"
   block:
+
     - name: "[BUSINESS CENTRAL] configure services"
       include_tasks: services.yml
 

@@ -1,5 +1,5 @@
 ---
-businesscentral_image_name: rhpam72-businesscentral-openshift
+businesscentral_image_name: rhpam73-businesscentral-openshift
 businesscentral_image_tag: "{{ image_stream_tag }}"
 businesscentral_image_namespace: "{{ image_stream_namespace }}"
 
@@ -23,3 +23,8 @@ businesscentral_sso_client_secret: "{{ apb_sso_businesscentral_client_secret | d
 
 # Git Hooks dir
 git_hooks_dir: "{{ apb_git_hooks_dir | default('', true) | trim }}"
+
+# OpenShift Integration
+controller_ocp_enabled: "{{ apb_controller_ocp_enabled | default(false, true) }}"
+controller_prefer_kieserver_svc: "{{ apb_controller_prefer_kieserver_svc | default(false, true) }}"
+controller_template_cache_ttl: "{{ apb_controller_template_cache_ttl | default(60000, true) }}"

@@ -9,7 +9,9 @@ metadata:
     service: {{ kieserver_service_name }}
 spec:
   strategy:
-    type: Recreate
+    type: Rolling
+    rollingParams:
+      maxUnavailable: 0
   triggers:
     - type: ImageChange
       imageChangeParams:
@@ -38,6 +40,7 @@ spec:
         service: {{ kieserver_service_name }}
         deploymentConfig: {{ kieserver_deployment_name }}
     spec:
+      serviceAccountName: {{ service_account_name }}
       terminationGracePeriodSeconds: 60
       containers:
         - name: kieserver
@@ -189,9 +192,15 @@ spec:
             - name: MAVEN_REPOS
               value: "EXTERNAL"
 {% endif %}
+{% if not kieserver_s2i %}
+            - name: MAVEN_MIRROR_URL
+              value: "{{ maven_mirror_url }}"
+{% endif %}
 {% if external_maven_repo_url != "" %}
             - name: EXTERNAL_MAVEN_REPO_URL
               value: "{{ external_maven_repo_url }}"
+            - name: EXTERNAL_MAVEN_REPO_ID
+              name: "{{ external_maven_repo_id }}"
             - name: EXTERNAL_MAVEN_REPO_USERNAME
               value: "{{ external_maven_repo_user }}"
             - name: EXTERNAL_MAVEN_REPO_PASSWORD

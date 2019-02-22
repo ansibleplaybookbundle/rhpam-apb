@@ -13,7 +13,9 @@ controller_pwd: "{{ apb_controller_pwd | default(lookup('password', tmp_folder +
 # Maven repositories
 businesscentral_maven_repo_user: "{{ apb_businesscentral_maven_repo_user | default('mavenUser', true) | trim }}"
 businesscentral_maven_repo_pwd: "{{ apb_businesscentral_maven_repo_pwd | default(lookup('password', tmp_folder + '/bc_mvn_pwd chars=ascii_letters,digits length=8'), true) }}"
+maven_mirror_url: "{{ apb_maven_mirror_url | default('', true) | trim }}"
 external_maven_repo_url: "{{ apb_maven_repo_url | default('', true) | trim }}"
+external_maven_repo_id: "{{ apb_maven_repo_id | default('', true) | trim }}"
 external_maven_repo_user: "{{ apb_maven_repo_user | default('', true) | trim }}"
 external_maven_repo_pwd: "{{ apb_maven_repo_pwd | default('', true) | trim }}"
 
@@ -60,3 +62,4 @@ auth_role_mapper_replace_role: "{{ apb_auth_role_mapper_replace_role | default('
 kie_execution_sets: "{{ apb_kieserver_sets | default(2) }}"
 
 provision_failed: false
+service_account_name: "{{ application_name }}-rhpamsvc"
