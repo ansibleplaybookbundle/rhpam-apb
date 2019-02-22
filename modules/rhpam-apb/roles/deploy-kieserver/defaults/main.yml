@@ -1,5 +1,5 @@
 ---
-kieserver_image_name: "{{ apb_kieserver_image_stream_name | default('rhpam72-kieserver-openshift') }}"
+kieserver_image_name: "{{ apb_kieserver_image_stream_name | default('rhpam73-kieserver-openshift') }}"
 kieserver_image_tag: "{{ image_stream_tag }}"
 kieserver_image_namespace: "{{ image_stream_namespace }}"
 
@@ -9,7 +9,6 @@ has_rhpamcentr: false
 has_router: false
 has_external_controller: false
 kieserver_s2i: false
-
 kieserver_sets: "{{ apb_kieserver_sets | default(1, true) }}"
 kieserver_replicas: "{{ apb_kieserver_replicas | default(3, true) | trim }}"
 kieserver_deployment_index: "0"
@@ -37,7 +36,6 @@ controller_protocol: "{{ apb_controller_protocol | default('', true) | trim }}"
 controller_token: "{{ apb_controller_token | default('', true) | trim }}"
 
 kieserver_mgmt_disabled: false
-kieserver_startup_strategy: ""
 
 kieserver_db_type: "{{ apb_kieserver_db_type }}"
 kieserver_db_size: "{{ apb_kieserver_db_size | default('', true) | trim  }}"
@@ -78,4 +76,3 @@ kieserver_github_webhook_secret: "{{ apb_kieserver_github_webhook_secret | defau
 kieserver_generic_webhook_secret: "{{ apb_kieserver_generic_webhook_secret | default(lookup('password', tmp_folder + '/generic_webhook chars=ascii_letters,digits length=8'), true) }}"
 kieserver_artifact_dir: "{{ apb_kieserver_artifact_dir | default('', true) | trim }}"
 kieserver_container_deployment: "{{ apb_kieserver_container_deployment | default('', true) | trim }}"
-kieserver_maven_mirror: "{{ apb_kieserver_maven_mirror | default('', true) | trim }}"

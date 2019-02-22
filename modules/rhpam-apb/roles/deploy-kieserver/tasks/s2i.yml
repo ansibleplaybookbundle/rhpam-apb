@@ -40,7 +40,7 @@
               - name: KIE_SERVER_CONTAINER_DEPLOYMENT
                 value: "{{ kieserver_container_deployment }}"
               - name: MAVEN_MIRROR_URL
-                value: "{{ kieserver_maven_mirror }}"
+                value: "{{ maven_mirror_url }}"
               - name: ARTIFACT_DIR
                 value: "{{ kieserver_artifact_dir }}"
             forcePull: true

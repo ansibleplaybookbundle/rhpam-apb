@@ -33,6 +33,7 @@ spec:
         service: '{{ businesscentral_service_name }}'
         deploymentConfig: '{{ businesscentral_deployment_name }}'
     spec:
+      serviceAccountName: '{{ service_account_name }}'
       terminationGracePeriodSeconds: 60
       containers:
         - name: businesscentral-monitoring
@@ -102,6 +103,20 @@ spec:
               value: '{{ businesscentral_keystore_alias }}'
             - name: HTTPS_PASSWORD
               value: '{{ businesscentral_keystore_pwd }}'
+{% if controller_ocp_enabled %}
+## OpenShift Enhancement BEGIN
+            - name: KIE_CONTROLLER_OCP_ENABLED
+              value: "{{ controller_ocp_enabled }}"
+            - name: KIE_CONTROLLER_OPENSHIFT_PREFER_KIESERVER_SERVICE
+              value: "{{ controller_prefer_kieserver_svc }}"
+            - name: KIE_CONTROLLER_TEMPLATE_CACHE_TTL
+              value: "{{ controller_template_cache_ttl }}"
+## OpenShift Enhancement END
+{% endif %}
+{% if maven_mirror_url %}
+            - name: MAVEN_MIRROR_URL
+              value: "{{ maven_mirror_url }}"
+{% endif %}
 {% if sso_url != "" %}
             - name: SSO_URL
               value: '{{ sso_url }}'

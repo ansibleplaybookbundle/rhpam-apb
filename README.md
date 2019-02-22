@@ -68,16 +68,39 @@ Deploys the following components:
 
 ## Requirements
 
+### Automation Broker
+
+Requires the Automation Broker to be deployed and have `sandbox_role` set to `admin`. Edit the `broker-config` ConfigMap in the `openshift-automation-service-broker` namespace:
+
+```{bash}
+$ oc edit cm -n openshift-automation-service-broker broker-config
+...
+    openshift:
+      host: ''
+      ca_file: ''
+      bearer_token_file: ''
+      image_pull_policy: IfNotPresent
+      sandbox_role: admin
+...
+```
+
+Restart the automation service broker by deleting the pod:
+
+```{bash}
+$ oc delete pods -n openshift-automation-service-broker -l app=openshift-automation-service-broker
+pod "openshift-automation-service-broker-1-b7pl6" deleted
+```
+
 ### ImageStreams
 
 The following `imageStreams` should exist in the `openshift` namespace:
 
-* rhpam72-businesscentral-monitoring-openshift:1.1
-* rhpam72-businesscentral-openshift:1.1
-* rhpam72-controller-openshift:1.1
-* rhpam72-elasticsearch-openshift:1.1
-* rhpam72-kieserver-openshift:1.1
-* rhpam72-smartrouter-openshift:1.1
+* rhpam73-businesscentral-monitoring-openshift:1.0
+* rhpam73-businesscentral-openshift:1.0
+* rhpam73-controller-openshift:1.0
+* rhpam73-elasticsearch-openshift:1.0
+* rhpam73-kieserver-openshift:1.0
+* rhpam73-smartrouter-openshift:1.0
 
 ### KIE Process Server
 
@@ -113,16 +136,10 @@ KIE Process Servers and Business Central (and Monitoring) requires a certificate
 
 ## Development
 
-When the `apb.yml` file is modified the base64 encoded version of the file must be generated and set to the Dockefiles and image.yml file. There's a convenience script that will do that for you.
+When the `apb.yml` file is modified the base64 encoded version of the file must be generated and set to the image.yml file. There's a convenience script that will do that for you.
 
 ```{bash}
 $ ./prepare.sh
-Prepare Dockerfile-canary
-Done
-Prepare Dockerfile-latest
-Done
-Prepare Dockerfile-nightly
-Done
 Update image.yaml file with b64 encoded spec
 Finished prepare
 ```
@@ -138,7 +155,7 @@ $ cekit build
 2018-10-03 11:56:06,752 cekit        INFO     Generating files for docker engine.
 2018-10-03 11:56:06,812 cekit        INFO     Initializing image descriptor...
 ...
-2018-10-03 11:57:31,545 cekit        INFO     Image built and available under following tags: rhpam-7/rhpam72-apb:1.0, rhpam-7/rhpam72-apb:latest
+2018-10-03 11:57:31,545 cekit        INFO     Image built and available under following tags: rhpam-7/rhpam73-apb:1.0, rhpam-7/rhpam73-apb:latest
 2018-10-03 11:57:31,545 cekit        INFO     Finished!
 ```
 

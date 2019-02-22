@@ -1,37 +1,37 @@
 provision_failed: false
-apb_image_stream_tag: 1.1
+apb_image_stream_tag: 1.0
 image_stream_namespace: '{{ namespace }}'
 image_registry: registry.access.redhat.com
 image_streams:
   - {
-      name: "rhpam72-businesscentral-openshift",
+      name: "rhpam73-businesscentral-openshift",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam72-businesscentral-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam73-businesscentral-openshift:{{ apb_image_stream_tag }}"
     }
   - {
-      name: "rhpam72-businesscentral-monitoring-openshift",
+      name: "rhpam73-businesscentral-monitoring-openshift",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam72-businesscentral-monitoring-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam73-businesscentral-monitoring-openshift:{{ apb_image_stream_tag }}"
     }
   - {
-      name: "rhpam72-controller-openshift",
+      name: "rhpam73-controller-openshift",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam72-controller-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam73-controller-openshift:{{ apb_image_stream_tag }}"
     }
   - {
-      name: "rhpam72-kieserver-openshift",
+      name: "rhpam73-kieserver-openshift",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam72-kieserver-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam73-kieserver-openshift:{{ apb_image_stream_tag }}"
     }
   - {
-      name: "rhpam72-smartrouter-openshift",
+      name: "rhpam73-smartrouter-openshift",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam72-smartrouter-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam73-smartrouter-openshift:{{ apb_image_stream_tag }}"
     }
 #  - {
-#       name: "rhpam72-businesscentral-indexing-openshift",
+#       name: "rhpam73-businesscentral-indexing-openshift",
 #       version: "{{ apb_image_stream_tag }}",
-#       image_ref: "{{ image_registry }}/rhpam-7/rhpam72-businesscentral-indexing-openshift:{{ apb_image_stream_tag }}"
+#       image_ref: "{{ image_registry }}/rhpam-7/rhpam73-businesscentral-indexing-openshift:{{ apb_image_stream_tag }}"
 #     }
   - {
       name: "postgresql",
