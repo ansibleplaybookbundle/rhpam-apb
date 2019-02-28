@@ -63,3 +63,8 @@ kie_execution_sets: "{{ apb_kieserver_sets | default(2) }}"
 
 provision_failed: false
 service_account_name: "{{ application_name }}-rhpamsvc"
+
+# OpenShift Integration
+controller_ocp_enabled: "{{ apb_controller_ocp_enabled | default(false, true) }}"
+controller_prefer_kieserver_svc: "{{ apb_controller_prefer_kieserver_svc | default(false, true) }}"
+controller_template_cache_ttl: "{{ apb_controller_template_cache_ttl | default(60000, true) }}"
