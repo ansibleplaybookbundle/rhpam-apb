@@ -33,6 +33,7 @@
       include_role:
         name: deploy-kieserver
       vars:
+        kieserver_mode: 'development'
         kieserver_db_type: 'H2'
         kieserver_replicas: 1
         kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('ControllerBasedStartupStrategy', true) | trim }}"

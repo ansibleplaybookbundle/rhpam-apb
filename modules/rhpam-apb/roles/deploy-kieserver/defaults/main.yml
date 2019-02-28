@@ -37,6 +37,7 @@ controller_token: "{{ apb_controller_token | default('', true) | trim }}"
 
 kieserver_mgmt_disabled: false
 
+kieserver_mode: "{{ apb_kieserver_mode | default('production', true) }}"
 kieserver_db_type: "{{ apb_kieserver_db_type }}"
 kieserver_db_size: "{{ apb_kieserver_db_size | default('', true) | trim  }}"
 
