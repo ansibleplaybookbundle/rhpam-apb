@@ -85,6 +85,8 @@ spec:
               protocol: TCP
 {% endif %}
           env:
+            - name: KIE_SERVER_MODE
+              value: "{{ kieserver_mode }}"
             - name: DATASOURCES
               value: "RHPAM"
             - name: RHPAM_DATABASE
