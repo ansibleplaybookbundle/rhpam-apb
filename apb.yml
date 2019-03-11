@@ -233,7 +233,7 @@ _apb_kieserver_external_db_driver: &_apb_kieserver_external_db_driver
 _apb_kieserver_external_db_dialect: &_apb_kieserver_external_db_dialect
   name: apb_kieserver_external_db_dialect
   title: Dialect class
-  description: Hibernate dialect class to use. Required for External database. For example, org.hibernate.dialect.MySQL5Dialect
+  description: Hibernate dialect class to use. Required for External database. For example, org.hibernate.dialect.MySQL57Dialect
   type: string
   display_group: External Database (only if Database type is External)
 _apb_kieserver_external_db_host: &_apb_kieserver_external_db_host

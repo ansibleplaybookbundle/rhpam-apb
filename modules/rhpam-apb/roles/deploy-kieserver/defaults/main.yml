@@ -54,7 +54,7 @@ kieserver_db:
     port: 5432
   MySQL:
     driver: mysql
-    dialect: org.hibernate.dialect.MySQL5Dialect
+    dialect: org.hibernate.dialect.MySQL57Dialect
     port: 3306
   External:
     driver: "{{ apb_kieserver_external_db_driver | default('', true) | trim }}"
