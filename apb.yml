@@ -159,11 +159,11 @@ _apb_businesscentral_maven_repo_pwd: &_apb_businesscentral_maven_repo_pwd
 _apb_kieserver_mode: &_apb_kieserver_mode
   name: apb_kieserver_mode
   title: Process Server Mode
-  description: The KIE Server mode. Valid values are 'development' or 'production'. (Sets the org.kie.server.mode system property).
+  description: The KIE Server mode. Valid values are 'DEVELOPMENT' or 'PRODUCTION'. (Sets the org.kie.server.mode system property).
   required: true
   type: enum
-  enum: ['development', 'production']
-  default: production
+  enum: ['DEVELOPMENT', 'PRODUCTION']
+  default: DEVELOPMENT
   display_group: Process Server
 _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   name: apb_kieserver_image_stream_name
