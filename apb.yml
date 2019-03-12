@@ -211,7 +211,7 @@ _apb_kieserver_hostname: &_apb_kieserver_hostname
 _apb_kieserver_startup_strategy: &_apb_kieserver_startup_strategy
   name: apb_kieserver_startup_strategy
   title: Startup Strategy
-  description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service. Default: ControllerBasedStartupStrategy"
+  description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service. The OpenShiftStartupStrategy strategy is still Technology Preview. Default: ControllerBasedStartupStrategy"
   required: true
   type: enum
   enum: ['ControllerBasedStartupStrategy','OpenShiftStartupStrategy']
