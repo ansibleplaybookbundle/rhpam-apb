@@ -1,6 +1,6 @@
 schema_version: 1
 
-name: "rhpam-7/rhpam7-apb"
+name: "rhpam-7/rhpam-apb"
 description: "Red Hat Business Central 7.3 OpenShift Ansible Playbook Bundle"
 version: "1.1"
 from: "openshift3/apb-base:v3.11"
