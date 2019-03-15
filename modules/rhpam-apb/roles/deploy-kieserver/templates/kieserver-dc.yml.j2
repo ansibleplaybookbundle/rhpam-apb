@@ -170,11 +170,9 @@ spec:
             - name: KIE_SERVER_ID
               value: "{{ kieserver_deployment_name }}"
             - name: KIE_SERVER_HOST
-              value: "{{ ks_host | default('') }}"
-            - name: KIE_SERVER_PROTOCOL
-              value: "https"
-            - name: KIE_SERVER_PORT
-              value: "443"
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             - name: KIE_SERVER_USER
               value: "{{ kie_execution_user }}"
             - name: KIE_SERVER_PWD
