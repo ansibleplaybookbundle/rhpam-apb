@@ -37,6 +37,7 @@ controller_token: "{{ apb_controller_token | default('', true) | trim }}"
 
 kieserver_mgmt_disabled: false
 
+kieserver_mode: "{{ apb_kieserver_mode | default('DEVELOPMENT', true) }}"
 kieserver_db_type: "{{ apb_kieserver_db_type }}"
 kieserver_db_size: "{{ apb_kieserver_db_size | default('', true) | trim  }}"
 
@@ -54,7 +55,7 @@ kieserver_db:
     port: 5432
   MySQL:
     driver: mysql
-    dialect: org.hibernate.dialect.MySQL5Dialect
+    dialect: org.hibernate.dialect.MySQL57Dialect
     port: 3306
   External:
     driver: "{{ apb_kieserver_external_db_driver | default('', true) | trim }}"

@@ -156,6 +156,15 @@ _apb_businesscentral_maven_repo_pwd: &_apb_businesscentral_maven_repo_pwd
   display_type: password
   display_group: Business Central
 # Process Server
+_apb_kieserver_mode: &_apb_kieserver_mode
+  name: apb_kieserver_mode
+  title: Process Server Mode
+  description: The KIE Server mode. Valid values are 'DEVELOPMENT' or 'PRODUCTION'. (Sets the org.kie.server.mode system property).
+  required: true
+  type: enum
+  enum: ['DEVELOPMENT', 'PRODUCTION']
+  default: DEVELOPMENT
+  display_group: Process Server
 _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   name: apb_kieserver_image_stream_name
   title: Process Server Image Stream Name
@@ -202,7 +211,7 @@ _apb_kieserver_hostname: &_apb_kieserver_hostname
 _apb_kieserver_startup_strategy: &_apb_kieserver_startup_strategy
   name: apb_kieserver_startup_strategy
   title: Startup Strategy
-  description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service. Default: ControllerBasedStartupStrategy"
+  description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service. The OpenShiftStartupStrategy strategy is still Technology Preview. Default: ControllerBasedStartupStrategy"
   required: true
   type: enum
   enum: ['ControllerBasedStartupStrategy','OpenShiftStartupStrategy']
@@ -233,7 +242,7 @@ _apb_kieserver_external_db_driver: &_apb_kieserver_external_db_driver
 _apb_kieserver_external_db_dialect: &_apb_kieserver_external_db_dialect
   name: apb_kieserver_external_db_dialect
   title: Dialect class
-  description: Hibernate dialect class to use. Required for External database. For example, org.hibernate.dialect.MySQL5Dialect
+  description: Hibernate dialect class to use. Required for External database. For example, org.hibernate.dialect.MySQL57Dialect
   type: string
   display_group: External Database (only if Database type is External)
 _apb_kieserver_external_db_host: &_apb_kieserver_external_db_host
@@ -609,6 +618,8 @@ plans:
       - *_apb_businesscentral_maven_repo_pwd
 
       # Process Server
+      - *_apb_kieserver_mode
+
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
 
@@ -760,6 +771,7 @@ plans:
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
 
+      - *_apb_kieserver_mode
       - *_apb_kieserver_db_type
       - *_apb_kieserver_db_size
       # Keystore and Secret
@@ -1048,6 +1060,7 @@ plans:
         display_group: Smart Router
 
       # Process Server
+      - *_apb_kieserver_mode
       - name: apb_kieserver_sets
         title: Sets of Process Servers
         description:
