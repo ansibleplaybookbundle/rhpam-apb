@@ -321,3 +321,19 @@ spec:
             claimName: {{ kieserver_deployment_name }}-h2-data
 {% endif %}
 {% endif %}
+{% if kieserver_db_type == 'MySQL' %}
+      initContainers:
+      - command: ['sh', '-c', 'until nslookup {{ kieserver_db_deployment }} && nc -vz {{ kieserver_db_deployment }} 3306; do echo waiting for {{ kieserver_db_service }}; sleep 2; done;']
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: {{ kieserver_db_deployment }}-init
+        terminationMessagePolicy: FallbackToLogsOnError
+{% endif %}
+{% if kieserver_db_type == 'PostgreSQL' %}
+      initContainers:
+      - command: ['sh', '-c', 'until nslookup {{ kieserver_db_deployment }} && nc -vz {{ kieserver_db_deployment }} 5432; do echo waiting for {{ kieserver_db_service }}; sleep 2; done;']
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: {{ kieserver_db_deployment }}-init
+        terminationMessagePolicy: FallbackToLogsOnError
+{% endif %}
