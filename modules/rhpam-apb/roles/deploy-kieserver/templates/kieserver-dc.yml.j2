@@ -11,6 +11,7 @@ spec:
   strategy:
     type: Rolling
     rollingParams:
+      maxSurge: 100%
       maxUnavailable: 0
   triggers:
     - type: ImageChange
