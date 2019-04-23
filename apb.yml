@@ -17,7 +17,7 @@ _apb_kie_admin_pwd: &_apb_kie_admin_pwd
 _apb_image_stream_tag: &_apb_image_stream_tag
   name: apb_image_stream_tag
   title: Image version
-  description: Tag version of the ImageStream to use. It must exist in the openshift namespace.
+  description: Tag version of the RHPAM ImageStream to use. It must exist in the openshift namespace.
   required: true
   type: string
   default: '1.0'
