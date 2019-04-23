@@ -107,11 +107,11 @@ spec:
               value: '{{ businesscentral_keystore_pwd }}'
 {% if controller_ocp_enabled %}
 ## OpenShift Enhancement BEGIN
-            - name: KIE_CONTROLLER_OCP_ENABLED
+            - name: KIE_WORKBENCH_CONTROLLER_OPENSHIFT_ENABLED
               value: "{{ controller_ocp_enabled }}"
-            - name: KIE_CONTROLLER_OPENSHIFT_PREFER_KIESERVER_SERVICE
+            - name: KIE_SERVER_CONTROLLER_OPENSHIFT_PREFER_KIESERVER_SERVICE
               value: "{{ controller_prefer_kieserver_svc }}"
-            - name: KIE_CONTROLLER_TEMPLATE_CACHE_TTL
+            - name: KIE_SERVER_CONTROLLER_TEMPLATE_CACHE_TTL
               value: "{{ controller_template_cache_ttl }}"
 ## OpenShift Enhancement END
 {% endif %}
