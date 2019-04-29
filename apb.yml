@@ -526,7 +526,7 @@ _apb_auth_role_mapper_replace_role: &_apb_auth_role_mapper_replace_role
   type: boolean
   display_group: RoleMapping (Optional)
 
-# APB api version, don't change it unless The APB api is updated.
+# APB api version
 version: 1.0
 name: rhpam-apb
 description: Red Hat Process Automation Manager (APB)
