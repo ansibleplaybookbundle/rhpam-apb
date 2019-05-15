@@ -106,7 +106,7 @@ spec:
               value: "{{ kieserver_db[kieserver_db_type].dialect }}"
 {% if kieserver_db_type == 'H2' %}
             - name: RHPAM_XA_CONNECTION_PROPERTY_URL
-              value: "jdbc:h2:/opt/eap/standalone/data/rhpam"
+              value: "jdbc:h2:/opt/kie/data/h2/rhpam;AUTO_SERVER=TRUE"
             - name: RHPAM_SERVICE_HOST
               value: "dummy_ignored"
             - name: RHPAM_SERVICE_PORT
@@ -305,7 +305,7 @@ spec:
               readOnly: true
 {% if kieserver_db_type == 'H2' %}
             - name: h2-storage
-              mountPath: "/opt/eap/standalone/data"
+              mountPath: "/opt/kie/data"
 {% endif %}
       volumes:
         - name: kieserver-certs
