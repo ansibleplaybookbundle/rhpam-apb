@@ -15,4 +15,4 @@ secrets:
 
 persistent_volume_claims:
   - { name: "{{ application_name }}-rhpamcentr-data", size: "{{ apb_businesscentral_volume_size }}" }
-  - { name: "{{ application_name }}-kieserver-h2-data", size: "{{ apb_kieserver_db_size }}" }
+  - { name: "{{ application_name }}-kieserver-kie-data", size: "{{ apb_kieserver_db_size }}" }
