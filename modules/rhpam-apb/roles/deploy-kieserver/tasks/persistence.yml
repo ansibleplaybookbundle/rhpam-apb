@@ -6,7 +6,7 @@
       apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
-        name: '{{ kieserver_deployment_name }}-h2-data'
+        name: '{{ kieserver_deployment_name }}-kie-data'
         namespace: '{{ namespace }}'
         labels:
           app: '{{ kieserver_deployment_name }}'

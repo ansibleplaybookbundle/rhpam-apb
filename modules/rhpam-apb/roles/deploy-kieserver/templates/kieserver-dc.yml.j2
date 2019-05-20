@@ -304,7 +304,7 @@ spec:
               mountPath: "/etc/kieserver-certs"
               readOnly: true
 {% if kieserver_db_type == 'H2' %}
-            - name: h2-storage
+            - name: kie-storage
               mountPath: "/opt/kie/data"
 {% endif %}
       volumes:
@@ -312,12 +312,12 @@ spec:
           secret:
             secretName: {{ ks_secret_name }}
 {% if kieserver_db_type == 'H2' %}
-        - name: h2-storage
+        - name: kie-storage
 {% if kieserver_db_size == "" %}
           emptyDir: {}
 {% else %}
           persistentVolumeClaim:
-            claimName: {{ kieserver_deployment_name }}-h2-data
+            claimName: {{ kieserver_deployment_name }}-kie-data
 {% endif %}
 {% endif %}
 {% if kieserver_db_type == 'MySQL' %}

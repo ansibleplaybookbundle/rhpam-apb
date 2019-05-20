@@ -138,7 +138,7 @@ _apb_businesscentral_keystore_pwd: &_apb_businesscentral_keystore_pwd
 _apb_git_hooks_dir: &_apb_git_hooks_dir
   name: apb_git_hooks_dir
   title: Git hooks directory
-  description: The directory to use for git hooks, if required. e.g. /opt/eap/standalone/data/kie/git/hooks
+  description: The directory to use for git hooks, if required. e.g. /opt/kie/data/git/hooks
   type: string
   display_group: Business Central
 _apb_businesscentral_maven_repo_user: &_apb_businesscentral_maven_repo_user
