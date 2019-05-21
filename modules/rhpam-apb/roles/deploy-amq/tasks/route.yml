@@ -1,0 +1,21 @@
+---
+- name: "[AMQ-JOLOKIA-CONSOLE] set http route state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Route
+      metadata:
+        name: amq-jolokia-console
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ application_name_amq }}'
+      spec:
+        port:
+          targetPort: amq-jolokia
+        to:
+          kind: Service
+          name: '{{ amq_console_service }}'
+

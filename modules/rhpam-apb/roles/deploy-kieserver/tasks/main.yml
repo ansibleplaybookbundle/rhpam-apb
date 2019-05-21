@@ -82,6 +82,19 @@
         mysql_pwd: '{{ kieserver_db_pwd }}'
       when: kieserver_db_type == "MySQL"
 
+    - name: "[KIE SERVER {{ kieserver_deployment_index }}] call AMQ role"
+      include_role:
+        name: deploy-amq
+      vars:
+        application_name_amq: '{{ kieserver_service_name }}-amq'
+        amq_console_service: '{{ kieserver_service_name }}-amq-jolokia'
+        amq_service_name: '{{ kieserver_service_name }}-amq'
+        amq_broker_name: '{{ kieserver_service_name }}-amq-broker'
+        amq_queues: '{{ kieserver_jms_amq_queues }}'
+        amq_user: '{{ kieserver_jms_username }}'
+        amq_pwd: '{{ kieserver_jms_password }}'
+      when: enable_kieserver_jms_integration
+
     - name: "[KIE SERVER {{ kieserver_deployment_index }}] configure S2I"
       include_tasks: s2i.yml
       when: kieserver_s2i

@@ -1,0 +1,111 @@
+---
+- name: "[AMQ] set amq-jolokia service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-jolokia'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+        - name: amq-jolokia
+          port: 8161
+          protocol: TCP
+          targetPort: 8161
+
+- name: "[AMQ] set amq-amqp service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-amqp'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+        - name: amq-amqp
+          port: 5672
+          protocol: TCP
+          targetPort: 5672
+
+- name: "[AMQ] set amq-mqtt service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-mqtt'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+        - name: amq-mqtt
+          port: 1883
+          protocol: TCP
+          targetPort: 1883
+
+- name: "[AMQ] set amq-stomp service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-stomp'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+        - name: amq-stomp
+          port: 61613
+          protocol: TCP
+          targetPort: 61613
+
+- name: "[AMQ] set amq-tcp service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-tcp'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+        - name: amq-tcp
+          port: 61616
+          protocol: TCP
+          targetPort: 61616
+

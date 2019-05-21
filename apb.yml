@@ -171,7 +171,7 @@ _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   description: Image Stream Name to use for Process Server. If you have generated a custom image (for example, to provide a database server driver), you can change this parameter to use it.
   required: true
   type: string
-  default: rhpam73-kieserver-openshift
+  default: rhpam74-kieserver-openshift
   display_group: Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
@@ -269,6 +269,97 @@ _apb_kieserver_external_db_url: &_apb_kieserver_external_db_url
   description: External database server JDBC URL. Required for External database. For example, jdbc:mysql:127.0.0.1:3306/rhpam
   type: string
   display_group: External Database (only if Database type is External)
+
+# JMS envs
+_apb_enable_kieserver_jms_integration: &_apb_enable_kieserver_jms_integration
+  name: apb_enable_kieserver_jms_integration
+  title: Enable JMS integration
+  description: When set to true will configure the KIE Server with JMS integration, if no configuration is added, the default will be used.
+  type: boolean
+  default: false
+  display_group: JMS Integration
+_apb_kieserver_jms_executor: &_apb_kieserver_jms_executor
+  name: apb_kieserver_jms_executor
+  title: Enable JMS Executor
+  description: Enables the JMS executor, uncheck to disable it.
+  type: boolean
+  default: true
+  display_group: JMS Integration
+_apb_kieserver_jms_queue_executor: &_apb_kieserver_jms_queue_executor
+  name: apb_kieserver_jms_queue_executor
+  title: KIE Server JMS Executor Queue
+  description: JNDI name of executor queue for JMS, example queue/CUSTOM.KIE.SERVER.EXECUTOR, default is queue/KIE.SERVER.EXECUTOR.
+  type: string
+  display_group: JMS Integration
+_apb_kieserver_jms_executor_transacted: &_apb_kieserver_jms_executor_transacted
+  name: apb_kieserver_jms_executor_transacted
+  title: KIE Server Transacted Executor
+  description: Enable transactions for JMS executor, disabled by default.
+  type: boolean
+  default: true
+  display_group: JMS Integration
+_apb_kieserver_jms_queue_request: &_apb_kieserver_jms_queue_request
+  name: apb_kieserver_jms_queue_request
+  title: KIE Server JMS Request Queue
+  description: JNDI name of request queue for JMS, example queue/CUSTOM.KIE.SERVER.REQUEST, default is queue/KIE.SERVER.REQUEST.
+  type: string
+  display_group: JMS Integration
+_apb_kieserver_jms_queue_response: &_apb_kieserver_jms_queue_response
+  name: apb_kieserver_jms_queue_response
+  title: KIE Server JMS Response Queue
+  description: JNDI name of response queue for JMS, example queue/CUSTOM.KIE.SERVER.RESPONSE, default is queue/KIE.SERVER.RESPONSE.
+  type: string
+  display_group: JMS Integration
+_apb_kieserver_jms_enable_signal: &_apb_kieserver_jms_enable_signal
+  name: apb_kieserver_jms_enable_signal
+  title: Enable KIE Server JMS Signal Queue
+  description: Enable the Signal configuration through JMS. Default is false.
+  type: boolean
+  display_group: JMS Integration
+_apb_kieserver_jms_queue_signal: &_apb_kieserver_jms_queue_signal
+  name: apb_kieserver_jms_queue_signal
+  title: KIE Server JMS Signal Queue
+  description: JNDI name of signal queue for JMS, example queue/CUSTOM.KIE.SERVER.SIGNAL, default is queue/KIE.SERVER.SIGNAL.
+  type: string
+  display_group: JMS Integration
+_apb_kieserver_jms_enable_audit: &_apb_kieserver_jms_enable_audit
+  name: apb_kieserver_jms_enable_audit
+  title: Enable KIE Server JMS Audit
+  description: Enable the Audit logging through JMS. Default is false.
+  type: boolean
+  display_group: JMS Integration
+_apb_kieserver_jms_queue_audit: &_apb_kieserver_jms_queue_audit
+  name: apb_kieserver_jms_queue_audit
+  title: KIE Server JMS Audit Queue
+  description: JNDI name of audit logging queue for JMS, example queue/CUSTOM.KIE.SERVER.AUDIT, default is queue/KIE.SERVER.AUDIT.
+  type: string
+  display_group: JMS Integration
+_apb_kieserver_jms_audit_transacted: &_apb_kieserver_jms_audit_transacted
+  name: apb_kieserver_jms_audit_transacted
+  title: KIE Server JMS Audit logger transacted
+  description: Determines if JMS session is transacted or not - default true.
+  type: boolean
+  default: true
+  display_group: JMS Integration
+_apb_kieserver_jms_username: &_apb_kieserver_jms_username
+  name: apb_kieserver_jms_username
+  title: AMQ Username
+  description: AMQ broker username to connect do the AMQ, generated if empty.
+  type: string
+  display_group: JMS Integration
+_apb_kieserver_jms_password: &_apb_kieserver_jms_password
+  name: apb_kieserver_jms_password
+  title: AMQ Password
+  description: AMQ broker password to connect do the AMQ, generated if empty.
+  type: string
+  display_group: JMS Integration
+_apb_kieserver_jms_amq_queues: &_apb_kieserver_jms_amq_queues
+  name: apb_kieserver_jms_amq_queues
+  title: AMQ Queues
+  description: AMQ broker broker comma separated queues, if set the QUEUES name will be ignored, if empty the values from default queues will be used.
+  type: string
+  display_group: JMS Integration
+
 # External Services Integration
 _apb_svc: &_apb_svc
   title: Service name
@@ -526,6 +617,7 @@ _apb_auth_role_mapper_replace_role: &_apb_auth_role_mapper_replace_role
   type: boolean
   display_group: RoleMapping (Optional)
 
+# APB Spec version
 version: 1.0
 name: rhpam-apb
 description: Red Hat Process Automation Manager (APB)
@@ -544,11 +636,11 @@ metadata:
   providerDisplayName: "Red Hat, Inc."
   serviceName: rhpam
   dependencies:
-    - 'registry.redhat.io/rhpam-7/rhpam73-kieserver-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam73-businesscentral-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam73-controller-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam73-smartrouter-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam73-businesscentral-monitoring-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam74-kieserver-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam74-businesscentral-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam74-controller-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam74-smartrouter-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam74-businesscentral-monitoring-openshift'
     - 'registry.redhat.io/rhscl/postgresql-10-rhel7'
     - 'registry.redhat.io/rhscl/mysql-57-rhel7'
 tags:
@@ -644,6 +736,22 @@ plans:
       - *_apb_kieserver_external_db_name
       - *_apb_kieserver_external_db_url
 
+      # JMS
+      - *_apb_enable_kieserver_jms_integration
+      - *_apb_kieserver_jms_executor
+      - *_apb_kieserver_jms_queue_executor
+      - *_apb_kieserver_jms_executor_transacted
+      - *_apb_kieserver_jms_queue_request
+      - *_apb_kieserver_jms_queue_response
+      - *_apb_kieserver_jms_enable_signal
+      - *_apb_kieserver_jms_queue_signal
+      - *_apb_kieserver_jms_enable_audit
+      - *_apb_kieserver_jms_queue_audit
+      - *_apb_kieserver_jms_audit_transacted
+      - *_apb_kieserver_jms_username
+      - *_apb_kieserver_jms_password
+      - *_apb_kieserver_jms_amq_queues
+
       # Maven
       - *_apb_maven_mirror_url
       - *_apb_maven_repo_url
@@ -737,7 +845,7 @@ plans:
         display_group: Artifact source
       - name: apb_kieserver_source_ref
         title: Git Repository Reference
-        description: Git branch/tag reference. For example, rhpam73 or master
+        description: Git branch/tag reference. For example, 7.4.0.GA or master
         required: true
         type: string
         display_group: Artifact source
@@ -770,6 +878,22 @@ plans:
       - *_apb_maven_repo_id
       - *_apb_maven_repo_user
       - *_apb_maven_repo_pwd
+
+      # JMS
+      - *_apb_enable_kieserver_jms_integration
+      - *_apb_kieserver_jms_executor
+      - *_apb_kieserver_jms_queue_executor
+      - *_apb_kieserver_jms_executor_transacted
+      - *_apb_kieserver_jms_queue_request
+      - *_apb_kieserver_jms_queue_response
+      - *_apb_kieserver_jms_enable_signal
+      - *_apb_kieserver_jms_queue_signal
+      - *_apb_kieserver_jms_enable_audit
+      - *_apb_kieserver_jms_queue_audit
+      - *_apb_kieserver_jms_audit_transacted
+      - *_apb_kieserver_jms_username
+      - *_apb_kieserver_jms_password
+      - *_apb_kieserver_jms_amq_queues
 
       - *_apb_kieserver_mode
       - *_apb_kieserver_db_type
@@ -1097,6 +1221,22 @@ plans:
       - *_apb_kieserver_external_db_port
       - *_apb_kieserver_external_db_name
       - *_apb_kieserver_external_db_url
+
+      # JMS
+      - *_apb_enable_kieserver_jms_integration
+      - *_apb_kieserver_jms_executor
+      - *_apb_kieserver_jms_queue_executor
+      - *_apb_kieserver_jms_executor_transacted
+      - *_apb_kieserver_jms_queue_request
+      - *_apb_kieserver_jms_queue_response
+      - *_apb_kieserver_jms_enable_signal
+      - *_apb_kieserver_jms_queue_signal
+      - *_apb_kieserver_jms_enable_audit
+      - *_apb_kieserver_jms_queue_audit
+      - *_apb_kieserver_jms_audit_transacted
+      - *_apb_kieserver_jms_username
+      - *_apb_kieserver_jms_password
+      - *_apb_kieserver_jms_amq_queues
 
       # RH - SSO
       - *_apb_sso_url

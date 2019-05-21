@@ -205,6 +205,38 @@ spec:
             - name: EXTERNAL_MAVEN_REPO_PASSWORD
               value: "{{ external_maven_repo_pwd }}"
 {% endif %}
+{% if enable_kieserver_jms_integration %}
+            - name: KIE_SERVER_JMS_QUEUE_REQUEST
+              value: "{{ kieserver_jms_queue_request }}"
+            - name: KIE_SERVER_JMS_QUEUE_RESPONSE
+              value: "{{ kieserver_jms_queue_response }}"
+            - name: KIE_SERVER_JMS_QUEUE_EXECUTOR
+              value: "{{ kieserver_jms_queue_executor }}"
+{% if kieserver_jms_enable_signal %}
+            - name: KIE_SERVER_JMS_ENABLE_SIGNAL
+              value: "{{ kieserver_jms_enable_signal }}"
+            - name: KIE_SERVER_JMS_QUEUE_SIGNAL
+              value: "{{ kieserver_jms_queue_signal }}"
+{% endif %}
+{% if kieserver_jms_enable_audit %}
+            - name: KIE_SERVER_JMS_ENABLE_AUDIT
+              value: "{{ kieserver_jms_enable_audit }}"
+            - name: KIE_SERVER_JMS_QUEUE_AUDIT
+              value: "{{ kieserver_jms_queue_audit }}"
+            - name: KIE_SERVER_JMS_AUDIT_TRANSACTED
+              value: "{{ kieserver_jms_audit_transacted }}"
+{% endif %}
+            - name: MQ_SERVICE_PREFIX_MAPPING
+              value: "{{ kieserver_service_name }}-amq7=AMQ"
+            - name: AMQ_USERNAME
+              value: "{{ kieserver_jms_username }}"
+            - name: AMQ_PASSWORD
+              value: "{{ kieserver_jms_password }}"
+            - name: AMQ_PROTOCOL
+              value: "tcp"
+            - name: AMQ_QUEUES
+              value: "{{ kieserver_jms_amq_queues }}"
+{% endif %}
             - name: KIE_SERVER_MGMT_DISABLED
               value: "{{ kieserver_mgmt_disabled }}"
             - name: KIE_SERVER_STARTUP_STRATEGY

@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: '{{ application_name_amq }}'
+  namespace: {{ namespace }}
+  labels:
+    app: '{{ kieserver_deployment_name }}'
+    application: '{{ application_name_amq }}'
+    service: '{{ amq_service_name }}'
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: "true"
+spec:
+  strategy:
+    rollingParams:
+      maxSurge: 0
+    type: Rolling
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - '{{ application_name_amq }}'
+      from:
+        kind: ImageStreamTag
+        name: '{{ amq_image_name }}:{{ amq_image_tag }}'
+        namespace: '{{ amq_image_namespace }}'
+    type: ImageChange
+  - type: ConfigChange
+  replicas: 1
+  selector:
+    deploymentConfig: '{{ application_name_amq }}'
+  template:
+    metadata:
+      labels:
+        app: '{{ kieserver_deployment_name }}'
+        application: '{{ application_name }}'
+        deploymentConfig: '{{ application_name_amq }}'
+        service: '{{ application_name_amq }}'
+      name: '{{ application_name_amq }}'
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: '{{ application_name_amq }}'
+        image: '{{ amq_image_name }}:{{ amq_image_tag }}'
+        imagePullPolicy: Always
+        readinessProbe:
+          exec:
+            command:
+            - "/bin/bash"
+            - "-c"
+            - "/opt/amq/bin/readinessProbe.sh"
+        ports:
+        - containerPort: 8161
+          name: console-jolokia
+          protocol: TCP
+        - containerPort: 5672
+          name: amq-amqp
+          protocol: TCP
+        - containerPort: 1883
+          name: amq-mqtt
+          protocol: TCP
+        - containerPort: 61613
+          name: amq-stomp
+          protocol: TCP
+        - containerPort: 61616
+          name: amq-tcp
+          protocol: TCP
+        env:
+        - name: AMQ_USER
+          value: '{{ amq_user }}'
+        - name: AMQ_PASSWORD
+          value: '{{ amq_pwd }}'
+        - name: AMQ_ROLE
+          value: admin
+        - name: AMQ_NAME
+          value: '{{ amq_broker_name }}'
+        - name: AMQ_TRANSPORTS
+          value: openwire
+        - name: AMQ_QUEUES
+          value: '{{ amq_queues }}'
+        - name: AMQ_REQUIRE_LOGIN
+          value: "false"
+        - name: AMQ_ANYCAST_PREFIX
+        - name: AMQ_MULTICAST_PREFIX
+

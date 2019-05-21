@@ -5,7 +5,7 @@ Deploys Red Hat Process Automation Manager - KIE Process Server
 ## Requirements
 
 * Image Requirements
-  * `{{kieserver_image_namespace}}/{{kieserver_image_name}}:{{kieserver_image_tag}}` e.g. openshift/rhpam73-kieserver-openshift:1.1
+  * `{{kieserver_image_namespace}}/{{kieserver_image_name}}:{{kieserver_image_tag}}` e.g. openshift/rhpam74-kieserver-openshift:1.0
 * External Database. If selected all the external DB values are mandatory
 * If H2 Database is selected, replicas must not be > 1
 
@@ -14,7 +14,7 @@ Deploys Red Hat Process Automation Manager - KIE Process Server
 * Route
 * Service
 * Ping Service
-* Secret containing keystore (if it didn't exist)
+* Secret containing keystore (if it doesn't exist)
 * PersistentVolumeClaim (if kieserver_db_size is provided and kieserver_db_type == "H2")
 * DeploymentConfig
 * [PostgreSQL](../deploy-postgresql/README.md) / [MySQL](../deploy-mysql/README.md) database depending on kieserver_db_type
