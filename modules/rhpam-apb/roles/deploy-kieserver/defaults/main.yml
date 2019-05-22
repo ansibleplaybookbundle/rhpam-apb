@@ -95,3 +95,5 @@ kieserver_jms_password: "{{ apb_kieserver_jms_password | default(lookup('passwor
 # if empty AMQ Queues will be set on the deploy-amq/tasks/main.yml
 kieserver_jms_amq_queues: "{{ apb_kieserver_jms_amq_queues | default('', true) | trim }}"
 
+# Prometheus
+kieserver_prometheus_ext_disabled: "{{ apb_kieserver_prometheus_ext_disabled }}"
