@@ -127,6 +127,8 @@ spec:
             - name: RHPAM_XA_CONNECTION_PROPERTY_URL
               value: "{{ kieserver_db[kieserver_db_type].url }}"
 {% endif %}
+            - name: PROMETHEUS_SERVER_EXT_DISABLED
+            - value: "{{ kieserver_prometheus_ext_disabled }}"
             - name: DROOLS_SERVER_FILTER_CLASSES
               value: "true"
             - name: KIE_ADMIN_USER

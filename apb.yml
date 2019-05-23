@@ -214,8 +214,16 @@ _apb_kieserver_startup_strategy: &_apb_kieserver_startup_strategy
   description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service. The OpenShiftStartupStrategy strategy is still Technology Preview. Default: ControllerBasedStartupStrategy"
   required: true
   type: enum
-  enum: ['ControllerBasedStartupStrategy','OpenShiftStartupStrategy']
+  enum: ['ControllerBasedStartupStrategy', 'OpenShiftStartupStrategy']
   default: ControllerBasedStartupStrategy
+  display_group: Process Server
+_apb_kieserver_prometheus_ext_disabled: &_apb_kieserver_prometheus_ext_disabled
+  name: apb_kieserver_prometheus_ext_disabled
+  title: Prometheus Server Extension Disabled
+  description: If unchecked, the prometheus server extension will be enabled. (Sets the org.kie.prometheus.server.ext.disabled system property)
+  required: false
+  type: boolean
+  default: false
   display_group: Process Server
 _apb_kieserver_db_type: &_apb_kieserver_db_type
   name: apb_kieserver_db_type
@@ -727,6 +735,7 @@ plans:
         display_group: Process Server
       - *_apb_kieserver_startup_strategy
       - *_apb_kieserver_image_stream_name
+      - *_apb_kieserver_prometheus_ext_disabled
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -910,9 +919,11 @@ plans:
         display_group: Process Server
       - <<: *_apb_kieserver_startup_strategy
         description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service; when set to LocalContainersStartupStrategy, allows KIE server to start up and function with local config, even when a controller is configured and unavailable"
-        enum: ['LocalContainersStartupStrategy','OpenShiftStartupStrategy']
+        enum: ['LocalContainersStartupStrategy', 'OpenShiftStartupStrategy']
         default: LocalContainersStartupStrategy
       - *_apb_kieserver_image_stream_name
+        # Prometheus
+      - *_apb_kieserver_prometheus_ext_disabled
 
       # External Database
       - *_apb_kieserver_external_db_driver
@@ -1213,6 +1224,7 @@ plans:
         display_group: Process Server
       - *_apb_kieserver_startup_strategy
       - *_apb_kieserver_image_stream_name
+      - *_apb_kieserver_prometheus_ext_disabled
 
       # External Database
       - *_apb_kieserver_external_db_driver
