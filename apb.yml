@@ -223,7 +223,7 @@ _apb_kieserver_prometheus_ext_disabled: &_apb_kieserver_prometheus_ext_disabled
   description: If unchecked, the prometheus server extension will be enabled. (Sets the org.kie.prometheus.server.ext.disabled system property)
   required: false
   type: boolean
-  default: false
+  default: true
   display_group: Process Server
 _apb_kieserver_db_type: &_apb_kieserver_db_type
   name: apb_kieserver_db_type
