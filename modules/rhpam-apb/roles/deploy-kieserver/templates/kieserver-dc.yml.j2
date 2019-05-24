@@ -105,6 +105,8 @@ spec:
             - name: KIE_SERVER_PERSISTENCE_DIALECT
               value: "{{ kieserver_db[kieserver_db_type].dialect }}"
 {% if kieserver_db_type == 'H2' %}
+            - name: RHPAM_NONXA
+              value: "false"
             - name: RHPAM_XA_CONNECTION_PROPERTY_URL
               value: "jdbc:h2:/opt/kie/data/h2/rhpam;AUTO_SERVER=TRUE"
             - name: RHPAM_SERVICE_HOST
