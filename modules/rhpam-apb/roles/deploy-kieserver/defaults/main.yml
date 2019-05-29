@@ -54,7 +54,7 @@ kieserver_db:
     dialect: org.hibernate.dialect.PostgreSQLDialect
     port: 5432
   MySQL:
-    driver: mysql
+    driver: mariadb
     dialect: org.hibernate.dialect.MySQL57Dialect
     port: 3306
   External:
