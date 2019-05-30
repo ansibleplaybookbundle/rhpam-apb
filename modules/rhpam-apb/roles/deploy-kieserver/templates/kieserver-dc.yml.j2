@@ -7,7 +7,9 @@ metadata:
     app: {{ kieserver_deployment_name }}
     application: {{ application_name }}
     service: {{ kieserver_service_name }}
+    services.server.kie.org/kie-server-id: {{ kieserver_deployment_name }}
 spec:
+  revisionHistoryLimit: 10
   strategy:
     type: Rolling
     rollingParams:
@@ -40,13 +42,25 @@ spec:
         application: {{ application_name }}
         service: {{ kieserver_service_name }}
         deploymentConfig: {{ kieserver_deployment_name }}
+        services.server.kie.org/kie-server-id: {{ kieserver_deployment_name }}
     spec:
       serviceAccountName: {{ service_account_name }}
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: 90
       containers:
         - name: kieserver
           image: ' '
           imagePullPolicy: "{{ kieserver_image_pull_policy }}"
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                - /bin/sh
+                - /opt/eap/bin/launch/jboss-kie-kieserver-hooks.sh
+            preStop:
+              exec:
+                command:
+                - /bin/sh
+                - /opt/eap/bin/launch/jboss-kie-kieserver-hooks.sh
           resources:
             limits:
               memory: "{{ kieserver_limits_memory }}"
@@ -84,6 +98,8 @@ spec:
               protocol: TCP
 {% endif %}
           env:
+            - name: WORKBENCH_SERVICE_NAME
+              value: "{{ kieserver_businesscentral_svc }}"
             - name: KIE_SERVER_MODE
               value: "{{ kieserver_mode }}"
             - name: DATASOURCES
@@ -130,7 +146,7 @@ spec:
               value: "{{ kieserver_db[kieserver_db_type].url }}"
 {% endif %}
             - name: PROMETHEUS_SERVER_EXT_DISABLED
-            - value: "{{ kieserver_prometheus_ext_disabled }}"
+              value: "{{ kieserver_prometheus_ext_disabled }}"
             - name: DROOLS_SERVER_FILTER_CLASSES
               value: "true"
             - name: KIE_ADMIN_USER
@@ -171,6 +187,10 @@ spec:
               value: "{{ router_protocol }}"
 {% endif %}
             - name: KIE_SERVER_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['services.server.kie.org/kie-server-id']
+            - name: KIE_SERVER_ROUTE_NAME
               value: "{{ kieserver_deployment_name }}"
             - name: KIE_SERVER_HOST
               valueFrom:
@@ -184,7 +204,7 @@ spec:
             - name: MAVEN_REPOS
               value: "RHPAMCENTR,EXTERNAL"
             - name: RHPAMCENTR_MAVEN_REPO_SERVICE
-              value: "{{ kieserver_businesscentral_maven_svc }}"
+              value: "{{ kieserver_businesscentral_svc }}"
             - name: RHPAMCENTR_MAVEN_REPO_PATH
               value: "/maven2/"
             - name: RHPAMCENTR_MAVEN_REPO_USERNAME

@@ -17,6 +17,10 @@
       spec:
         selector:
           deploymentConfig: '{{ kieserver_deployment_name }}'
+        sessionAffinity: ClientIP
+        sessionAffinityConfig:
+          clientIP:
+            timeoutSeconds: 3600
         ports:
           - name: http
             port: 8080
