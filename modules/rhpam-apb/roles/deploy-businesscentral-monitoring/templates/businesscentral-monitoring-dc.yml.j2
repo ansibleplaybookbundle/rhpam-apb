@@ -103,16 +103,16 @@ spec:
               value: '{{ businesscentral_keystore_alias }}'
             - name: HTTPS_PASSWORD
               value: '{{ businesscentral_keystore_pwd }}'
-{% if controller_ocp_enabled %}
 ## OpenShift Enhancement BEGIN
-            - name: KIE_WORKBENCH_CONTROLLER_OPENSHIFT_ENABLED
-              value: "{{ controller_ocp_enabled }}"
+            - name: KIE_SERVER_CONTROLLER_OPENSHIFT_GLOBAL_DISCOVERY_ENABLED
+              value: "{{ controller_global_discovery }}"
             - name: KIE_SERVER_CONTROLLER_OPENSHIFT_PREFER_KIESERVER_SERVICE
               value: "{{ controller_prefer_kieserver_svc }}"
             - name: KIE_SERVER_CONTROLLER_TEMPLATE_CACHE_TTL
               value: "{{ controller_template_cache_ttl }}"
+            - name: KIE_WORKBENCH_CONTROLLER_OPENSHIFT_ENABLED
+              value: "true"
 ## OpenShift Enhancement END
-{% endif %}
 {% if maven_mirror_url %}
             - name: MAVEN_MIRROR_URL
               value: "{{ maven_mirror_url }}"

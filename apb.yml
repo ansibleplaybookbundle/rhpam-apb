@@ -97,10 +97,10 @@ _apb_businesscentral_hostname: &_apb_businesscentral_hostname
   name: apb_businesscentral_hostname
   description: Public hostname for Business Central. Generated if empty
 # OCP Enablement
-_apb_controller_ocp_enabled: &_apb_controller_ocp_enabled
-  name: apb_controller_ocp_enabled
-  title: Enable OpenShift Integration
-  description: If set to true, turns on OpenShift integration feature (Sets the org.kie.workbench.controller.openshift.enabled system property)
+_apb_controller_global_discovery: &_apb_controller_global_discovery
+  name: apb_controller_global_discovery
+  title: Enable KIE server global discovery
+  description: If set to true, turns on KIE server global discovery feature (Sets the org.kie.server.controller.openshift.global.discovery.enabled system property)
   type: boolean
   default: false
   display_group: Business Central
@@ -215,7 +215,7 @@ _apb_kieserver_startup_strategy: &_apb_kieserver_startup_strategy
   required: true
   type: enum
   enum: ['ControllerBasedStartupStrategy', 'OpenShiftStartupStrategy']
-  default: ControllerBasedStartupStrategy
+  default: OpenShiftStartupStrategy
   display_group: Process Server
 _apb_kieserver_prometheus_ext_disabled: &_apb_kieserver_prometheus_ext_disabled
   name: apb_kieserver_prometheus_ext_disabled
@@ -704,7 +704,7 @@ plans:
       - <<: *_apb_businesscentral_hostname
         display_group: Business Central
       # OCP Enablement
-      - *_apb_controller_ocp_enabled
+      - *_apb_controller_global_discovery
       - *_apb_controller_prefer_kieserver_svc
       - *_apb_controller_template_cache_ttl
       # Git hooks
@@ -920,7 +920,7 @@ plans:
       - <<: *_apb_kieserver_startup_strategy
         description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service; when set to LocalContainersStartupStrategy, allows KIE server to start up and function with local config, even when a controller is configured and unavailable"
         enum: ['LocalContainersStartupStrategy', 'OpenShiftStartupStrategy']
-        default: LocalContainersStartupStrategy
+        default: OpenShiftStartupStrategy
       - *_apb_kieserver_image_stream_name
         # Prometheus
       - *_apb_kieserver_prometheus_ext_disabled
@@ -1033,7 +1033,7 @@ plans:
         description: Public hostname for Business Central Monitoring. Generated if empty
         display_group: Business Central Monitoring
       # OCP Enablement
-      - *_apb_controller_ocp_enabled
+      - *_apb_controller_global_discovery
       - *_apb_controller_prefer_kieserver_svc
       - *_apb_controller_template_cache_ttl
       # Other users
@@ -1157,7 +1157,7 @@ plans:
         description: Public hostname for Business Central Monitoring. Generated if empty
         display_group: Business Central Monitoring
       # OCP Enablement
-      - *_apb_controller_ocp_enabled
+      - *_apb_controller_global_discovery
       - *_apb_controller_prefer_kieserver_svc
       - *_apb_controller_template_cache_ttl
 

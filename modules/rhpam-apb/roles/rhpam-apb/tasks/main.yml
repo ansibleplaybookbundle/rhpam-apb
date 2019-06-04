@@ -36,7 +36,7 @@
         kieserver_mode: 'DEVELOPMENT'
         kieserver_db_type: 'H2'
         kieserver_replicas: 1
-        kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('ControllerBasedStartupStrategy', true) | trim }}"
+        kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('OpenShiftStartupStrategy', true) | trim }}"
   when: _apb_plan_id == "trial"
 
 - name: "[RHPAM] Authoring Plan"
@@ -57,7 +57,7 @@
         name: deploy-kieserver
       vars:
         kieserver_replicas: 1
-        kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('ControllerBasedStartupStrategy', true) | trim }}"
+        kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('OpenShiftStartupStrategy', true) | trim }}"
   when: _apb_plan_id == "authoring"
 
 
@@ -85,7 +85,7 @@
         has_router: true
         router_svc: "{{ smartrouter_deployment_name }}"
         kieserver_deployment_index: "{{ item }}"
-        kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('ControllerBasedStartupStrategy', true) | trim }}"
+        kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('OpenShiftStartupStrategy', true) | trim }}"
       with_sequence: start=0 count={{ kie_execution_sets }}
   when: _apb_plan_id == "managed"
 
@@ -112,7 +112,7 @@
     name: deploy-kieserver
   vars:
     kieserver_mgmt_disabled: true
-    kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('LocalContainersStartupStrategy', true) | trim }}"
+    kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('OpenShiftStartupStrategy', true) | trim }}"
     has_external_controller: true
     has_router: true
     kieserver_s2i: true
