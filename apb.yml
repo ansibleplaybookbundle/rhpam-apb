@@ -109,7 +109,7 @@ _apb_controller_prefer_kieserver_svc: &_apb_controller_prefer_kieserver_svc
   title: Prefer Process Server OpenShift Service
   description: Enables connection to Process Server via OpenShift internal Service endpoint (Sets the org.kie.server.controller.openshift.prefer.kieserver.service system property)
   type: boolean
-  default: false
+  default: true
   display_group: Business Central
 _apb_controller_template_cache_ttl: &_apb_controller_template_cache_ttl
   name: apb_controller_template_cache_ttl
