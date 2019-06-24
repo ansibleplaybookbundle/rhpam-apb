@@ -1,8 +1,8 @@
 schema_version: 1
 
 name: "rhpam-7/rhpam-apb"
-description: "Red Hat Business Central 7.3 OpenShift Ansible Playbook Bundle"
-version: "1.1"
+description: "Red Hat Business Central 7.4 OpenShift Ansible Playbook Bundle"
+version: "1.2"
 from: "openshift3/apb-base:v3.11"
 labels:
   - name: "com.redhat.component"
@@ -10,7 +10,7 @@ labels:
   - name: "io.k8s.description"
     value: "Platform for running Red Hat Process Automation Manager"
   - name: "io.k8s.display-name"
-    value: "Red Hat Process Automation Manager 7.3"
+    value: "Red Hat Process Automation Manager 7.4"
   - name: "io.openshift.tags"
     value: "javaee,eap,eap7,rhpam,rhpam7,apb"
   - name: "com.redhat.apb.spec"
