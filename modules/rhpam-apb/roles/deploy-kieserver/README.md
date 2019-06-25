@@ -5,7 +5,7 @@ Deploys Red Hat Process Automation Manager - KIE Process Server
 ## Requirements
 
 * Image Requirements
-  * `{{kieserver_image_namespace}}/{{kieserver_image_name}}:{{kieserver_image_tag}}` e.g. openshift/rhpam74-kieserver-openshift:1.0
+  * `{{kieserver_image_namespace}}/{{kieserver_image_name}}:{{kieserver_image_tag}}` e.g. openshift/rhpam75-kieserver-openshift:1.0
 * External Database. If selected all the external DB values are mandatory
 * If H2 Database is selected, replicas must not be > 1
 
