@@ -134,6 +134,17 @@ spec:
               value: "{{ kieserver_db_host }}"
             - name: RHPAM_SERVICE_PORT
               value: "{{ kieserver_db[kieserver_db_type].port }}"
+{% if kieserver_db_type == 'MySQL' %}
+            - name: RHPAM_CONNECTION_CHECKER
+              value: "org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"
+            - name: RHPAM_EXCEPTION_SORTER
+              value: "org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"
+{% elif kieserver_db_type == 'PostgreSQL' %}
+            - name: RHPAM_CONNECTION_CHECKER
+              value: "org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"
+            - name: RHPAM_EXCEPTION_SORTER
+              value: "org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"
+{% endif %}
             - name: TIMER_SERVICE_DATA_STORE
               value: "{{ kieserver_db_host }}"
             - name: TIMER_SERVICE_DATA_STORE_REFRESH_INTERVAL
