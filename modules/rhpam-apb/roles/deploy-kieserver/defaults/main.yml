@@ -96,4 +96,5 @@ kieserver_jms_password: "{{ apb_kieserver_jms_password | default(lookup('passwor
 kieserver_jms_amq_queues: "{{ apb_kieserver_jms_amq_queues | default('', true) | trim }}"
 
 # Prometheus
-kieserver_prometheus_ext_disabled: "{{ apb_kieserver_prometheus_ext_disabled }}"
+kieserver_prometheus_ext_disabled: "{{ apb_kieserver_prometheus_ext_disabled | default(true, true) }}"
+
