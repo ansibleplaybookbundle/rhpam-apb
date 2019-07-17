@@ -33,6 +33,7 @@ spec:
         service: {{ smartrouter_service_name }}
         deploymentConfig: '{{ smartrouter_deployment_name }}'
     spec:
+      serviceAccountName: {{ service_account_name }}
       terminationGracePeriodSeconds: 60
       containers:
       - name: smartrouter
@@ -60,6 +61,12 @@ spec:
           value: "{{ smartrouter_id }}"
         - name: KIE_SERVER_ROUTER_NAME
           value: "{{ smartrouter_name }}"
+{% if smartrouter_use_external_route %}
+        - name: KIE_SERVER_ROUTER_ROUTE_NAME
+          value: "{{ smartrouter_deployment_name }}"
+{% endif %}
+        - name: KIE_SERVER_ROUTER_SERVICE
+          value: "{{ smartrouter_deployment_name }}"
         - name: KIE_SERVER_ROUTER_PROTOCOL
           value: "{{ smartrouter_protocol }}"
         - name: KIE_SERVER_ROUTER_TLS_KEYSTORE_KEYALIAS
