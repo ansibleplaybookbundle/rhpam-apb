@@ -19,6 +19,7 @@ smartrouter_keystore_pwd: "{{ apb_smartrouter_keystore_pwd | default(lookup('pas
 smartrouter_volume_size: "{{ apb_smartrouter_volume_size | default('', true) | trim }}"
 smartrouter_limits_memory: "512Mi"
 
-smartrouter_protocol: "http"
+smartrouter_protocol: "{{ apb_smartrouter_protocol | default('http', true) | trim }}"
+smartrouter_use_external_route: "{{ apb_smartrouter_use_external_route | default(false, true) }}"
 smartrouter_name: "KIE Server Router"
 smartrouter_id: "kie-server-router"

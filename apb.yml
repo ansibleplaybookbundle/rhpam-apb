@@ -626,6 +626,18 @@ _apb_auth_role_mapper_replace_role: &_apb_auth_role_mapper_replace_role
   description: Whether to add to the current roles, or replace the current roles with the mapped ones. Replaces if set to true.
   type: boolean
   display_group: RoleMapping (Optional)
+# Smart Router Propperties
+_apb_smartrouter_protocol: &_apb_smartrouter_protocol
+  <<: *_apb_protocol_type
+  name: apb_smartrouter_protocol
+  default: http
+  display_group: Smart Router
+_apb_smartrouter_use_external_route: &_apb_smartrouter_use_external_route
+  name: apb_smartrouter_use_external_route
+  type: boolean
+  default: false
+  description: If enabled, Busineses Central will use the external smartrouter route to communicate with. Note that, valid SSL certificates should be used.
+  display_group: Smart Router
 
 # APB Spec version
 version: 1.0
@@ -1045,6 +1057,8 @@ plans:
         display_group: Business Central Monitoring
 
       # Smart Router
+      - *_apb_smartrouter_protocol
+      - *_apb_smartrouter_use_external_route
       - <<: *_apb_replicas
         name: apb_smartrouter_replicas
         description: Number of Replicas of Smart Router that will be initially deployed
@@ -1170,6 +1184,8 @@ plans:
         display_group: Business Central Monitoring
 
       # Smart Router
+      - *_apb_smartrouter_protocol
+      - *_apb_smartrouter_use_external_route
       - <<: *_apb_replicas
         name: apb_smartrouter_replicas
         default: 2
