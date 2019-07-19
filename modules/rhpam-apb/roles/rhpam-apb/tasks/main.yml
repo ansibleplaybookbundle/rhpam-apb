@@ -111,7 +111,7 @@
   include_role:
     name: deploy-kieserver
   vars:
-    kieserver_mgmt_disabled: true
+    kieserver_mgmt_disabled: "true"
     kieserver_startup_strategy: "{{ apb_kieserver_startup_strategy | default('OpenShiftStartupStrategy', true) | trim }}"
     has_external_controller: true
     has_router: true
