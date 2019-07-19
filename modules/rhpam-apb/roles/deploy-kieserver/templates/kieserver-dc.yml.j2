@@ -241,6 +241,10 @@ spec:
               value: "{{ external_maven_repo_pwd }}"
 {% endif %}
 {% if enable_kieserver_jms_integration %}
+            - name: KIE_SERVER_EXECUTOR_JMS
+              value: "{{ kieserver_jms_executor }}"
+            - name: KIE_SERVER_EXECUTOR_JMS_TRANSACTED
+              value: "{{ kieserver_jms_executor_transacted }}"
             - name: KIE_SERVER_JMS_QUEUE_REQUEST
               value: "{{ kieserver_jms_queue_request }}"
             - name: KIE_SERVER_JMS_QUEUE_RESPONSE
