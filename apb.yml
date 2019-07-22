@@ -99,7 +99,7 @@ _apb_businesscentral_hostname: &_apb_businesscentral_hostname
 # OCP Enablement
 _apb_controller_global_discovery: &_apb_controller_global_discovery
   name: apb_controller_global_discovery
-  title: Enable KIE server global discovery
+  title: Enable KIE Server global discovery
   description: If set to true, turns on KIE server global discovery feature (Sets the org.kie.server.controller.openshift.global.discovery.enabled system property)
   type: boolean
   default: false
@@ -159,7 +159,7 @@ _apb_businesscentral_maven_repo_pwd: &_apb_businesscentral_maven_repo_pwd
 _apb_kieserver_mode: &_apb_kieserver_mode
   name: apb_kieserver_mode
   title: Process Server Mode
-  description: The KIE Server mode. Valid values are 'DEVELOPMENT' or 'PRODUCTION'. (Sets the org.kie.server.mode system property).
+  description: The KIE server mode. Valid values are 'DEVELOPMENT' or 'PRODUCTION'. (Sets the org.kie.server.mode system property).
   required: true
   type: enum
   enum: ['DEVELOPMENT', 'PRODUCTION']
@@ -211,10 +211,10 @@ _apb_kieserver_hostname: &_apb_kieserver_hostname
 _apb_kieserver_startup_strategy: &_apb_kieserver_startup_strategy
   name: apb_kieserver_startup_strategy
   title: Startup Strategy
-  description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service. The OpenShiftStartupStrategy strategy is still Technology Preview. Default: ControllerBasedStartupStrategy"
+  description: "When set to OpenShiftStartupStrategy, allows KIE server to start up independently using shared state from OpenShift API service; when set to ControllerBasedStartupStrategy, allows KIE server to start up and function with configuration from a controller. Default: OpenShiftStartupStrategy"
   required: true
   type: enum
-  enum: ['ControllerBasedStartupStrategy', 'OpenShiftStartupStrategy']
+  enum: ['OpenShiftStartupStrategy', 'ControllerBasedStartupStrategy']
   default: OpenShiftStartupStrategy
   display_group: Process Server
 _apb_kieserver_prometheus_ext_disabled: &_apb_kieserver_prometheus_ext_disabled
@@ -282,7 +282,7 @@ _apb_kieserver_external_db_url: &_apb_kieserver_external_db_url
 _apb_enable_kieserver_jms_integration: &_apb_enable_kieserver_jms_integration
   name: apb_enable_kieserver_jms_integration
   title: Enable JMS integration
-  description: When set to true will configure the KIE Server with JMS integration, if no configuration is added, the default will be used.
+  description: When set to true will configure the KIE server with JMS integration, if no configuration is added, the default will be used.
   type: boolean
   default: false
   display_group: JMS Integration
@@ -932,8 +932,8 @@ plans:
       - <<: *_apb_kieserver_hostname
         display_group: Process Server
       - <<: *_apb_kieserver_startup_strategy
-        description: "When set to OpenShiftStartupStrategy, allows Process Server to start up independently used shared state from OpenShift API service; when set to LocalContainersStartupStrategy, allows KIE server to start up and function with local config, even when a controller is configured and unavailable"
-        enum: ['LocalContainersStartupStrategy', 'OpenShiftStartupStrategy']
+        description: "When set to OpenShiftStartupStrategy, allows KIE server to start up independently using shared state from OpenShift API service; when set to LocalContainersStartupStrategy, allows KIE server to start up and function with local configuration, even when a controller is configured and unavailable. Default: OpenShiftStartupStrategy"
+        enum: ['OpenShiftStartupStrategy', 'LocalContainersStartupStrategy']
         default: OpenShiftStartupStrategy
       - *_apb_kieserver_image_stream_name
         # Prometheus
