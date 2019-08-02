@@ -3,7 +3,6 @@
     - name: "[KIE SERVER {{ kieserver_deployment_index }}] Check H2 configuration is valid"
       shell: >
         echo "[Invalid H2 Configuration] - H2 database cannot be used with a clustered KIE Server. Choose a different option." > /dev/termination-log
-
     - set_fact:
         provision_failed: true
   when:

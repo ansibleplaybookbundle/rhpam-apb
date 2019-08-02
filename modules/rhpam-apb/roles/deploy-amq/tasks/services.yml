@@ -16,7 +16,7 @@
         selector:
           deploymentConfig: '{{ amq_service_name }}'
         ports:
-        - name: amq-jolokia
+        - name: '{{ application_name_amq }}-jolokia'
           port: 8161
           protocol: TCP
           targetPort: 8161
@@ -38,10 +38,32 @@
         selector:
           deploymentConfig: '{{ amq_service_name }}'
         ports:
-        - name: amq-amqp
+        - name: '{{ application_name_amq }}-amqp'
           port: 5672
           protocol: TCP
           targetPort: 5672
+
+- name: "[AMQ] set amq-amqp-ssl service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-amqp-ssl'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+          - name: '{{ application_name_amq }}-amqp-ssl'
+            port: 5672
+            protocol: TCP
+            targetPort: 5672
 
 - name: "[AMQ] set amq-mqtt service state to {{ state }}"
   k8s:
@@ -65,6 +87,28 @@
           protocol: TCP
           targetPort: 1883
 
+- name: "[AMQ] set amq-mqtt-ssl service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-mqtt-ssl'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+          - name: '{{ application_name_amq }}-mqtt-ssl'
+            port: 8883
+            protocol: TCP
+            targetPort: 8883
+
 - name: "[AMQ] set amq-stomp service state to {{ state }}"
   k8s:
     state: '{{ state }}'
@@ -82,10 +126,32 @@
         selector:
           deploymentConfig: '{{ amq_service_name }}'
         ports:
-        - name: amq-stomp
+        - name: '{{ application_name_amq }}-stomp'
           port: 61613
           protocol: TCP
           targetPort: 61613
+
+- name: "[AMQ] set amq-stomp-ssl service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-stomp-ssl'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+          - name: '{{ application_name_amq }}-stomp-ssl'
+            port: 61612
+            protocol: TCP
+            targetPort: 61612
 
 - name: "[AMQ] set amq-tcp service state to {{ state }}"
   k8s:
@@ -104,8 +170,30 @@
         selector:
           deploymentConfig: '{{ amq_service_name }}'
         ports:
-        - name: amq-tcp
+        - name: '{{ application_name_amq }}-tcp'
           port: 61616
           protocol: TCP
           targetPort: 61616
+
+- name: "[AMQ] set amq-tcp-ssl service state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: '{{ application_name_amq }}-tcp-ssl'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ amq_service_name }}'
+      spec:
+        selector:
+          deploymentConfig: '{{ amq_service_name }}'
+        ports:
+          - name: '{{ application_name_amq }}-tcp-ssl'
+            port: 61617
+            protocol: TCP
+            targetPort: 61617
 

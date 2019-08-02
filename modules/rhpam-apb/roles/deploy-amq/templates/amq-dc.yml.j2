@@ -53,16 +53,28 @@ spec:
           name: console-jolokia
           protocol: TCP
         - containerPort: 5672
-          name: amq-amqp
+          name: amqp
+          protocol: TCP
+        - containerPort: 5671
+          name: amqp-ssl
           protocol: TCP
         - containerPort: 1883
-          name: amq-mqtt
+          name: mqtt
+          protocol: TCP
+        - containerPort: 8883
+          name: mqtt-ssl
           protocol: TCP
         - containerPort: 61613
-          name: amq-stomp
+          name: stomp
+          protocol: TCP
+        - containerPort: 61612
+          name: stomp-ssl
           protocol: TCP
         - containerPort: 61616
-          name: amq-tcp
+          name: artemis
+          protocol: TCP
+        - containerPort: 61617
+          name: amq-tcp-ssl
           protocol: TCP
         env:
         - name: AMQ_USER
@@ -78,7 +90,27 @@ spec:
         - name: AMQ_QUEUES
           value: '{{ amq_queues }}'
         - name: AMQ_REQUIRE_LOGIN
-          value: "false"
+          value: "true"
         - name: AMQ_ANYCAST_PREFIX
         - name: AMQ_MULTICAST_PREFIX
+{% if enable_amq_ssl %}
+        - name: AMQ_KEYSTORE_TRUSTSTORE_DIR
+          value: "/etc/amq-secret-volume"
+        - name: AMQ_TRUSTSTORE
+          value: '{{ amq_truststore_name }}'
+        - name: AMQ_TRUSTSTORE_PASSWORD
+          value: '{{ amq_truststore_pwd }}'
+        - name: AMQ_KEYSTORE
+          value: '{{ amq_keystore_name }}'
+        - name: AMQ_KEYSTORE_PASSWORD
+          value: '{{ amq_keystore_pwd }}'
+        volumeMounts:
+        - name: broker-secret-volume
+          mountPath: "/etc/amq-secret-volume"
+          readOnly: true
+      volumes:
+      - name: broker-secret-volume
+        secret:
+          secretName: '{{ amq_secret_name }}'
+{% endif %}
 

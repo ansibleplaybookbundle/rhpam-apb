@@ -64,6 +64,10 @@ kie_execution_sets: "{{ apb_kieserver_sets | default(2) }}"
 provision_failed: false
 service_account_name: "{{ application_name }}-rhpamsvc"
 
+# Amq
+amq_service_account_name: "{{ application_name }}-amq"
+enable_kieserver_jms_integration: "{{ apb_enable_kieserver_jms_integration | default(false, true) }}"
+
 # OpenShift Integration
 controller_global_discovery: "{{ apb_controller_global_discovery | default(false, true) | lower }}"
 controller_prefer_kieserver_svc: "{{ apb_controller_prefer_kieserver_svc | default(true, true) | lower }}"

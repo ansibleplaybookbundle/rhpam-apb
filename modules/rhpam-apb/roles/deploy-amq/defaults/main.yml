@@ -3,3 +3,10 @@ amq_image_name: amq-broker-73-openshift
 amq_image_tag: "7.3"
 amq_image_namespace: "{{ image_stream_namespace }}"
 
+amq_secret_name:  "{{ apb_amq_secret_name | default('', true) }}"
+amq_truststore_name: "{{ apb_amq_truststore_name | default('', true) }}"
+amq_truststore_pwd: "{{ apb_amq_truststore_pwd | default('', true) }}"
+amq_keystore_name: "{{ apb_amq_keystore_name | default('', true) }}"
+amq_keystore_pwd: "{{ apb_amq_keystore_pwd | default('', true) }}"
+
+enable_amq_ssl: false

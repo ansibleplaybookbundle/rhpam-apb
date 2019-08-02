@@ -362,6 +362,7 @@ _apb_kieserver_jms_password: &_apb_kieserver_jms_password
   title: AMQ Password
   description: AMQ broker password to connect do the AMQ, generated if empty.
   type: string
+  display_type: password
   display_group: JMS Integration
 _apb_kieserver_jms_amq_queues: &_apb_kieserver_jms_amq_queues
   name: apb_kieserver_jms_amq_queues
@@ -369,6 +370,42 @@ _apb_kieserver_jms_amq_queues: &_apb_kieserver_jms_amq_queues
   description: AMQ broker broker comma separated queues, if set the QUEUES name will be ignored, if empty the values from default queues will be used.
   type: string
   display_group: JMS Integration
+# AMQ keystore/trutstore
+_apb_amq_secret_name: &_apb_amq_secret_name
+  name: apb_amq_secret_name
+  title: AMQ Secret Name
+  required: false
+  description: The name of a secret containing AMQ SSL related files.
+  type: string
+  display_group: JMS Integration
+_apb_amq_truststore_name: &_apb_amq_truststore_name
+  name: apb_amq_truststore_name
+  title: AMQ Truststore File Name
+  description: The name of the AMQ SSL Trust Store file. If a secret name is not provided, the server client truststore that imports the broker certificate.
+  required: false
+  type: string
+  display_group: JMS Integration
+_apb_amq_truststore_pwd: &_apb_amq_truststore_pwd
+  name: apb_amq_truststore_pwd
+  title: AMQ Truststore Password
+  description: The password for the AMQ Trust Store.
+  type: string
+  display_type: password
+  display_group: JMS Integration
+_apb_amq_keystore_name: &_apb_amq_keystore_name
+  name: apb_amq_keystore_name
+  title: Keystore File Name
+  description: The name of the AMQ keystore file.
+  type: string
+  display_group: JMS Integration
+_apb_amq_keystore_pwd: &_apb_amq_keystore_pwd
+  name: apb_amq_keystore_pwd
+  title: Keystore and Certificate Password
+  description: Password protecting both the Keystore and the Certificate.
+  type: string
+  display_type: password
+  display_group: JMS Integration
+
 
 # External Services Integration
 _apb_svc: &_apb_svc
@@ -774,6 +811,11 @@ plans:
       - *_apb_kieserver_jms_username
       - *_apb_kieserver_jms_password
       - *_apb_kieserver_jms_amq_queues
+      - *_apb_amq_secret_name
+      - *_apb_amq_truststore_name
+      - *_apb_amq_truststore_pwd
+      - *_apb_amq_keystore_name
+      - *_apb_amq_keystore_pwd
 
       # Maven
       - *_apb_maven_mirror_url
@@ -917,6 +959,11 @@ plans:
       - *_apb_kieserver_jms_username
       - *_apb_kieserver_jms_password
       - *_apb_kieserver_jms_amq_queues
+      - *_apb_amq_secret_name
+      - *_apb_amq_truststore_name
+      - *_apb_amq_truststore_pwd
+      - *_apb_amq_keystore_name
+      - *_apb_amq_keystore_pwd
 
       - *_apb_kieserver_mode
       - *_apb_kieserver_db_type
@@ -1267,6 +1314,11 @@ plans:
       - *_apb_kieserver_jms_username
       - *_apb_kieserver_jms_password
       - *_apb_kieserver_jms_amq_queues
+      - *_apb_amq_secret_name
+      - *_apb_amq_truststore_name
+      - *_apb_amq_truststore_pwd
+      - *_apb_amq_keystore_name
+      - *_apb_amq_keystore_pwd
 
       # RH - SSO
       - *_apb_sso_url

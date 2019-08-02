@@ -1,12 +1,26 @@
 ---
-- name: "[AMQ-JOLOKIA-CONSOLE] set http route state to {{ state }}"
+- block:
+    - name: "[AMQ] verify ssl configuration"
+      shell: >
+        echo "SSL parameters set, AMQ will be configured with SSL support."
+
+    - set_fact:
+        enable_amq_ssl: true
+  when:
+    - amq_secret_name != ""
+    - amq_truststore_name != ""
+    - amq_truststore_pwd != ""
+    - amq_keystore_name != ""
+    - amq_keystore_pwd != ""
+
+- name: "[AMQ] set https route state to {{ state }}"
   k8s:
     state: '{{ state }}'
     definition:
       apiVersion: v1
       kind: Route
       metadata:
-        name: amq-jolokia-console
+        name: '{{ application_name_amq }}-jolokia'
         namespace: '{{ namespace }}'
         labels:
           app: '{{ kieserver_deployment_name }}'
@@ -14,8 +28,59 @@
           service: '{{ application_name_amq }}'
       spec:
         port:
-          targetPort: amq-jolokia
+          targetPort: '{{ application_name_amq }}-jolokia'
         to:
           kind: Service
           name: '{{ amq_console_service }}'
+        tls:
+          termination: passthrough
+  when:
+    - enable_amq_ssl
+
+
+- name: "[AMQ] set http route state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Route
+      metadata:
+        name: '{{ application_name_amq }}-jolokia'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ application_name_amq }}'
+      spec:
+        port:
+          targetPort: '{{ application_name_amq }}-jolokia'
+        to:
+          kind: Service
+          name: '{{ amq_console_service }}'
+  when:
+    - not enable_amq_ssl
+
+- name: "[AMQ] set http amq-tcp-ssl route state to {{ state }}"
+  k8s:
+    state: '{{ state }}'
+    definition:
+      apiVersion: v1
+      kind: Route
+      metadata:
+        name: '{{ application_name_amq }}-tcp-ssl'
+        namespace: '{{ namespace }}'
+        labels:
+          app: '{{ kieserver_deployment_name }}'
+          application: '{{ application_name }}'
+          service: '{{ application_name_amq }}'
+      spec:
+        port:
+          targetPort: '{{ application_name_amq }}-tcp-ssl'
+        to:
+          kind: Service
+          name: '{{ application_name_amq }}-tcp-ssl'
+        tls:
+          termination: passthrough
+  when:
+    - enable_amq_ssl
 
