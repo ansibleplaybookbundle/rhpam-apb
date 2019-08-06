@@ -20,7 +20,7 @@ _apb_image_stream_tag: &_apb_image_stream_tag
   description: Tag version of the RHPAM ImageStream to use. It must exist in the openshift namespace.
   required: true
   type: string
-  default: '1.0'
+  default: '1.1'
 # HA
 _apb_replicas: &_apb_replicas
   title: Number of replicas
@@ -639,7 +639,7 @@ _apb_smartrouter_use_external_route: &_apb_smartrouter_use_external_route
   description: If enabled, Busineses Central will use the external smartrouter route to communicate with. Note that, valid SSL certificates should be used.
   display_group: Smart Router
 
-# APB Spec version
+# APB Spec version, don't change it unless The APB api is updated.
 version: 1.0
 name: rhpam-apb
 description: Red Hat Process Automation Manager (APB)
