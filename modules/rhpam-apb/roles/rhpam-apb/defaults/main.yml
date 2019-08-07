@@ -65,6 +65,6 @@ provision_failed: false
 service_account_name: "{{ application_name }}-rhpamsvc"
 
 # OpenShift Integration
-controller_global_discovery: "{{ apb_controller_global_discovery | default(false, true) | lower }}"
-controller_prefer_kieserver_svc: "{{ apb_controller_prefer_kieserver_svc | default(true, true) | lower }}"
+controller_global_discovery: "{{ apb_controller_global_discovery | default(false) | lower }}"
+controller_prefer_kieserver_svc: "{{ apb_controller_prefer_kieserver_svc | default(true) | lower }}"
 controller_template_cache_ttl: "{{ apb_controller_template_cache_ttl | default(60000, true) }}"

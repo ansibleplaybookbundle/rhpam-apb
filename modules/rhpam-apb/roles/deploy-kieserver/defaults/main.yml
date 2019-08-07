@@ -79,22 +79,22 @@ kieserver_artifact_dir: "{{ apb_kieserver_artifact_dir | default('', true) | tri
 kieserver_container_deployment: "{{ apb_kieserver_container_deployment | default('', true) | trim }}"
 
 # JMS integration (UPDATE DEFAULT VALUES)
-enable_kieserver_jms_integration: "{{ apb_enable_kieserver_jms_integration | default(false, true) }}"
-kieserver_jms_executor: "{{ apb_kieserver_jms_executor | default(true, true) | string | lower }}"
+enable_kieserver_jms_integration: "{{ apb_enable_kieserver_jms_integration | default(false) }}"
+kieserver_jms_executor: "{{ apb_kieserver_jms_executor | default(true) | string | lower }}"
 kieserver_jms_queue_executor: "{{ apb_kieserver_jms_queue_executor | default('queue/KIE.SERVER.EXECUTOR', true) | trim }}"
-kieserver_jms_executor_transacted: "{{ apb_kieserver_jms_executor_transacted | default(false, true) | string | lower }}"
+kieserver_jms_executor_transacted: "{{ apb_kieserver_jms_executor_transacted | default(false) | string | lower }}"
 kieserver_jms_queue_request: "{{ apb_kieserver_jms_queue_request | default('queue/KIE.SERVER.REQUEST', true) | trim }}"
 kieserver_jms_queue_response: "{{ apb_kieserver_jms_queue_response | default('queue/KIE.SERVER.RESPONSE', true) | trim }}"
-kieserver_jms_enable_signal: "{{ apb_kieserver_jms_enable_signal | default(false, true) | string | lower }}"
+kieserver_jms_enable_signal: "{{ apb_kieserver_jms_enable_signal | default(false) | string | lower }}"
 kieserver_jms_queue_signal: "{{ apb_kieserver_jms_queue_signal | default('queue/KIE.SERVER.SIGNAL', true) | trim }}"
-kieserver_jms_enable_audit: "{{ apb_kieserver_jms_enable_audit | default(false, true) | string | lower }}"
+kieserver_jms_enable_audit: "{{ apb_kieserver_jms_enable_audit | default(false) | string | lower }}"
 kieserver_jms_queue_audit: "{{ apb_kieserver_jms_queue_audit | default('queue/KIE.SERVER.AUDIT', true) | trim }}"
-kieserver_jms_audit_transacted: "{{ apb_kieserver_jms_audit_transacted | default(true, true) | string | lower }}"
+kieserver_jms_audit_transacted: "{{ apb_kieserver_jms_audit_transacted | default(true) | string | lower }}"
 kieserver_jms_username: "{{ apb_kieserver_jms_username | default('amqUser') | trim }}"
 kieserver_jms_password: "{{ apb_kieserver_jms_password | default(lookup('password', tmp_folder + '/amq_pwd chars=ascii_letters,digits length=8'), true) }}"
 # if empty AMQ Queues will be set on the deploy-amq/tasks/main.yml
 kieserver_jms_amq_queues: "{{ apb_kieserver_jms_amq_queues | default('', true) | trim }}"
 
 # Prometheus
-kieserver_prometheus_ext_disabled: "{{ apb_kieserver_prometheus_ext_disabled | default(true, true) | string | lower }}"
+kieserver_prometheus_ext_disabled: "{{ apb_kieserver_prometheus_ext_disabled | default(true) | string | lower }}"
 
