@@ -69,9 +69,6 @@ spec:
             - name: https
               containerPort: 8443
               protocol: TCP
-            - name: git-ssh
-              containerPort: 8001
-              protocol: TCP
           env:
             - name: KIE_ADMIN_USER
               value: '{{ kie_admin_user }}'
@@ -87,6 +84,8 @@ spec:
               value: '{{ kie_execution_user }}'
             - name: KIE_SERVER_PWD
               value: '{{ kie_execution_pwd }}'
+            - name:  WORKBENCH_ROUTE_NAME
+              value: '{{ businesscentral_deployment_name }}' 
 ## OpenShift Enhancement BEGIN
             - name: KIE_SERVER_CONTROLLER_OPENSHIFT_GLOBAL_DISCOVERY_ENABLED
               value: "{{ controller_global_discovery }}"

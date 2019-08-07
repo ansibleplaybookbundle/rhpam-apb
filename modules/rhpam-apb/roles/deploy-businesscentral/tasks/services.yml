@@ -24,6 +24,3 @@
           - name: https
             port: 8443
             targetPort: 8443
-          - name: git-ssh
-            port: 8001
-            targetPort: 8001
