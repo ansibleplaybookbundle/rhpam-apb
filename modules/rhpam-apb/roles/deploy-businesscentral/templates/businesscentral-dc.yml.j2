@@ -70,6 +70,10 @@ spec:
               containerPort: 8443
               protocol: TCP
           env:
+            - name: APPLICATION_USERS_PROPERTIES
+              value: "/opt/kie/data/configuration/application-users.properties"
+            - name: APPLICATION_ROLES_PROPERTIES
+              value: "/opt/kie/data/configuration/application-roles.properties"
             - name: KIE_ADMIN_USER
               value: '{{ kie_admin_user }}'
             - name: KIE_ADMIN_PWD
@@ -85,7 +89,7 @@ spec:
             - name: KIE_SERVER_PWD
               value: '{{ kie_execution_pwd }}'
             - name:  WORKBENCH_ROUTE_NAME
-              value: '{{ businesscentral_deployment_name }}' 
+              value: '{{ businesscentral_deployment_name }}'
 ## OpenShift Enhancement BEGIN
             - name: KIE_SERVER_CONTROLLER_OPENSHIFT_GLOBAL_DISCOVERY_ENABLED
               value: "{{ controller_global_discovery }}"
