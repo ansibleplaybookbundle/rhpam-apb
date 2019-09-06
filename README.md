@@ -95,12 +95,12 @@ pod "openshift-automation-service-broker-1-b7pl6" deleted
 
 The following `imageStreams` should exist in the `openshift` namespace:
 
-* rhpam75-businesscentral-monitoring-openshift:1.0
-* rhpam75-businesscentral-openshift:1.0
-* rhpam75-controller-openshift:1.0
-* rhpam75-elasticsearch-openshift:1.0
-* rhpam75-kieserver-openshift:1.0
-* rhpam75-smartrouter-openshift:1.0
+* rhpam76-businesscentral-monitoring-openshift:1.0
+* rhpam76-businesscentral-openshift:1.0
+* rhpam76-controller-openshift:1.0
+* rhpam76-elasticsearch-openshift:1.0
+* rhpam76-kieserver-openshift:1.0
+* rhpam76-smartrouter-openshift:1.0
 
 ### KIE Process Server
 

@@ -171,7 +171,7 @@ _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   description: Image Stream Name to use for Process Server. If you have generated a custom image (for example, to provide a database server driver), you can change this parameter to use it.
   required: true
   type: string
-  default: rhpam75-kieserver-openshift
+  default: rhpam76-kieserver-openshift
   display_group: Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
@@ -695,11 +695,11 @@ metadata:
   providerDisplayName: "Red Hat, Inc."
   serviceName: rhpam
   dependencies:
-    - 'registry.redhat.io/rhpam-7/rhpam75-kieserver-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam75-businesscentral-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam75-controller-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam75-smartrouter-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam75-businesscentral-monitoring-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam76-kieserver-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam76-businesscentral-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam76-controller-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam76-smartrouter-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam76-businesscentral-monitoring-openshift'
     - 'registry.redhat.io/rhscl/postgresql-10-rhel7'
     - 'registry.redhat.io/rhscl/mysql-57-rhel7'
 tags:
@@ -910,7 +910,7 @@ plans:
         display_group: Artifact source
       - name: apb_kieserver_source_ref
         title: Git Repository Reference
-        description: Git branch/tag reference. For example, 7.5.0.GA or master
+        description: Git branch/tag reference. For example, 7.6.0.GA or master
         required: true
         type: string
         display_group: Artifact source
