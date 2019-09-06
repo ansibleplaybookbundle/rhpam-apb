@@ -1,6 +1,6 @@
 # RHPAM APB
 
-[![Build Status](https://travis-ci.org/ansibleplaybookbundle/rhpam-apb.svg?branch=master)](https://travis-ci.org/ansibleplaybookbundle/rhpam-apb) [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Build Status](https://travis-ci.org/ansibleplaybookbundle/rhpam-apb.svg?branch=7.5.x)](https://travis-ci.org/ansibleplaybookbundle/rhpam-apb) [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 ## Overview
 
