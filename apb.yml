@@ -679,7 +679,7 @@ _apb_smartrouter_use_external_route: &_apb_smartrouter_use_external_route
 # APB Spec version
 version: 1.0
 name: rhpam-apb
-description: Red Hat Process Automation Manager (APB)
+description: Red Hat Process Automation Manager (APB) - Deprecated
 bindable: false
 async: unsupported
 metadata:
@@ -689,6 +689,7 @@ metadata:
     As a system engineer, you can deploy a Red Hat Process Automation Manager
     environment on Red Hat OpenShift Container Platform to provide an infrastructure
     to develop or execute processes and other business assets.
+    Deprecated in 7.5; using the Red Hat Business Automation Operator is recommended.
 
     Make sure the required ImageStreamTags exist in the openshift project. See below for the required images
   console.openshift.io/iconClass: icon-processserver
