@@ -155,7 +155,7 @@ $ cekit build
 2018-10-03 11:56:06,752 cekit        INFO     Generating files for docker engine.
 2018-10-03 11:56:06,812 cekit        INFO     Initializing image descriptor...
 ...
-2018-10-03 11:57:31,545 cekit        INFO     Image built and available under following tags: rhpam-7/rhpam-apb:1.3, rhpam-7/rhpam-apb:latest
+2018-10-03 11:57:31,545 cekit        INFO     Image built and available under following tags: rhpam-7/rhpam-apb:1.4, rhpam-7/rhpam-apb:latest
 2018-10-03 11:57:31,545 cekit        INFO     Finished!
 ```
 
