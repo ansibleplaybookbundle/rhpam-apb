@@ -100,7 +100,7 @@ _apb_businesscentral_hostname: &_apb_businesscentral_hostname
 _apb_controller_global_discovery: &_apb_controller_global_discovery
   name: apb_controller_global_discovery
   title: Enable KIE Server global discovery
-  description: If set to true, turns on KIE server global discovery feature (Sets the org.kie.server.controller.openshift.global.discovery.enabled system property)
+  description: If set to true, turns on KIE server global discovery feature. With this feature, Business Central is able to discover all KIE servers with OpenShiftStartupStrategy deployed in the same namespace.  If set to false, Business Central can discover a KIE server only if both components are deployed with the same application name. (Sets the org.kie.server.controller.openshift.global.discovery.enabled system property)
   type: boolean
   default: false
   display_group: Business Central
@@ -159,7 +159,7 @@ _apb_businesscentral_maven_repo_pwd: &_apb_businesscentral_maven_repo_pwd
 _apb_kieserver_mode: &_apb_kieserver_mode
   name: apb_kieserver_mode
   title: Process Server Mode
-  description: The KIE server mode. Valid values are 'DEVELOPMENT' or 'PRODUCTION'. (Sets the org.kie.server.mode system property).
+  description: The KIE server mode. Valid values are 'DEVELOPMENT' or 'PRODUCTION'. In production mode, you can not deploy SNAPSHOT versions of artifacts on the KIE server and can not change the version of an artifact in an existing container. (Sets the org.kie.server.mode system property).
   required: true
   type: enum
   enum: ['DEVELOPMENT', 'PRODUCTION']
@@ -689,7 +689,7 @@ metadata:
     As a system engineer, you can deploy a Red Hat Process Automation Manager
     environment on Red Hat OpenShift Container Platform to provide an infrastructure
     to develop or execute processes and other business assets.
-    Deprecated in 7.5; using the Red Hat Business Automation Operator is recommended.
+    For use with Red Hat OpenShift Container Platform version 3.11. Deprecated since Red Hat Process Automation Manager version 7.5; consider using the Red Hat Business Automation Operator.
 
     Make sure the required ImageStreamTags exist in the openshift project. See below for the required images
   console.openshift.io/iconClass: icon-processserver
@@ -899,7 +899,7 @@ plans:
       # Artifact Source
       - name: apb_kieserver_container_deployment
         title: Process Server Container Deployment
-        description: 'Process Server Container deployment configuration in format: containerId=groupId:artifactId:version|c2=g2:a2:v2'
+        description: 'KIE Server Container deployment configuration with optional alias. Format: containerId=groupId:artifactId:version|c2(alias2)=g2:a2:v2'
         required: true
         type: string
         display_group: Artifact source
