@@ -5,37 +5,33 @@ sevices:
 
 language: python
 python:
-  - '2.7'
+  - '3.6'
 
 env:
-  - OPENSHIFT_VERSION=v3.9
-  - OPENSHIFT_VERSION=v3.10
+#- OPENSHIFT_VERSION=v3.10
   - OPENSHIFT_VERSION=v3.11
-    #- KUBERNETES_VERSION=v1.9.0 --> ImageStreams don't work on K8S
-    #- KUBERNETES_VERSION=v1.10.0 --> ImageStreams don't work on K8S
-# Allow failures on oc latest
-# TODO: re-enable latest when it isn't busted
-matrix:
-  allow_failures:
-    - env: OPENSHIFT_VERSION=v3.10
-    - env: OPENSHIFT_VERSION=v3.11
+
+#matrix:
+#  allow_failures:
+#    - env: OPENSHIFT_VERSION=v3.10
 
 script:
   # Configure test values
   - export apb_name='rhpam-apb'
   - export dockerfile='target/image/Dockerfile'
-  - export resources='https://github.com/jboss-container-images/rhpam-7-openshift-image/blob/7.3.x/rhpam73-image-streams.yaml'
-  - export resources_namespace='openshift'
+#  - export image_stream='https://raw.githubusercontent.com/jboss-container-images/rhpam-7-openshift-image/7.4.1.GA/rhpam74-image-streams.yaml'
 
+  # workaround for bypass odcs auth
+  - |
+    sed -i "s/  content_sets_file: content_sets.yml//g" ${PWD}/image.yaml
   # Install and run cekit
-  - virtualenv ~/cekit
-  - source ~/cekit/bin/activate
-  - pip install -q -U cekit
-  - cekit build --overrides-file dev-overrides.yaml
+  - pip install --pre docker docker-squash 'cekit>=3.2.0,<3.3.0' odcs
+  - cekit build --overrides-file dev-overrides.yaml docker --no-squash
 
-  # Download test shim.
-  - wget -O ${PWD}/apb-test.sh https://raw.githubusercontent.com/ansibleplaybookbundle/apb-test-shim/master/apb-test.sh
+  # add execution permission to the test script.
   - chmod +x ${PWD}/apb-test.sh
+
+
 
   # Run tests.
   - ${PWD}/apb-test.sh

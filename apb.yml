@@ -162,7 +162,7 @@ _apb_kieserver_mode: &_apb_kieserver_mode
   description: The KIE server mode. Valid values are 'DEVELOPMENT' or 'PRODUCTION'. In production mode, you can not deploy SNAPSHOT versions of artifacts on the KIE server and can not change the version of an artifact in an existing container. (Sets the org.kie.server.mode system property).
   required: true
   type: enum
-  enum: ['DEVELOPMENT', 'PRODUCTION']
+  enum: [ 'DEVELOPMENT', 'PRODUCTION' ]
   default: DEVELOPMENT
   display_group: Process Server
 _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
@@ -214,7 +214,7 @@ _apb_kieserver_startup_strategy: &_apb_kieserver_startup_strategy
   description: "When set to OpenShiftStartupStrategy, allows KIE server to start up independently using shared state from OpenShift API service; when set to ControllerBasedStartupStrategy, allows KIE server to start up and function with configuration from a controller. Default: OpenShiftStartupStrategy"
   required: true
   type: enum
-  enum: ['OpenShiftStartupStrategy', 'ControllerBasedStartupStrategy']
+  enum: [ 'OpenShiftStartupStrategy', 'ControllerBasedStartupStrategy' ]
   default: OpenShiftStartupStrategy
   display_group: Process Server
 _apb_kieserver_prometheus_ext_disabled: &_apb_kieserver_prometheus_ext_disabled
@@ -981,10 +981,10 @@ plans:
         display_group: Process Server
       - <<: *_apb_kieserver_startup_strategy
         description: "When set to OpenShiftStartupStrategy, allows KIE server to start up independently using shared state from OpenShift API service; when set to LocalContainersStartupStrategy, allows KIE server to start up and function with local configuration, even when a controller is configured and unavailable. Default: OpenShiftStartupStrategy"
-        enum: ['OpenShiftStartupStrategy', 'LocalContainersStartupStrategy']
+        enum: [ 'OpenShiftStartupStrategy', 'LocalContainersStartupStrategy' ]
         default: OpenShiftStartupStrategy
       - *_apb_kieserver_image_stream_name
-        # Prometheus
+      # Prometheus
       - *_apb_kieserver_prometheus_ext_disabled
 
       # External Database
