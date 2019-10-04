@@ -1,12 +1,12 @@
 schema_version: 1
 
 name: "rhpam-7/rhpam-apb"
-description: "Red Hat Business Central 7.5 OpenShift Ansible Playbook Bundle - Deprecated"
+description: "Red Hat Business Central 7.6 OpenShift Ansible Playbook Bundle - Deprecated"
 version: "1.4"
 from: "openshift3/apb-base:v3.11"
 labels:
   - name: "com.redhat.component"
-    value: "rhpam-apb"
+    value: "rhpam-7-rhpam76-apb-openshift-apb"
   - name: "io.k8s.description"
     value: "Platform for running Red Hat Process Automation Manager"
   - name: "io.k8s.display-name"
@@ -186,4 +186,4 @@ osbs:
     container_file: container.yaml
   repository:
     name: apbs/rhpam-7-apb-openshift
-    branch: rhpam-7-rhel-7
+    branch: rhba-7.6-openshift-rhel-7
