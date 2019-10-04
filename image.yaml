@@ -6,7 +6,7 @@ version: "1.3"
 from: "openshift3/apb-base:v3.11"
 labels:
   - name: "com.redhat.component"
-    value: "rhpam-apb"
+    value: "rhpam-7-rhpam75-apb-openshift-apb"
   - name: "io.k8s.description"
     value: "Platform for running Red Hat Process Automation Manager"
   - name: "io.k8s.display-name"
@@ -186,4 +186,4 @@ osbs:
     container_file: container.yaml
   repository:
     name: apbs/rhpam-7-apb-openshift
-    branch: rhpam-7-rhel-7
+    branch: rhba-7.5-openshift-rhel-7
