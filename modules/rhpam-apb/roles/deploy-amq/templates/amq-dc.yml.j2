@@ -10,10 +10,12 @@ metadata:
   annotations:
     template.alpha.openshift.io/wait-for-ready: "true"
 spec:
+  revisionHistoryLimit: 10
   strategy:
-    rollingParams:
-      maxSurge: 0
     type: Rolling
+    rollingParams:
+      maxSurge: 100%
+      maxUnavailable: 0
   triggers:
   - imageChangeParams:
       automatic: true

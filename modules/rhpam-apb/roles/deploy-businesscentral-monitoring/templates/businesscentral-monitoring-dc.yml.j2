@@ -8,8 +8,12 @@ metadata:
     application: {{ application_name }}
     service: {{ businesscentral_service_name }}
 spec:
+  revisionHistoryLimit: 10
   strategy:
-    type: Recreate
+    type: Rolling
+    rollingParams:
+      maxSurge: 100%
+      maxUnavailable: 0
   triggers:
     - type: ImageChange
       imageChangeParams:

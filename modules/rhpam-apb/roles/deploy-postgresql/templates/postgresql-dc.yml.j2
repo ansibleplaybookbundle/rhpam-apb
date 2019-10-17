@@ -8,6 +8,11 @@ metadata:
     application: '{{ application_name }}'
     service: '{{ service_name }}'
 spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      maxSurge: 100%
+      maxUnavailable: 0
   selector:
     deploymentConfig: '{{ deployment_name }}'
   triggers:
