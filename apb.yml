@@ -20,7 +20,7 @@ _apb_image_stream_tag: &_apb_image_stream_tag
   description: Tag version of the RHPAM ImageStream to use. It must exist in the openshift namespace.
   required: true
   type: string
-  default: '1.0'
+  default: '7.5.0'
 # HA
 _apb_replicas: &_apb_replicas
   title: Number of replicas
@@ -171,7 +171,7 @@ _apb_kieserver_image_stream_name: &_apb_kieserver_image_stream_name
   description: Image Stream Name to use for Process Server. If you have generated a custom image (for example, to provide a database server driver), you can change this parameter to use it.
   required: true
   type: string
-  default: rhpam75-kieserver-openshift
+  default: rhpam-kieserver-rhel8
   display_group: Process Server
 _apb_kieserver_user: &_apb_kieserver_user
   name: apb_kieserver_user
@@ -696,11 +696,11 @@ metadata:
   providerDisplayName: "Red Hat, Inc."
   serviceName: rhpam
   dependencies:
-    - 'registry.redhat.io/rhpam-7/rhpam75-kieserver-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam75-businesscentral-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam75-controller-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam75-smartrouter-openshift'
-    - 'registry.redhat.io/rhpam-7/rhpam75-businesscentral-monitoring-openshift'
+    - 'registry.redhat.io/rhpam-7/rhpam-kieserver-rhel8'
+    - 'registry.redhat.io/rhpam-7/rhpam-businesscentral-rhel8'
+    - 'registry.redhat.io/rhpam-7/rhpam-controller-rhel8'
+    - 'registry.redhat.io/rhpam-7/rhpam-smartrouter-rhel8'
+    - 'registry.redhat.io/rhpam-7/rhpam-businesscentral-monitoring-rhel8'
     - 'registry.redhat.io/rhscl/postgresql-10-rhel7'
     - 'registry.redhat.io/rhscl/mysql-57-rhel7'
 tags:

@@ -1,9 +1,0 @@
-builds:
-  - name: "rhpam-apb"
-    descriptor: "image.yaml"
-    product: true
-  - name: "rhpam-apb-dev"
-    descriptor: "image.yaml"
-    product: false
-    overrides:
-      - "dev-overrides.yaml"

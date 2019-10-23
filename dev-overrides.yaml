@@ -1,4 +1,4 @@
 schema_version: 1
 
-name: "rhpam-7/rhpam7-dev-apb"
+name: "rhpam-7/rhpam-rhel7-dev-apb"
 from: "ansibleplaybookbundle/apb-base:v3.11"
