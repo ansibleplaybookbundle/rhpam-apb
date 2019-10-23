@@ -1,2 +1,0 @@
----
-keystore_path: "{{ tmp_folder }}/{{ secret_name }}-{{ keystore_name | default('keystore.jks', true) }}"
