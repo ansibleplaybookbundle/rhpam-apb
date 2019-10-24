@@ -186,4 +186,4 @@ osbs:
     container_file: container.yaml
   repository:
     name: apbs/rhpam-7-apb
-    branch: rhba-7--rhel-7
+    branch: rhba-7-rhel-7
