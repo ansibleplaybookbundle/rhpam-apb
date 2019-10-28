@@ -5,7 +5,7 @@ Deploys Red Hat Process Automation Manager - Smart Router
 ## Requirements
 
 * Image Requirements
-  * `{{smartrouter_image_namespace}}/{{smartrouter_image_name}}:{{smartrouter_image_tag}}` e.g. openshift/rhpam75-smartrouter-openshift:1.0
+  * `{{smartrouter_image_namespace}}/{{smartrouter_image_name}}:{{smartrouter_image_tag}}` e.g. openshift/rhpam-smartrouter-rhel8:7.5.0
 
 ## Objects created
 

@@ -1,32 +1,32 @@
 provision_failed: false
-apb_image_stream_tag: 1.0
+apb_image_stream_tag: 7.5.0
 image_stream_namespace: '{{ namespace }}'
 image_registry: registry.access.redhat.com
 image_streams:
   - {
-      name: "rhpam75-businesscentral-openshift",
+      name: "rhpam-businesscentral-rhel8",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam75-businesscentral-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam-businesscentral-rhel8:{{ apb_image_stream_tag }}"
     }
   - {
-      name: "rhpam75-businesscentral-monitoring-openshift",
+      name: "rhpam-businesscentral-monitoring-rhel8",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam75-businesscentral-monitoring-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam-businesscentral-monitoring-rhel8:{{ apb_image_stream_tag }}"
     }
   - {
-      name: "rhpam75-controller-openshift",
+      name: "rhpam-controller-rhel8",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam75-controller-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam-controller-rhel8:{{ apb_image_stream_tag }}"
     }
   - {
-      name: "rhpam75-kieserver-openshift",
+      name: "rhpam-kieserver-rhel8",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam75-kieserver-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam-kieserver-rhel8:{{ apb_image_stream_tag }}"
     }
   - {
-      name: "rhpam75-smartrouter-openshift",
+      name: "rhpam-smartrouter-rhel8",
       version: "{{ apb_image_stream_tag }}",
-      image_ref: "{{ image_registry }}/rhpam-7/rhpam75-smartrouter-openshift:{{ apb_image_stream_tag }}"
+      image_ref: "{{ image_registry }}/rhpam-7/rhpam-smartrouter-rhel8:{{ apb_image_stream_tag }}"
     }
   - {
       name: "postgresql",
