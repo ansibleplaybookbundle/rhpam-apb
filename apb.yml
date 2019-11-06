@@ -20,7 +20,7 @@ _apb_image_stream_tag: &_apb_image_stream_tag
   description: Tag version of the RHPAM ImageStream to use. It must exist in the openshift namespace.
   required: true
   type: string
-  default: '7.5.0'
+  default: '7.5.1'
 # HA
 _apb_replicas: &_apb_replicas
   title: Number of replicas
@@ -911,7 +911,7 @@ plans:
         display_group: Artifact source
       - name: apb_kieserver_source_ref
         title: Git Repository Reference
-        description: Git branch/tag reference. For example, 7.5.0.GA or master
+        description: Git branch/tag reference. For example, 7.5.1.GA or master
         required: true
         type: string
         display_group: Artifact source
